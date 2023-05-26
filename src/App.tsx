@@ -1,18 +1,63 @@
+import Konva from "konva";
+import { useEffect, useRef } from "react";
 import { Stage, Layer, Rect, Text, Circle, Line, Shape } from "react-konva";
+import SpiroForm from "./components/SpiroForm";
+import SpiroSVG from "./components/SpiroSVG";
+import { Col, Row } from "antd";
 
 function App() {
+  const lineRef = useRef<Konva.Line>(null);
+  const initialPoints = [20, 20, 100, 100, 150, 50];
+  let animPoints = [20, 20];
+
+  useEffect(() => {
+    const anim = new Konva.Animation((frame) => {
+      const time = frame?.time || 0;
+      const velocity = 0.0001;
+      if (animPoints.length + 1 < initialPoints.length) {
+        animPoints = [...animPoints, initialPoints[animPoints.length] + velocity * time];
+        console.log(animPoints);
+        lineRef.current?.points(animPoints);
+      } else {
+        anim.stop();
+      }
+    }, lineRef.current?.getLayer());
+
+    anim.start();
+
+    return () => {
+      anim.stop();
+    }
+  }, []);
+
   return (
+    <>
+    <SpiroForm />
+    <Row>
+      <Col span={24}>
+        <SpiroSVG a={5} r={1} d={3} interpolation="cuadratic" />
+      </Col>
+      <Col span={24}>
+        <SpiroSVG a={6} r={1} d={2} interpolation="cuadratic" />
+      </Col>
+      <Col span={24}>
+        <SpiroSVG a={4} r={1} d={1} interpolation="linear" />
+      </Col>
+      <Col span={24}>
+        <SpiroSVG a={5} r={1} d={3} interpolation="linear" />
+      </Col>
+      <Col span={24}>
+        <SpiroSVG a={6} r={1} d={2} interpolation="linear" />
+      </Col>
+      <Col span={24}>
+        <SpiroSVG a={4} r={1} d={1} interpolation="cuadratic" />
+      </Col>
+    </Row>
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Text text="Some text on canvas" fontSize={15} />
-        <Rect
-          x={20}
-          y={50}
-          width={100}
-          height={100}
-          fill="red"
-          shadowBlur={10}
-        />
+        <Line ref={lineRef} points={animPoints} stroke="white" />
+      </Layer>
+      {/* <Layer>
         <Circle x={200} y={100} radius={50} fill="green" />
         <Line
           x={20}
@@ -39,8 +84,9 @@ function App() {
           stroke="black"
           strokeWidth={4}
         />
-      </Layer>
+      </Layer> */}
     </Stage>
+    </>
   );
 }
 
