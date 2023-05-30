@@ -1,4 +1,4 @@
-import { Line, LineSegment, Point } from "./maths.type";
+import { Line, LineSegment, Point } from "./types";
 
 export function getSlope(p1: Point, p2: Point): number {
   return (p2.y - p1.y) / (p2.x - p1.x);

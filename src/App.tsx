@@ -1,9 +1,7 @@
-import ListFavoriteSpiros from "./components/ListFavoriteSpiros";
-import SpiroCanvas from "./components/SpiroCanvas";
-import SpiroForm from "./components/SpiroForm";
-import { Button, Col, Row } from "antd";
-
-const colSpan = 8;
+import { Header } from "antd/es/layout/layout";
+import ListFavoriteSpiros from "./components/favoriteSpiro/ListFavoriteSpiros";
+import { Button } from "antd";
+import EditingSpiro from "./components/EditingSpiro/EditingSpiro";
 
 function App() {
   const params = [
@@ -21,34 +19,17 @@ function App() {
 
   return (
     <>
-    <Row gutter={[16, 16]}>
-      <Col span={8}>
-        <div className="flex flex-col gap-16">
-          <h1>Spirograph 2.0</h1>
-          <div className="flex gap-16 justify-between">
-            <Button>Change Language</Button>
-            <Button>Show advance Settings</Button>
-          </div>
-          <SpiroForm />
+      <Header className="flex justify-between items-center">
+        <h1 className="text-4xl text-white">Spirograph 2.0</h1>
+        <div className="flex gap-16 justify-between">
+          <Button>Change Language</Button>
+          <Button>Show advance Settings</Button>
         </div>
-      </Col>
-      <Col span={16}>
-        <SpiroCanvas
-          movingRadius={params[0].movingRadius}
-          pointDistance={params[0].pointDistance}
-          interpolation="derivative"
-          msPerStep={20}
-          step={44}
-          backgroundColor="#00000000"
-          color="#fff"
-          strokeWidth={10}
-        />
-      </Col>
-      <Col span={24}>
+      </Header>
+      <div className="flex flex-col p-16">
+        <EditingSpiro />
         <ListFavoriteSpiros />
-      </Col>
-    </Row>
-    
+      </div>
     </>
   );
 }

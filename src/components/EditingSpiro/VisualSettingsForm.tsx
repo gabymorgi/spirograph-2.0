@@ -1,17 +1,17 @@
 import { Button, Form, Input, InputRef } from "antd";
-import { SpirographSettings } from "../utils/maths.type";
-import SpiroCanvas from "./SpiroCanvas";
+import { SpiroSettings } from "../../utils/types";
+import SpiroCanvas from "../SpiroCanvas";
 import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
 import { useRef } from "react";
 
-interface EditingSpiroProps {
+interface VisualSettingsFormProps {
   id: string;
-  spiro: SpirographSettings;
+  spiro: SpiroSettings;
   onEditId: (prevId: string, newId: string) => void;
 }
 
-function EditingSpiro(props: EditingSpiroProps) {
+function VisualSettingsForm(props: VisualSettingsFormProps) {
   const inputRef = useRef<InputRef>(null);
 
   function handleEdit() {
@@ -54,16 +54,10 @@ function EditingSpiro(props: EditingSpiroProps) {
         />
       </div>
       <SpiroCanvas
-        movingRadius={props.spiro.movingRadius}
-        pointDistance={props.spiro.pointDistance}
-        interpolation={props.spiro.interpolation}
-        step={props.spiro.step}
-        color={props.spiro.color}
-        backgroundColor={props.spiro.backgroundColor}
-        strokeWidth={props.spiro.strokeWidth || 10}
+        {...props.spiro}
       />
     </div>
   );
 }
 
-export default EditingSpiro;
+export default VisualSettingsForm;

@@ -2,23 +2,19 @@ import { useEffect, useCallback, useMemo, useState, useRef } from "react";
 import { calculateSpirographPoints } from "../utils/functions";
 import { getPath, pathChunkToString, pathChunksToString } from "../utils/canvasUtils";
 import { HYPOTROCHOID_FIXED_RADIUS } from "../utils/constants";
-import { Interpolation, SpirographSettings } from "../utils/maths.type";
+import { Interpolation, SpiroAnimationSettings, SpiroSettings } from "../utils/types";
 
-interface SpiroSVGProps extends SpirographSettings {
-  msPerStep?: number
-}
-
-function SpiroCanvas(props: SpiroSVGProps) {
+function SpiroCanvas(props: SpiroAnimationSettings | SpiroSettings) {
   const animationId = useRef<number | null>(null);
   const [currentPath, setCurrentPath] = useState('');
   const pathChunks = useMemo(() => {
     const points = calculateSpirographPoints(
       props.movingRadius,
       props.pointDistance,
-      props.step
+      props.stepPerLap
     );
     return getPath(points, props.interpolation)
-  }, [props.interpolation, props.movingRadius, props.pointDistance, props.step]);
+  }, [props.interpolation, props.movingRadius, props.pointDistance, props.stepPerLap]);
 
   const viewBox = useMemo(() => {
     const max = HYPOTROCHOID_FIXED_RADIUS - (props.movingRadius - props.pointDistance);
@@ -30,7 +26,7 @@ function SpiroCanvas(props: SpiroSVGProps) {
 
   const startAnimation = useCallback(() => {
     setCurrentPath("")
-    if (!props.msPerStep || props.msPerStep < 1) {
+    if (!('msPerStep' in props) || props.msPerStep < 1) {
       setCurrentPath(pathChunksToString(pathChunks))
       return
     }
@@ -42,7 +38,7 @@ function SpiroCanvas(props: SpiroSVGProps) {
       if (!start) start = timestamp;
       const progress = timestamp - start;
   
-      if (progress > Number(props.msPerStep)) {
+      if (progress > Number((props as SpiroAnimationSettings).msPerStep)) {
         start = null;
   
         if (currentIndex < pathChunks.length) {
@@ -60,7 +56,7 @@ function SpiroCanvas(props: SpiroSVGProps) {
     }
   
     animationId.current = requestAnimationFrame(step);
-  }, [pathChunks, props.msPerStep]);
+  }, [pathChunks, (props as SpiroAnimationSettings).msPerStep]);
 
   useEffect(() => {
     startAnimation()

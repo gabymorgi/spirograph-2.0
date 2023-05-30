@@ -26,12 +26,12 @@ const StyledInput = styled(Input)`
   }
 `;
 
-interface FavoriteFormProps {
+interface InteractionFormProps {
   id: string;
   onEditId: (prevId: string, newId: string) => void;
 }
 
-function FavoriteForm(props: FavoriteFormProps) {
+function InteractionForm(props: InteractionFormProps) {
   const inputRef = useRef<InputRef>(null);
 
   function handleEdit() {
@@ -76,4 +76,4 @@ function FavoriteForm(props: FavoriteFormProps) {
   );
 }
 
-export default FavoriteForm;
+export default InteractionForm;

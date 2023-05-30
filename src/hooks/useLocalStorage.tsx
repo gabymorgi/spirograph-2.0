@@ -9,10 +9,14 @@ export function useLocalStorage<T>(key: string, initialValue?: T): [T | undefine
     if (storedValue) {
       setStoreState(JSON.parse(storedValue));
     } else {
-      localStorage.setItem(
-        key,
-        JSON.stringify(initialValue)
-      );
+      if (initialValue) {
+        localStorage.setItem(
+          key,
+          typeof initialValue !== "object"
+            ? initialValue.toString()
+            : JSON.stringify(initialValue)
+        );
+      }
     }
   }, [key]);
 

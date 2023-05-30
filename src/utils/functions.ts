@@ -1,6 +1,6 @@
 import { HYPOTROCHOID_FIXED_RADIUS } from "./constants";
 import { getLaps } from "./maths";
-import { Point } from "./maths.type";
+import { Point } from "./types";
 
 export function calculateSpirographPoints(
   movingRadius: number,
@@ -9,17 +9,14 @@ export function calculateSpirographPoints(
 ): Point[] {
   const points: Point[] = [];
   const step = 2 * Math.PI / pointsPerLap;
-  console.log(pointsPerLap, step);
-  
-  console.log(HYPOTROCHOID_FIXED_RADIUS, movingRadius)
+
   let max = getLaps(HYPOTROCHOID_FIXED_RADIUS, movingRadius) * pointsPerLap;
-  console.log(max)
+
   let t = 0;
   for (; max > 0; max--) {
     points.push(getHypotrochoidPoint(HYPOTROCHOID_FIXED_RADIUS, movingRadius, pointDistance, t));
     t += step;
   }
-  console.log(points.length)
   return points;
 }
 

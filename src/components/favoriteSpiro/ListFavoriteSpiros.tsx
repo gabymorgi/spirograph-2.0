@@ -1,9 +1,8 @@
 import { Button, Col, Row } from 'antd'
 import { useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
-import { Dict, SpirographSettings } from '../utils/maths.type'
-import EditingSpiro from './EditingSpiro'
-import FavoriteSpiro from './favoriteSpiro/FavoriteSpiro'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { Dict, SpiroSettings } from '../../utils/types'
+import FavoriteSpiro from './FavoriteSpiro'
 
 const options = [
   { label: 'Imagenes pequeñas', value: 6 },
@@ -14,7 +13,7 @@ const options = [
 
 function ListFavoriteSpiros() {
   const [span, setSpan] = useState(8)
-  const [favoriteSpiros, setFavoriteSpiros] = useLocalStorage<Dict<SpirographSettings>>('favoriteSpiros')
+  const [favoriteSpiros, setFavoriteSpiros] = useLocalStorage<Dict<SpiroSettings>>('favoriteSpiros')
 
   function handleEditSpiro(id: string, newId: string) {
     const newFavoriteSpiros = {
@@ -59,7 +58,7 @@ function ListFavoriteSpiros() {
         <Col key={key} span={span}>
           <FavoriteSpiro spiro={spiro} id={key} onEditId={handleEditSpiro} />
         </Col>
-      )) : null}
+      )) : 'Aun no hay favoritos'}
     </Row>
   );
 }

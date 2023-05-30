@@ -20,14 +20,19 @@ export type PathChunk = {
   points: Point[];
 };
 
-export type SpirographSettings = {
+export interface SpiroSettings {
+  id: string;
   movingRadius: number;
   pointDistance: number;
-  step: number;
+  stepPerLap: number;
   interpolation: Interpolation;
   color: string;
   backgroundColor: string;
   strokeWidth: number;
+}
+
+export interface SpiroAnimationSettings extends SpiroSettings {
+  msPerStep: number;
 }
 
 export type Dict<T> = {
