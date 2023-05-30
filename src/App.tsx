@@ -39,6 +39,9 @@ function App() {
           interpolation="derivative"
           msPerStep={20}
           step={44}
+          backgroundColor="#00000000"
+          color="#fff"
+          strokeWidth={10}
         />
       </Col>
       <Col span={24}>

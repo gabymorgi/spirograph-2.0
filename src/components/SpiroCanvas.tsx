@@ -2,13 +2,9 @@ import { useEffect, useCallback, useMemo, useState, useRef } from "react";
 import { calculateSpirographPoints } from "../utils/functions";
 import { getPath, pathChunkToString, pathChunksToString } from "../utils/canvasUtils";
 import { HYPOTROCHOID_FIXED_RADIUS } from "../utils/constants";
-import { Interpolation } from "../utils/maths.type";
+import { Interpolation, SpirographSettings } from "../utils/maths.type";
 
-interface SpiroSVGProps {
-  movingRadius: number;
-  pointDistance: number;
-  interpolation: Interpolation;
-  step: number;
+interface SpiroSVGProps extends SpirographSettings {
   msPerStep?: number
 }
 
@@ -81,9 +77,10 @@ function SpiroCanvas(props: SpiroSVGProps) {
       height="100%"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      strokeWidth={10}
+      strokeWidth={props.strokeWidth}
+      style={{ backgroundColor: props.backgroundColor }}
     >
-      <path d={currentPath} stroke="white" />
+      <path d={currentPath} stroke={props.color} />
     </svg>
   );
 }

@@ -27,6 +27,7 @@ export type SpirographSettings = {
   interpolation: Interpolation;
   color: string;
   backgroundColor: string;
+  strokeWidth: number;
 }
 
 export type Dict<T> = {
