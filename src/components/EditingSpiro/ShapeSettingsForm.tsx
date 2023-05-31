@@ -1,67 +1,54 @@
-import { Button, Form, Input, InputRef } from "antd";
-import { SpiroSettings } from "../../utils/types";
-import SpiroCanvas from "../SpiroCanvas";
-import Icon from "@mdi/react";
-import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
-import { useRef } from "react";
+import { Button, Form, InputNumber, Select } from "antd";
+import { SpiroSettings } from "@/utils/types";
+import Icon from "@/ui-kit/Icon";
+import { mdiAutoFix, mdiGesture } from "@mdi/js";
+
+interface ShapeSettingsFormStore {
+  id: string;
+}
 
 interface ShapeSettingsFormProps {
   id: string;
   spiro: SpiroSettings;
-  onEditId: (prevId: string, newId: string) => void;
+  onEditId: (id: string, partialSpiro: ShapeSettingsFormStore) => void;
 }
 
 function ShapeSettingsForm(props: ShapeSettingsFormProps) {
-  const inputRef = useRef<InputRef>(null);
-
-  function handleEdit() {
-    if (
-      inputRef.current?.input?.value &&
-      inputRef.current?.input?.value !== props.id
-    ) {
-      props.onEditId(props.id, inputRef.current.input.value);
-    }
+  function handleFinish(values: ShapeSettingsFormStore) {
+    console.log("finish", values);
   }
 
   return (
     <div className="flex flex-col">
-      <div className="flex">
+      <Form onFinish={handleFinish} initialValues={props.spiro} layout="vertical">
+        <Form.Item label="Curve type" name="type">
+          <Select>
+            <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="Tamaño del disco" name="movingRadius">
+          <InputNumber disabled />
+        </Form.Item>
+        <Form.Item label="Cantidad de vueltas" name="lapsAmount">
+          <InputNumber />
+        </Form.Item>
+        <Form.Item label="Cantidad de petalos" name="petalsAmount">
+          <InputNumber />
+        </Form.Item>
+        <Form.Item label="Tamaño de los petalos" name="petalSize">
+          <InputNumber />
+        </Form.Item>
+        <Button icon={<Icon path={mdiAutoFix} title="I feel lucky" />}>
+          I feel lucky
+        </Button>
         <Button
+          icon={<Icon path={mdiGesture} title="Draw it!" />}
           type="primary"
-          icon={<Icon path={mdiImageEdit} title="Edit Spiro" size={1} />}
-        />
-        <Input
-          ref={inputRef}
-          type="text"
-          placeholder="Name"
-          defaultValue={props.id}
-          addonAfter={
-            <div onClick={handleEdit} className="cursor-pointer">
-              <Icon path={mdiPencil} title="Edit Spiro" size={1} />
-            </div>
-          }
-          onBlur={handleEdit}
-        />
-        <Button
-          danger
-          icon={
-            <Icon
-              path={mdiTrashCanOutline}
-              title="Edit Spiro"
-              size={1}
-            />
-          }
-        />
-      </div>
-      <SpiroCanvas
-        movingRadius={props.spiro.movingRadius}
-        pointDistance={props.spiro.pointDistance}
-        interpolation={props.spiro.interpolation}
-        step={props.spiro.step}
-        color={props.spiro.color}
-        backgroundColor={props.spiro.backgroundColor}
-        strokeWidth={props.spiro.strokeWidth || 10}
-      />
+          htmlType="submit"
+        >
+          Draw it!
+        </Button>
+      </Form>
     </div>
   );
 }

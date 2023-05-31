@@ -1,9 +1,8 @@
-import { SpiroSettings } from "../../utils/types";
+import { SpiroSettings } from "@/utils/types";
 import SpiroCanvas from "../SpiroCanvas";
 import InteractionFormProps from "./InteractionForm";
 
 interface FavoriteSpiroProps {
-  id: string;
   spiro: SpiroSettings;
   onEditId: (prevId: string, newId: string) => void;
 }
@@ -11,7 +10,7 @@ interface FavoriteSpiroProps {
 function FavoriteSpiro(props: FavoriteSpiroProps) {
   return (
     <div className="flex flex-col">
-      <InteractionFormProps id={props.id} onEditId={props.onEditId} />
+      <InteractionFormProps id={props.spiro.id} onEditId={props.onEditId} />
       <SpiroCanvas
         {...props.spiro}
       />

@@ -3,7 +3,10 @@ import SpiroCanvas from "../SpiroCanvas";
 import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
 import { useState } from "react";
-import { SpiroAnimationSettings, SpiroSettings } from "../../utils/types";
+import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
+import AnimationControlForm from "./AnimationControlForm";
+import ShapeSettingsForm from "./ShapeSettingsForm";
+import VisualSettingsForm from "./VisualSettingsForm";
 
 const initialSpiro: SpiroAnimationSettings = {
   id: "default",
@@ -20,13 +23,34 @@ const initialSpiro: SpiroAnimationSettings = {
 function EditingSpiro() {
   const [spiro, setSpiro] = useState<SpiroAnimationSettings>(initialSpiro)
 
+  function handleEditId(id: string, partialSpiro: Partial<SpiroSettings>) {
+    // const newSpiro = { ...spiro, id: newId };
+    // setSpiro(newSpiro);
+    console.log("edit id", id, partialSpiro);
+  }
+
   return (
     <Row gutter={[16, 16]}>
       <Col span={6}>
+        <ShapeSettingsForm
+          id={spiro.id}
+          spiro={spiro}
+          onEditId={handleEditId}
+        />
       </Col>
       <Col span={6}>
+        <VisualSettingsForm
+          id={spiro.id}
+          spiro={spiro}
+          onEditId={handleEditId}
+        />
       </Col>
       <Col span={12}>
+        <AnimationControlForm
+          id={spiro.id}
+          spiro={spiro}
+          onEditId={handleEditId}
+        />
         <SpiroCanvas
           {...spiro}
         />

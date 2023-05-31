@@ -18,6 +18,12 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .flex {
   display: flex;
 }
@@ -32,6 +38,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .gap-16 {
   gap: 16px;
+}
+
+.gap-8 {
+  gap: 8px;
 }
 
 .justify-center {

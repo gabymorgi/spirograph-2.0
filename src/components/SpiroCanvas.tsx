@@ -1,8 +1,8 @@
 import { useEffect, useCallback, useMemo, useState, useRef } from "react";
-import { calculateSpirographPoints } from "../utils/functions";
-import { getPath, pathChunkToString, pathChunksToString } from "../utils/canvasUtils";
-import { HYPOTROCHOID_FIXED_RADIUS } from "../utils/constants";
-import { Interpolation, SpiroAnimationSettings, SpiroSettings } from "../utils/types";
+import { calculateSpirographPoints } from "@/utils/functions";
+import { getPath, pathChunkToString, pathChunksToString } from "@/utils/canvasUtils";
+import { HYPOTROCHOID_FIXED_RADIUS } from "@/utils/constants";
+import { Interpolation, SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
 
 function SpiroCanvas(props: SpiroAnimationSettings | SpiroSettings) {
   const animationId = useRef<number | null>(null);

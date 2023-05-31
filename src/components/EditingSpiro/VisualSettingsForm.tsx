@@ -1,61 +1,99 @@
-import { Button, Form, Input, InputRef } from "antd";
-import { SpiroSettings } from "../../utils/types";
-import SpiroCanvas from "../SpiroCanvas";
-import Icon from "@mdi/react";
-import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
-import { useRef } from "react";
+import { Button, Form, InputNumber, Select } from "antd";
+import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
+import {
+  mdiCircle,
+  mdiCircleMedium,
+  mdiCircleSmall,
+  mdiHorseVariant,
+  mdiRabbit,
+  mdiSnail,
+  mdiUnicorn,
+  mdiVectorBezier,
+  mdiVectorCurve,
+  mdiVectorLine,
+  mdiVectorPolygon,
+  mdiVectorSquare,
+  mdiVectorTriangle,
+} from "@mdi/js";
+import OptionPicker from "@/ui-kit/OptionPicker";
+
+const thicknessOptions = [
+  { label: "thin", value: 10, icon: mdiCircleSmall },
+  { label: "medium", value: 20, icon: mdiCircleMedium },
+  { label: "thick", value: 50, icon: mdiCircle },
+];
+
+const detailOptions = [
+  { label: "low", value: 10, icon: mdiVectorTriangle },
+  { label: "medium", value: 20, icon: mdiVectorSquare },
+  { label: "high", value: 50, icon: mdiVectorPolygon },
+];
+
+const transitionOptions = [
+  { label: "linear", value: 10, icon: mdiVectorLine },
+  { label: "bezier", value: 20, icon: mdiVectorCurve },
+  { label: "derivative", value: 50, icon: mdiVectorBezier },
+];
+
+const animationSpeedOptions = [
+  { label: "slow", value: 100, icon: mdiSnail },
+  { label: "medium", value: 50, icon: mdiRabbit },
+  { label: "fast", value: 20, icon: mdiHorseVariant },
+  { label: "instant", value: 0, icon: mdiUnicorn },
+];
+
+interface VisualSettingsFormStore {
+  id: string;
+}
 
 interface VisualSettingsFormProps {
   id: string;
-  spiro: SpiroSettings;
-  onEditId: (prevId: string, newId: string) => void;
+  spiro: SpiroAnimationSettings;
+  onEditId: (id: string, partialSpiro: VisualSettingsFormStore) => void;
 }
 
 function VisualSettingsForm(props: VisualSettingsFormProps) {
-  const inputRef = useRef<InputRef>(null);
-
-  function handleEdit() {
-    if (
-      inputRef.current?.input?.value &&
-      inputRef.current?.input?.value !== props.id
-    ) {
-      props.onEditId(props.id, inputRef.current.input.value);
-    }
+  function handleFinish(values: VisualSettingsFormStore) {
+    console.log("finish", values);
   }
 
   return (
     <div className="flex flex-col">
-      <div className="flex">
-        <Button
-          type="primary"
-          icon={<Icon path={mdiImageEdit} title="Edit Spiro" size={1} />}
-        />
-        <Input
-          ref={inputRef}
-          type="text"
-          placeholder="Name"
-          defaultValue={props.id}
-          addonAfter={
-            <div onClick={handleEdit} className="cursor-pointer">
-              <Icon path={mdiPencil} title="Edit Spiro" size={1} />
-            </div>
-          }
-          onBlur={handleEdit}
-        />
-        <Button
-          danger
-          icon={
-            <Icon
-              path={mdiTrashCanOutline}
-              title="Edit Spiro"
-              size={1}
-            />
-          }
-        />
-      </div>
-      <SpiroCanvas
-        {...props.spiro}
-      />
+      <Form layout="vertical">
+        Color Picker
+        <Form.Item
+          label="Grosor:"
+          name="strokeWidth"
+          initialValue={props.spiro.strokeWidth}
+          tooltip="Grosor de la línea"
+        >
+          <OptionPicker options={thicknessOptions} />
+        </Form.Item>
+        <Form.Item
+          label="Detail:"
+          name="stepPerLap"
+          initialValue={props.spiro.stepPerLap}
+          tooltip="Cantidad de puntos que se dibujan"
+        >
+          <OptionPicker options={detailOptions} />
+        </Form.Item>
+        <Form.Item
+          label="Transition:"
+          name="interpolation"
+          initialValue={props.spiro.interpolation}
+          tooltip="Tipo de interpolación entre puntos"
+        >
+          <OptionPicker options={transitionOptions} />
+        </Form.Item>
+        <Form.Item
+          label="Animation speed:"
+          name="msPerStep"
+          initialValue={props.spiro.msPerStep}
+          tooltip="Velocidad de la animación"
+        >
+          <OptionPicker options={animationSpeedOptions} />
+        </Form.Item>
+      </Form>
     </div>
   );
 }

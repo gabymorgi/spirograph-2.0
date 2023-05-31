@@ -1,7 +1,7 @@
 import { Button, Col, Row } from 'antd'
 import { useState } from 'react'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import { Dict, SpiroSettings } from '../../utils/types'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { SpiroSettings } from '@/utils/types'
 import FavoriteSpiro from './FavoriteSpiro'
 
 const options = [
@@ -13,15 +13,15 @@ const options = [
 
 function ListFavoriteSpiros() {
   const [span, setSpan] = useState(8)
-  const [favoriteSpiros, setFavoriteSpiros] = useLocalStorage<Dict<SpiroSettings>>('favoriteSpiros')
+  const [favoriteSpiros, setFavoriteSpiros] = useLocalStorage<SpiroSettings[]>('favoriteSpiros')
 
   function handleEditSpiro(id: string, newId: string) {
     const newFavoriteSpiros = {
       ...favoriteSpiros,
     }
-    newFavoriteSpiros[newId] = newFavoriteSpiros[id]
-    delete newFavoriteSpiros[id]
-    setFavoriteSpiros(newFavoriteSpiros)
+    // newFavoriteSpiros[newId] = newFavoriteSpiros[id]
+    // delete newFavoriteSpiros[id]
+    // setFavoriteSpiros(newFavoriteSpiros)
   }
 
   console.log(favoriteSpiros)
@@ -54,11 +54,11 @@ function ListFavoriteSpiros() {
           </div>
         </div>
       </Col>
-      {favoriteSpiros ? Object.entries(favoriteSpiros).map(([key, spiro]) => (
-        <Col key={key} span={span}>
-          <FavoriteSpiro spiro={spiro} id={key} onEditId={handleEditSpiro} />
+      {favoriteSpiros?.map((spiro) => (
+        <Col key={spiro.id} span={span}>
+          <FavoriteSpiro spiro={spiro} onEditId={handleEditSpiro} />
         </Col>
-      )) : 'Aun no hay favoritos'}
+      )) || 'Aun no hay favoritos'}
     </Row>
   );
 }
