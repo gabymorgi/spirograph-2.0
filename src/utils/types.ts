@@ -21,7 +21,8 @@ export type PathChunk = {
 };
 
 export interface SpiroSettings {
-  id: string;
+  id: number;
+  name: string;
   movingRadius: number;
   pointDistance: number;
   stepPerLap: number;

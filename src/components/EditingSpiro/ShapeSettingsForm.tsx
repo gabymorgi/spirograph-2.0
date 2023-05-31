@@ -4,17 +4,21 @@ import Icon from "@/ui-kit/Icon";
 import { mdiAutoFix, mdiGesture } from "@mdi/js";
 
 interface ShapeSettingsFormStore {
-  id: string;
+  movingRadius: number;
+  pointDistance: number;
 }
 
 interface ShapeSettingsFormProps {
-  id: string;
   spiro: SpiroSettings;
-  onEditId: (id: string, partialSpiro: ShapeSettingsFormStore) => void;
+  onEdit: (partialSpiro: ShapeSettingsFormStore) => void;
 }
 
 function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   function handleFinish(values: ShapeSettingsFormStore) {
+    props.onEdit({
+      movingRadius: values.movingRadius,
+      pointDistance: values.pointDistance,
+    });
     console.log("finish", values);
   }
 
@@ -22,27 +26,33 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
     <div className="flex flex-col">
       <Form onFinish={handleFinish} initialValues={props.spiro} layout="vertical">
         <Form.Item label="Curve type" name="type">
-          <Select>
+          <Select disabled>
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Tamaño del disco" name="movingRadius">
-          <InputNumber disabled />
+        <Form.Item label="Tamaño del disco" name="movingRadius" rules={[{
+          required: true,
+          message: "Please input the moving radius",
+        }]}>
+          <InputNumber />
         </Form.Item>
         <Form.Item label="Cantidad de vueltas" name="lapsAmount">
-          <InputNumber />
+          <InputNumber disabled />
         </Form.Item>
         <Form.Item label="Cantidad de petalos" name="petalsAmount">
+          <InputNumber disabled />
+        </Form.Item>
+        <Form.Item label="Tamaño de los petalos" name="pointDistance" rules={[{
+          required: true,
+          message: "Please input the petals size",
+        }]}>
           <InputNumber />
         </Form.Item>
-        <Form.Item label="Tamaño de los petalos" name="petalSize">
-          <InputNumber />
-        </Form.Item>
-        <Button icon={<Icon path={mdiAutoFix} title="I feel lucky" />}>
+        <Button icon={<Icon path={mdiAutoFix} />}>
           I feel lucky
         </Button>
         <Button
-          icon={<Icon path={mdiGesture} title="Draw it!" />}
+          icon={<Icon path={mdiGesture} />}
           type="primary"
           htmlType="submit"
         >

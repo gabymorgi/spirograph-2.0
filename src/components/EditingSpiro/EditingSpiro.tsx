@@ -4,12 +4,14 @@ import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
 import { useState } from "react";
 import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
-import AnimationControlForm from "./AnimationControlForm";
+import AnimationControlForm from "./ControlForm";
 import ShapeSettingsForm from "./ShapeSettingsForm";
 import VisualSettingsForm from "./VisualSettingsForm";
+import { getIncrementalId } from "@/utils/constants";
 
 const initialSpiro: SpiroAnimationSettings = {
-  id: "default",
+  id: getIncrementalId(),
+  name: "My Spiro",
   movingRadius: 504,
   pointDistance: 1512,
   interpolation: "derivative",
@@ -23,39 +25,34 @@ const initialSpiro: SpiroAnimationSettings = {
 function EditingSpiro() {
   const [spiro, setSpiro] = useState<SpiroAnimationSettings>(initialSpiro)
 
-  function handleEditId(id: string, partialSpiro: Partial<SpiroSettings>) {
-    // const newSpiro = { ...spiro, id: newId };
-    // setSpiro(newSpiro);
-    console.log("edit id", id, partialSpiro);
+  function handleEdit(partialSpiro: Partial<SpiroAnimationSettings>) {
+    const newSpiro = { ...spiro, ...partialSpiro };
+    setSpiro(newSpiro);
+    console.log("edit id", partialSpiro);
   }
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={6}>
+    <div className="flex gap-16">
+      <div className="flex gap-16">
         <ShapeSettingsForm
-          id={spiro.id}
           spiro={spiro}
-          onEditId={handleEditId}
+          onEdit={handleEdit}
         />
-      </Col>
-      <Col span={6}>
         <VisualSettingsForm
-          id={spiro.id}
           spiro={spiro}
-          onEditId={handleEditId}
+          onEdit={handleEdit}
         />
-      </Col>
-      <Col span={12}>
+      </div>
+      <div className="flex-grow">
         <AnimationControlForm
-          id={spiro.id}
           spiro={spiro}
-          onEditId={handleEditId}
+          onEdit={handleEdit}
         />
         <SpiroCanvas
           {...spiro}
         />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }
 

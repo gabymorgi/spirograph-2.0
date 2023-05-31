@@ -1,10 +1,11 @@
 import { Header } from "antd/es/layout/layout";
 import ListFavoriteSpiros from "./components/favoriteSpiro/ListFavoriteSpiros";
-import { Button } from "antd";
+import { Card } from "antd";
 import EditingSpiro from "./components/EditingSpiro/EditingSpiro";
 import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from "@mdi/js";
 import Icon from "./ui-kit/Icon";
 import { useState } from "react";
+import Button from "./ui-kit/Button";
 
 function App() {
   const [language, setLanguage] = useState<"en" | "es">("en");
@@ -25,10 +26,10 @@ function App() {
         <div className="flex gap-16 justify-between">
           <Button
             onClick={toggleLanguage}
+            tooltip={`Change to ${language === "en" ? "Spanish" : "English"}`}
             icon={
               <Icon
                 path={mdiTranslate}
-                title={`Change to ${language === "en" ? "Spanish" : "English"}`}
               />
             }
           >
@@ -36,12 +37,11 @@ function App() {
           </Button>
           <Button
             onClick={toggleShowAdvanceSettings}
+            tooltip={`Show ${showAdvanceSettings ? "friendly" : "advance"
+              } Settings`}
             icon={
               <Icon
                 path={showAdvanceSettings ? mdiViewAgendaOutline : mdiTune}
-                title={`Show ${
-                  showAdvanceSettings ? "friendly" : "advance"
-                } Settings`}
               />
             }
           >
@@ -49,9 +49,13 @@ function App() {
           </Button>
         </div>
       </Header>
-      <div className="flex flex-col p-16">
-        <EditingSpiro />
-        <ListFavoriteSpiros />
+      <div className="flex flex-col gap-16 p-16">
+        <Card>
+          <EditingSpiro />
+        </Card>
+        <Card>
+          <ListFavoriteSpiros />
+        </Card>
       </div>
     </>
   );

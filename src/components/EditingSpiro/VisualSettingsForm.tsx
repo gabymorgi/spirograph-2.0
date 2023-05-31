@@ -1,5 +1,5 @@
 import { Button, Form, InputNumber, Select } from "antd";
-import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
+import { Interpolation, SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
 import {
   mdiCircle,
   mdiCircleMedium,
@@ -43,13 +43,17 @@ const animationSpeedOptions = [
 ];
 
 interface VisualSettingsFormStore {
-  id: string;
+  stepPerLap: number;
+  interpolation: Interpolation;
+  color: string;
+  backgroundColor: string;
+  strokeWidth: number;
+  msPerStep: number;
 }
 
 interface VisualSettingsFormProps {
-  id: string;
   spiro: SpiroAnimationSettings;
-  onEditId: (id: string, partialSpiro: VisualSettingsFormStore) => void;
+  onEdit: (partialSpiro: VisualSettingsFormStore) => void;
 }
 
 function VisualSettingsForm(props: VisualSettingsFormProps) {

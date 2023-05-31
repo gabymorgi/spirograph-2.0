@@ -1,8 +1,9 @@
 import { Button, Input, InputRef } from "antd";
 import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil, mdiDownloadBoxOutline, mdiExport } from "@mdi/js";
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import styled from "styled-components";
+import { useLocalStorage } from "@/contexts/localStorage";
 
 const Container = styled.div`
   display: flex;
@@ -32,6 +33,7 @@ interface InteractionFormProps {
 }
 
 function InteractionForm(props: InteractionFormProps) {
+  const { editValueId } = useLocalStorage()
   const inputRef = useRef<InputRef>(null);
 
   function handleEdit() {
@@ -39,7 +41,7 @@ function InteractionForm(props: InteractionFormProps) {
       inputRef.current?.input?.value &&
       inputRef.current?.input?.value !== props.id
     ) {
-      props.onEditId(props.id, inputRef.current.input.value);
+      editValueId(props.id, inputRef.current.input.value);
     }
   }
   return (
@@ -76,4 +78,4 @@ function InteractionForm(props: InteractionFormProps) {
   );
 }
 
-export default InteractionForm;
+export default memo(InteractionForm);

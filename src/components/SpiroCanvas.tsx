@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState, useRef } from "react";
+import { useEffect, useCallback, useMemo, useState, useRef, memo } from "react";
 import { calculateSpirographPoints } from "@/utils/functions";
 import { getPath, pathChunkToString, pathChunksToString } from "@/utils/canvasUtils";
 import { HYPOTROCHOID_FIXED_RADIUS } from "@/utils/constants";
@@ -81,4 +81,4 @@ function SpiroCanvas(props: SpiroAnimationSettings | SpiroSettings) {
   );
 }
 
-export default SpiroCanvas;
+export default memo(SpiroCanvas)

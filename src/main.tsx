@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { ConfigProvider, theme } from 'antd'
+import { LocalStorageProvider } from './contexts/localStorage.tsx'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <ConfigProvider
@@ -9,6 +10,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       algorithm: theme.darkAlgorithm,
     }}
   >
-    <App />
+    <LocalStorageProvider keyName="favoriteSpiros">
+      <App />
+    </LocalStorageProvider>
   </ConfigProvider>,
 )

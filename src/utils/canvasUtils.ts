@@ -101,6 +101,6 @@ function getDerivativePoint(P0: Point, P1: Point, P2: Point, P3: Point): PathChu
 }
 
 export function getUniqueSpirographId(spiro: SpiroSettings): string {
-  return `Spiro-${spiro.movingRadius}-${spiro.pointDistance}-${spiro.strokeWidth}-${spiro.step}-${
+  return `Spiro-${spiro.movingRadius}-${spiro.pointDistance}-${spiro.strokeWidth}-${spiro.stepPerLap}-${
     spiro.interpolation}-${spiro.color}-${spiro.backgroundColor}`
 }

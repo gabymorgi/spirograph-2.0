@@ -8,12 +8,11 @@ const StyledIcon = styled.svg`
 
 interface IconProps {
   path: string;
-  title: string;
 }
 
 function Icon(props: IconProps) {
   return (
-    <StyledIcon className="icon" viewBox="0 0 24 24" aria-label={props.title}>
+    <StyledIcon className="icon" viewBox="0 0 24 24">
       <path fill="currentColor" d={props.path} />
     </StyledIcon>
   );
