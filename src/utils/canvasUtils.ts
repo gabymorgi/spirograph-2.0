@@ -15,11 +15,11 @@ export function getPath(
   interpolation: Interpolation
 ): PathChunk[] {
   switch (interpolation) {
-    case "linear":
+    case Interpolation.Linear:
       return getLinearPath(points);
-    case "bezier":
+    case Interpolation.Bezier:
       return getBezierPath(points);
-    case "derivative":
+    case Interpolation.Derivative:
       return getDerivativePath(points);
     default:
       throw new Error("Invalid interpolation");

@@ -13,7 +13,11 @@ export type LineSegment = {
   p2: Point;
 };
 
-export type Interpolation = "linear" | "bezier" | "derivative";
+export enum Interpolation {
+  Linear = "linear",
+  Bezier = "bezier",
+  Derivative = "derivative",
+}
 
 export type PathChunk = {
   command: 'M' | 'L' | 'Q' | 'Z';
@@ -33,7 +37,7 @@ export interface SpiroSettings {
 }
 
 export interface SpiroAnimationSettings extends SpiroSettings {
-  msPerStep: number;
+  msPerLap: number;
 }
 
 export type Dict<T> = {

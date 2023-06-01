@@ -1,9 +1,9 @@
 import { Button, Col, Form, Input, InputRef, Row } from "antd";
-import SpiroCanvas from "../SpiroCanvas";
+import SpiroCanvas, { SpiroCanvasHandle } from "../SpiroCanvas";
 import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil } from "@mdi/js";
-import { useState } from "react";
-import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
+import { useState, useRef } from "react";
+import { Interpolation, SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
 import AnimationControlForm from "./ControlForm";
 import ShapeSettingsForm from "./ShapeSettingsForm";
 import VisualSettingsForm from "./VisualSettingsForm";
@@ -14,19 +14,20 @@ const initialSpiro: SpiroAnimationSettings = {
   name: "My Spiro",
   movingRadius: 504,
   pointDistance: 1512,
-  interpolation: "derivative",
+  interpolation: Interpolation.Derivative,
   stepPerLap: 44,
   strokeWidth: 10,
   color: "#ffffff",
   backgroundColor: "#00000000",
-  msPerStep: 20,
+  msPerLap: 1000,
 };
 
 function EditingSpiro() {
+  const spiroRef = useRef<SpiroCanvasHandle>(null);
   const [spiro, setSpiro] = useState<SpiroAnimationSettings>(initialSpiro)
 
   function handleEdit(partialSpiro: Partial<SpiroAnimationSettings>) {
-    const newSpiro = { ...spiro, ...partialSpiro };
+    const newSpiro = { ...spiro, ...partialSpiro, id: getIncrementalId() };
     setSpiro(newSpiro);
     console.log("edit id", partialSpiro);
   }
@@ -45,10 +46,12 @@ function EditingSpiro() {
       </div>
       <div className="flex-grow">
         <AnimationControlForm
+          spiroRef={spiroRef}
           spiro={spiro}
           onEdit={handleEdit}
         />
         <SpiroCanvas
+          ref={spiroRef}
           {...spiro}
         />
       </div>

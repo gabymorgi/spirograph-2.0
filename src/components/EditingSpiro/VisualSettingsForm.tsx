@@ -19,8 +19,8 @@ import OptionPicker from "@/ui-kit/OptionPicker";
 
 const thicknessOptions = [
   { label: "thin", value: 10, icon: mdiCircleSmall },
-  { label: "medium", value: 20, icon: mdiCircleMedium },
-  { label: "thick", value: 50, icon: mdiCircle },
+  { label: "medium", value: 50, icon: mdiCircleMedium },
+  { label: "thick", value: 100, icon: mdiCircle },
 ];
 
 const detailOptions = [
@@ -30,15 +30,15 @@ const detailOptions = [
 ];
 
 const transitionOptions = [
-  { label: "linear", value: 10, icon: mdiVectorLine },
-  { label: "bezier", value: 20, icon: mdiVectorCurve },
-  { label: "derivative", value: 50, icon: mdiVectorBezier },
+  { label: "linear", value: Interpolation.Linear, icon: mdiVectorLine },
+  { label: "bezier", value: Interpolation.Bezier, icon: mdiVectorCurve },
+  { label: "derivative", value: Interpolation.Derivative, icon: mdiVectorBezier },
 ];
 
 const animationSpeedOptions = [
-  { label: "slow", value: 100, icon: mdiSnail },
-  { label: "medium", value: 50, icon: mdiRabbit },
-  { label: "fast", value: 20, icon: mdiHorseVariant },
+  { label: "slow", value: 5000, icon: mdiSnail },
+  { label: "medium", value: 2000, icon: mdiRabbit },
+  { label: "fast", value: 500, icon: mdiHorseVariant },
   { label: "instant", value: 0, icon: mdiUnicorn },
 ];
 
@@ -48,17 +48,33 @@ interface VisualSettingsFormStore {
   color: string;
   backgroundColor: string;
   strokeWidth: number;
-  msPerStep: number;
+  msPerLap: number;
 }
 
 interface VisualSettingsFormProps {
   spiro: SpiroAnimationSettings;
-  onEdit: (partialSpiro: VisualSettingsFormStore) => void;
+  onEdit: (partialSpiro: Partial<VisualSettingsFormStore>) => void;
 }
 
 function VisualSettingsForm(props: VisualSettingsFormProps) {
-  function handleFinish(values: VisualSettingsFormStore) {
+  function handleFinish(values: Partial<VisualSettingsFormStore>) {
     console.log("finish", values);
+  }
+
+  function handleChangeWidth(width: string | number) {
+    props.onEdit({ strokeWidth: Number(width) });
+  }
+
+  function handleChangeDetail(detail: string | number) {
+    props.onEdit({ stepPerLap: Number(detail) });
+  }
+
+  function handleChangeInterpolation(interpolation: string | number) {
+    props.onEdit({ interpolation: interpolation as Interpolation });
+  }
+
+  function handleChangeSpeed(msPerLaps: string | number) {
+    props.onEdit({ msPerLap: Number(msPerLaps) });
   }
 
   return (
@@ -71,7 +87,7 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
           initialValue={props.spiro.strokeWidth}
           tooltip="Grosor de la línea"
         >
-          <OptionPicker options={thicknessOptions} />
+          <OptionPicker options={thicknessOptions} onChange={handleChangeWidth} />
         </Form.Item>
         <Form.Item
           label="Detail:"
@@ -79,7 +95,7 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
           initialValue={props.spiro.stepPerLap}
           tooltip="Cantidad de puntos que se dibujan"
         >
-          <OptionPicker options={detailOptions} />
+          <OptionPicker options={detailOptions} onChange={handleChangeDetail} />
         </Form.Item>
         <Form.Item
           label="Transition:"
@@ -87,15 +103,15 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
           initialValue={props.spiro.interpolation}
           tooltip="Tipo de interpolación entre puntos"
         >
-          <OptionPicker options={transitionOptions} />
+          <OptionPicker options={transitionOptions} onChange={handleChangeInterpolation} />
         </Form.Item>
         <Form.Item
           label="Animation speed:"
-          name="msPerStep"
-          initialValue={props.spiro.msPerStep}
+          name="msPerLap"
+          initialValue={props.spiro.msPerLap}
           tooltip="Velocidad de la animación"
         >
-          <OptionPicker options={animationSpeedOptions} />
+          <OptionPicker options={animationSpeedOptions} onChange={handleChangeSpeed} />
         </Form.Item>
       </Form>
     </div>

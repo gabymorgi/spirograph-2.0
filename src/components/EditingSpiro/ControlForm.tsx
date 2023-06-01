@@ -1,11 +1,12 @@
 import { Input, InputRef } from "antd";
-import { mdiPencil, mdiDownloadBoxOutline, mdiRestart, mdiStretchToPageOutline, mdiContentSave } from "@mdi/js";
+import { mdiPencil, mdiDownloadBoxOutline, mdiRestart, mdiContentSave } from "@mdi/js";
 import { useRef } from "react";
 import styled from "styled-components";
-import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
+import { SpiroAnimationSettings } from "@/utils/types";
 import Icon from "@/ui-kit/Icon";
 import Button from "@/ui-kit/Button";
-import { useLocalStorage } from "@/contexts/localStorage";
+import { useFavSpiros } from "@/contexts/favSpiros";
+import { SpiroCanvasHandle } from "../SpiroCanvas";
 
 const Container = styled.div`
   display: flex;
@@ -34,12 +35,13 @@ interface ControlFormStore {
 }
 
 interface ControlFormProps {
+  spiroRef: React.RefObject<SpiroCanvasHandle>;
   spiro: SpiroAnimationSettings;
   onEdit: (partialSpiro: ControlFormStore) => void;
 }
 
 function ControlForm(props: ControlFormProps) {
-  const { addValue } = useLocalStorage()
+  const { addSpiro } = useFavSpiros()
   const inputRef = useRef<InputRef>(null);
 
   function handleEdit() {
@@ -52,8 +54,16 @@ function ControlForm(props: ControlFormProps) {
   }
 
   function handleSave() {
-    const { msPerStep, ...favSpiro } = props.spiro
-    addValue(favSpiro)
+    const { msPerLap, ...favSpiro } = props.spiro
+    addSpiro(favSpiro)
+  }
+
+  function handleReDraw() {
+    props.spiroRef.current?.redraw()
+  }
+
+  function handleDownload() {
+    props.spiroRef.current?.download()
   }
 
   return (
@@ -66,13 +76,14 @@ function ControlForm(props: ControlFormProps) {
       />
       <Button
         tooltip="Download Spiro"
+        onClick={handleDownload}
         icon={<Icon path={mdiDownloadBoxOutline} />}
       />
       <StyledInput
         ref={inputRef}
         type="text"
         placeholder="Name"
-        defaultValue={props.spiro.id}
+        defaultValue={props.spiro.name}
         addonAfter={
           <div onClick={handleEdit} className="cursor-pointer font-10">
             <Icon path={mdiPencil} />
@@ -82,11 +93,8 @@ function ControlForm(props: ControlFormProps) {
       />
       <Button
         tooltip="Redibujar"
+        onClick={handleReDraw}
         icon={<Icon path={mdiRestart} />}
-      />
-      <Button
-        tooltip="Ajustar al marco"
-        icon={<Icon path={mdiStretchToPageOutline} />}
       />
     </Container>
   );

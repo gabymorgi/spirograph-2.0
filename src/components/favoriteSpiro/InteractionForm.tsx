@@ -1,9 +1,9 @@
-import { Button, Input, InputRef } from "antd";
+import { Button, Input, InputRef, Popconfirm } from "antd";
 import Icon from "@mdi/react";
 import { mdiTrashCanOutline, mdiImageEdit, mdiPencil, mdiDownloadBoxOutline, mdiExport } from "@mdi/js";
 import { useRef, memo } from "react";
 import styled from "styled-components";
-import { useLocalStorage } from "@/contexts/localStorage";
+import { useFavSpiros } from "@/contexts/favSpiros";
 
 const Container = styled.div`
   display: flex;
@@ -28,22 +28,27 @@ const StyledInput = styled(Input)`
 `;
 
 interface InteractionFormProps {
-  id: string;
-  onEditId: (prevId: string, newId: string) => void;
+  id: number;
+  name: string;
 }
 
 function InteractionForm(props: InteractionFormProps) {
-  const { editValueId } = useLocalStorage()
+  const { editSpiroName, removeSpiro } = useFavSpiros()
   const inputRef = useRef<InputRef>(null);
 
   function handleEdit() {
     if (
       inputRef.current?.input?.value &&
-      inputRef.current?.input?.value !== props.id
+      inputRef.current?.input?.value !== props.name
     ) {
-      editValueId(props.id, inputRef.current.input.value);
+      editSpiroName(props.id, inputRef.current.input.value);
     }
   }
+
+  function handleDelete() {
+    removeSpiro(props.id)
+  }
+
   return (
     <Container>
       <Button
@@ -62,7 +67,7 @@ function InteractionForm(props: InteractionFormProps) {
         ref={inputRef}
         type="text"
         placeholder="Name"
-        defaultValue={props.id}
+        defaultValue={props.name}
         addonAfter={
           <div onClick={handleEdit} className="cursor-pointer">
             <Icon path={mdiPencil} title="Edit Spiro" size="15px" />
@@ -70,10 +75,18 @@ function InteractionForm(props: InteractionFormProps) {
         }
         onBlur={handleEdit}
       />
-      <Button
-        danger
-        icon={<Icon path={mdiTrashCanOutline} title="Edit Spiro" size={1} />}
-      />
+      <Popconfirm
+        title="Delete spiro"
+        description="Are you sure to remove this spiro from favs?"
+        onConfirm={handleDelete}
+        okText="Yes"
+        cancelText="No"
+      >
+        <Button
+          danger
+          icon={<Icon path={mdiTrashCanOutline} title="Edit Spiro" size={1} />}
+        />
+      </Popconfirm>
     </Container>
   );
 }

@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd'
 import { useState } from 'react'
-import { useLocalStorage } from '@/contexts/localStorage'
+import { useFavSpiros } from '@/contexts/favSpiros'
 import FavoriteSpiro from './FavoriteSpiro'
 import Button from '@/ui-kit/Button'
 import { mdiApps, mdiDatabaseExportOutline, mdiDatabaseImportOutline, mdiHeartPlusOutline, mdiShapeOutline, mdiSquare, mdiUpload, mdiViewComfy, mdiViewGrid, mdiViewGridOutline, mdiViewModule, mdiViewQuilt, mdiViewStream } from '@mdi/js'
@@ -16,19 +16,10 @@ const options = [
 
 function ListFavoriteSpiros() {
   const [span, setSpan] = useState(8)
-  const {values, removeValue} = useLocalStorage()
+  const { spiros } = useFavSpiros()
 
-  function handleEditSpiro(id: string, newId: string) {
-    const newvalues = {
-      ...values,
-    }
-    // newvalues[newId] = newvalues[id]
-    // delete newvalues[id]
-    // setvalues(newvalues)
-  }
-
-  console.log(values)
-  return values?.length ? (
+  console.log(spiros)
+  return spiros?.length ? (
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <div className="flex gap-16 justify-between">
@@ -65,11 +56,11 @@ function ListFavoriteSpiros() {
           </div>
         </div>
       </Col>
-      {values?.map((spiro) => (
+      {spiros.map((spiro) => (
         <Col key={spiro.id} span={span}>
-          <FavoriteSpiro spiro={spiro} onEditId={handleEditSpiro} />
+          <FavoriteSpiro spiro={spiro} />
         </Col>
-      )) || 'Aun no hay favoritos'}
+      ))}
     </Row>
   ) : (
     <div className="flex flex-col gap-16 items-center">
