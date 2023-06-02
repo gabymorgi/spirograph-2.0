@@ -17,6 +17,7 @@ import {
 } from '@/utils/canvasUtils'
 import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
 import { toPng } from 'html-to-image'
+import { message } from 'antd'
 
 export interface SpiroCanvasHandle {
   redraw: () => void
@@ -30,19 +31,20 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   SpiroCanvasProps
 > = (props, ref) => {
   const animationId = useRef<number | null>(null)
-  const animationFinished = useRef<boolean>(false)
   const animationIndex = useRef<number>(0)
   const svgRef = useRef<HTMLElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
   const prevPointsLength = useRef<number>(0)
+  const prevProps = useRef<SpiroCanvasProps>()
 
-  const { points, laps } = useMemo(() => {
+  const points = useMemo(() => {
     return calculateSpirographPoints(
-      props.movingRadius,
+      props.laps,
+      props.petals,
       props.pointDistance,
       props.stepPerLap,
     )
-  }, [props.movingRadius, props.pointDistance, props.stepPerLap])
+  }, [props.laps, props.pointDistance, props.petals, props.stepPerLap])
 
   const pathChunks = useMemo(() => {
     return getPath(points, props.interpolation)
@@ -50,20 +52,11 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   const msPerStep = useMemo(() => {
     const msPerLap = props.msPerLap || 0
-    return msPerLap ? (msPerLap * laps) / points.length : 0
-  }, [laps, points.length, props.msPerLap])
-
-  useEffect(() => {
-    const viewBox = recalculateViewBox({
-      movingRadius: props.movingRadius,
-      pointDistance: props.pointDistance,
-      strokeWidth: props.strokeWidth,
-    })
-    svgRef.current?.setAttribute('viewBox', viewBox)
-  }, [props.movingRadius, props.pointDistance, props.strokeWidth])
+    return msPerLap ? (msPerLap * props.laps) / points.length : 0
+  }, [props.laps, points.length, props.msPerLap])
 
   const startAnimation = useCallback(() => {
-    if (animationFinished.current) {
+    if (animationIndex.current >= pathChunks.length) {
       return
     }
     if (animationId.current) {
@@ -89,7 +82,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
             animationIndex.current += 1
           } else {
-            animationFinished.current = true
             break
           }
         }
@@ -108,7 +100,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     if (animationId.current) {
       cancelAnimationFrame(animationId.current)
     }
-    animationFinished.current = false
     animationIndex.current = 0
     pathRef.current?.setAttribute('d', '')
     startAnimation()
@@ -132,53 +123,77 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         link.click()
       })
       .catch((err) => {
-        console.log(err)
+        message.error(err.message)
       })
   }, [props.name])
 
-  // if shape settings change, restart animation
+  // viewbox effect
   useEffect(() => {
-    console.log('useEffect', animationFinished.current)
-    restartAnimation()
-  }, [props.movingRadius, props.pointDistance])
+    const viewBox = recalculateViewBox({
+      laps: props.laps,
+      petals: props.petals,
+      pointDistance: props.pointDistance,
+      strokeWidth: props.strokeWidth,
+    })
+    svgRef.current?.setAttribute('viewBox', viewBox)
+  }, [props.laps, props.petals, props.pointDistance, props.strokeWidth])
 
-  // if sampling change, update path with the same percentage of the animation
-  // then continue the animation
+  // animation effect
+  // this effect has multiple purposes
+  // but I don't split it into multiple effects because it uses a lot of the same variables
+  // and I don't want to struggle with race conditions
   useEffect(() => {
-    console.log(points, prevPointsLength.current, animationFinished.current)
-    const percentage = animationIndex.current / prevPointsLength.current
-    animationIndex.current = Math.floor(points.length * percentage)
-    pathRef.current?.setAttribute(
-      'd',
-      pathChunksToString(pathChunks.slice(0, animationIndex.current)),
-    )
-    if (!animationFinished.current) {
-      startAnimation()
+    // if shape settings change, restart animation
+    if (
+      prevProps.current?.laps !== props.laps ||
+      prevProps.current?.petals !== props.petals ||
+      prevProps.current?.pointDistance !== props.pointDistance
+    ) {
+      restartAnimation()
+    } else {
+      // if sampling change, update path with the same percentage of the animation
+      // then continue the animation
+      if (prevProps.current?.stepPerLap !== props.stepPerLap) {
+        if (prevPointsLength.current === 0) {
+          return
+        }
+        const percentage = animationIndex.current / prevPointsLength.current
+        animationIndex.current = Math.floor(points.length * percentage)
+        pathRef.current?.setAttribute(
+          'd',
+          pathChunksToString(pathChunks.slice(0, animationIndex.current)),
+        )
+      }
+
+      // if interpolation change, update path until the current animation index
+      if (prevProps.current?.interpolation !== props.interpolation) {
+        pathRef.current?.setAttribute(
+          'd',
+          pathChunksToString(pathChunks.slice(0, animationIndex.current)),
+        )
+      }
+
+      // continue the animation
+      if (animationIndex.current < pathChunks.length) {
+        startAnimation()
+      }
     }
 
     return () => {
+      prevProps.current = props
       prevPointsLength.current = points.length
+      if (animationId.current) {
+        cancelAnimationFrame(animationId.current)
+      }
     }
-  }, [props.stepPerLap])
-
-  // if interpolation change, update path until the current animation index
-  useEffect(() => {
-    if (animationFinished.current) {
-      return
-    }
-    pathRef.current?.setAttribute(
-      'd',
-      pathChunksToString(pathChunks.slice(0, animationIndex.current)),
-    )
-  }, [props.interpolation])
-
-  // if speed change, continue the animation
-  useEffect(() => {
-    if (animationFinished.current) {
-      return
-    }
-    startAnimation()
-  }, [props.msPerLap])
+  }, [
+    props.laps,
+    props.petals,
+    props.pointDistance,
+    props.stepPerLap,
+    props.interpolation,
+    props.msPerLap,
+  ])
 
   return (
     <svg

@@ -27,7 +27,8 @@ export type PathChunk = {
 export interface SpiroSettings {
   id: number
   name: string
-  movingRadius: number
+  laps: number
+  petals: number
   pointDistance: number
   stepPerLap: number
   interpolation: Interpolation

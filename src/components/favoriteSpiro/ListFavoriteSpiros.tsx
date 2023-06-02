@@ -27,58 +27,66 @@ function ListFavoriteSpiros() {
   const [span, setSpan] = useState(8)
   const { spiros } = useFavSpiros()
 
-  return spiros?.length ? (
-    <Row gutter={[16, 16]}>
-      <Col span={24}>
-        <div className="flex gap-16 justify-between">
-          <div className="flex gap-16 items-center">
-            Tamaño:{' '}
-            {options.map((option) => (
-              <Button
-                key={option.value}
-                onClick={() => setSpan(option.value)}
-                tooltip={option.label}
-                icon={<Icon path={option.icon} />}
-                type={span === option.value ? 'primary' : 'default'}
-              />
-            ))}
-          </div>
-          <div className="flex gap-16">
-            <Button
-              type="primary"
-              icon={<Icon path={mdiDatabaseImportOutline} />}
-            >
-              Import
-            </Button>
-            <Button
-              type="primary"
-              icon={<Icon path={mdiDatabaseExportOutline} />}
-            >
-              Export
-            </Button>
-          </div>
+  return (
+    <>
+      <h1 className="text-center">Spirodex</h1>
+      {spiros?.length ? (
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <div className="flex gap-16 justify-between">
+              <div className="flex gap-16 items-center">
+                Tamaño:{' '}
+                {options.map((option) => (
+                  <Button
+                    key={option.value}
+                    onClick={() => setSpan(option.value)}
+                    tooltip={option.label}
+                    icon={<Icon path={option.icon} />}
+                    type={span === option.value ? 'primary' : 'default'}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-16">
+                <Button
+                  type="primary"
+                  icon={<Icon path={mdiDatabaseImportOutline} />}
+                >
+                  Import
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<Icon path={mdiDatabaseExportOutline} />}
+                >
+                  Export
+                </Button>
+              </div>
+            </div>
+          </Col>
+          {spiros.map((spiro) => (
+            <Col key={spiro.id} span={span}>
+              <FavoriteSpiro spiro={spiro} />
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <div className="flex flex-col gap-16 items-center">
+          <h2>No tienes ningún spiro en tu spirodex... aún</h2>
+          <MDIIcon path={mdiShapeOutline} size={4} />
+          <p>Este es el lugar donde aparecerán tus spiro favoritos.</p>
+          <p>
+            Puedes agregar algunos a tu lista seleccionando el{' '}
+            <Icon path={mdiHeartPlusOutline} /> en cada spiro,
+          </p>
+          <p>o importar algunos si ya tienes un archivo de spiro listo.</p>
+          <Button
+            type="primary"
+            icon={<Icon path={mdiDatabaseImportOutline} />}
+          >
+            Import
+          </Button>
         </div>
-      </Col>
-      {/* {spiros.map((spiro) => (
-        <Col key={spiro.id} span={span}>
-          <FavoriteSpiro spiro={spiro} />
-        </Col>
-      ))} */}
-    </Row>
-  ) : (
-    <div className="flex flex-col gap-16 items-center">
-      <h2>No tienes ningún spiro en tus favoritos... aún</h2>
-      <MDIIcon path={mdiShapeOutline} size={4} />
-      <p>Este es el lugar donde aparecerán tus spiro favoritos.</p>
-      <p>
-        Puedes agregar algunos a tu lista seleccionando el{' '}
-        <Icon path={mdiHeartPlusOutline} /> en cada spiro,
-      </p>
-      <p>o importar algunos si ya tienes un archivo de spiro listo.</p>
-      <Button type="primary" icon={<Icon path={mdiDatabaseImportOutline} />}>
-        Import
-      </Button>
-    </div>
+      )}
+    </>
   )
 }
 

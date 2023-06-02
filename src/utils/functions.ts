@@ -1,5 +1,5 @@
 import { HYPOTROCHOID_FIXED_RADIUS, PADDING } from './constants'
-import { getLaps } from './maths'
+import { getLaps, getMovingRadius } from './maths'
 import { Point } from './types'
 
 export function clipViewBox(points: Point[]): string {
@@ -21,15 +21,21 @@ export function clipViewBox(points: Point[]): string {
 }
 
 interface RecalculateViewBoxParams {
-  movingRadius: number
+  laps: number
+  petals: number
   pointDistance: number
   strokeWidth: number
 }
 
 export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
+  const movingRadius = getMovingRadius(
+    HYPOTROCHOID_FIXED_RADIUS,
+    spiro.petals,
+    spiro.laps,
+  )
   const max =
     HYPOTROCHOID_FIXED_RADIUS -
-    (spiro.movingRadius - spiro.pointDistance) +
+    (movingRadius - spiro.pointDistance) +
     spiro.strokeWidth
   const maxWithPadding = max + PADDING
   const width = maxWithPadding * 2
@@ -38,14 +44,16 @@ export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
 }
 
 export function calculateSpirographPoints(
-  movingRadius: number,
+  laps: number,
+  petals: number,
   pointDistance: number,
   pointsPerLap: number,
-): { points: Point[]; laps: number } {
+): Point[] {
   const points: Point[] = []
   const step = (2 * Math.PI) / pointsPerLap
 
-  const laps = getLaps(HYPOTROCHOID_FIXED_RADIUS, movingRadius)
+  // const laps = getLaps(HYPOTROCHOID_FIXED_RADIUS, movingRadius)
+  const movingRadius = getMovingRadius(HYPOTROCHOID_FIXED_RADIUS, petals, laps)
   let max = laps * pointsPerLap
 
   let t = 0
@@ -60,7 +68,7 @@ export function calculateSpirographPoints(
     )
     t += step
   }
-  return { points, laps }
+  return points
 }
 
 export function getHypotrochoidPoint(

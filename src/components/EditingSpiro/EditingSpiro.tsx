@@ -9,7 +9,8 @@ import { getIncrementalId } from '@/utils/constants'
 const initialSpiro: SpiroAnimationSettings = {
   id: getIncrementalId(),
   name: 'My Spiro',
-  movingRadius: 504,
+  laps: 1,
+  petals: 5,
   pointDistance: 1512,
   interpolation: Interpolation.Derivative,
   stepPerLap: 44,

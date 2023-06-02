@@ -114,5 +114,15 @@ function getDerivativePoint(
 }
 
 export function getUniqueSpirographId(spiro: SpiroSettings): string {
-  return `Spiro-${spiro.movingRadius}-${spiro.pointDistance}-${spiro.strokeWidth}-${spiro.stepPerLap}-${spiro.interpolation}-${spiro.color}-${spiro.backgroundColor}`
+  const params = [
+    spiro.laps,
+    spiro.petals,
+    spiro.pointDistance,
+    spiro.strokeWidth,
+    spiro.stepPerLap,
+    spiro.interpolation,
+    spiro.color,
+    spiro.backgroundColor,
+  ]
+  return `Spiro-${params.join('-')}`
 }

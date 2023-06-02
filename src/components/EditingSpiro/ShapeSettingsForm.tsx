@@ -2,9 +2,11 @@ import { Button, Form, InputNumber, Select } from 'antd'
 import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix, mdiGesture } from '@mdi/js'
+import { useMemo } from 'react'
 
 interface ShapeSettingsFormStore {
-  movingRadius: number
+  laps: number
+  petals: number
   pointDistance: number
 }
 
@@ -16,17 +18,25 @@ interface ShapeSettingsFormProps {
 function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   function handleFinish(values: ShapeSettingsFormStore) {
     props.onEdit({
-      movingRadius: values.movingRadius,
+      laps: values.laps,
+      petals: values.petals,
       pointDistance: values.pointDistance,
     })
-    console.log('finish', values)
   }
+
+  const initialValues: ShapeSettingsFormStore = useMemo(() => {
+    return {
+      laps: props.spiro.laps,
+      petals: props.spiro.petals,
+      pointDistance: props.spiro.pointDistance,
+    }
+  }, [props.spiro])
 
   return (
     <div className="flex flex-col">
       <Form
         onFinish={handleFinish}
-        initialValues={props.spiro}
+        initialValues={initialValues}
         layout="vertical"
       >
         <Form.Item label="Curve type" name="type">
@@ -34,23 +44,11 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item
-          label="Tamaño del disco"
-          name="movingRadius"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the moving radius',
-            },
-          ]}
-        >
+        <Form.Item label="Cantidad de petalos" name="petals">
           <InputNumber />
         </Form.Item>
-        <Form.Item label="Cantidad de vueltas" name="lapsAmount">
-          <InputNumber disabled />
-        </Form.Item>
-        <Form.Item label="Cantidad de petalos" name="petalsAmount">
-          <InputNumber disabled />
+        <Form.Item label="Rotaciones" name="laps">
+          <InputNumber />
         </Form.Item>
         <Form.Item
           label="Tamaño de los petalos"

@@ -97,6 +97,24 @@ export function getLaps(fixedRadius: number, movingRadius: number): number {
   return laps
 }
 
+export function getPetalsAmount(
+  fixedRadius: number,
+  movingRadius: number,
+): number {
+  const divisor = gcd(fixedRadius, movingRadius)
+  const petals = fixedRadius / divisor
+  return petals
+}
+
+export function getMovingRadius(
+  fixedRadius: number,
+  petals: number,
+  laps: number,
+): number {
+  const divisor = fixedRadius / petals
+  return divisor * laps
+}
+
 export function getViewBox(points: Point[]): string {
   const minX = Math.min(...points.map((point) => point.x))
   const maxX = Math.max(...points.map((point) => point.x))

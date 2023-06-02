@@ -41,7 +41,6 @@ function FavSpirosProvider({
   }, [keyName, spiros])
 
   function addSpiro(spiro: SpiroSettings) {
-    console.log('addSpiro', spiro)
     let exists = false
     // if already exists, replace it, else add it
     const newSpiros = spiros.map((v) => {
