@@ -26,7 +26,6 @@ function EditingSpiro() {
   function handleEdit(partialSpiro: Partial<SpiroAnimationSettings>) {
     const newSpiro = { ...spiro, ...partialSpiro, id: getIncrementalId() }
     setSpiro(newSpiro)
-    console.log('edit id', partialSpiro)
   }
 
   return (

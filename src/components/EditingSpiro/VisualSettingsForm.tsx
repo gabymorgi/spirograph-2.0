@@ -16,6 +16,8 @@ import {
   mdiVectorTriangle,
 } from '@mdi/js'
 import OptionPicker from '@/ui-kit/OptionPicker'
+import ColorPicker from '@/ui-kit/ColorPicker'
+import { Color } from 'antd/es/color-picker'
 
 const thicknessOptions = [
   { label: 'thin', value: 10, icon: mdiCircleSmall },
@@ -77,10 +79,35 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
     props.onEdit({ msPerLap: Number(msPerLaps) })
   }
 
+  function handleChangeColor(_value: Color, hex: string) {
+    props.onEdit({ color: hex })
+  }
+
+  function handleChangeBackgroundColor(_value: Color, hex: string) {
+    props.onEdit({ backgroundColor: hex })
+  }
+
   return (
     <div className="flex flex-col">
       <Form layout="vertical">
-        Color Picker
+        <div className="flex gap-16">
+          <Form.Item
+            label="Linea:"
+            name="color"
+            initialValue={props.spiro.color}
+            tooltip="Color de la línea"
+          >
+            <ColorPicker onChange={handleChangeColor} />
+          </Form.Item>
+          <Form.Item
+            label="Background:"
+            name="backgroundColor"
+            initialValue={props.spiro.backgroundColor}
+            tooltip="Color de fondo"
+          >
+            <ColorPicker onChange={handleChangeBackgroundColor} />
+          </Form.Item>
+        </div>
         <Form.Item
           label="Grosor:"
           name="strokeWidth"

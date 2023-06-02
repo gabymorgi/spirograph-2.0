@@ -21,7 +21,7 @@ function OptionPicker(props: OptionPickerProps) {
       {props.options.map((option) => (
         <Button
           type={props.value === option.value ? 'primary' : 'default'}
-          icon={<Icon path={option.icon} title={option.label} />}
+          icon={<Icon path={option.icon} />}
           onClick={() => handleOptionClick(option.value)}
           key={option.value}
         />

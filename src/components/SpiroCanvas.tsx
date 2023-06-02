@@ -34,8 +34,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   const animationIndex = useRef<number>(0)
   const svgRef = useRef<HTMLElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
-
-  console.log('SpiroCanvas', props)
+  const prevPointsLength = useRef<number>(0)
 
   const { points, laps } = useMemo(() => {
     return calculateSpirographPoints(
@@ -64,9 +63,12 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   }, [props.movingRadius, props.pointDistance, props.strokeWidth])
 
   const startAnimation = useCallback(() => {
-    pathRef.current?.setAttribute('d', '')
-    animationFinished.current = false
-    animationIndex.current = 0
+    if (animationFinished.current) {
+      return
+    }
+    if (animationId.current) {
+      cancelAnimationFrame(animationId.current)
+    }
     if (msPerStep < 1) {
       pathRef.current?.setAttribute('d', pathChunksToString(pathChunks))
       return
@@ -76,7 +78,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
     function step(timestamp: number) {
       if (!start) start = timestamp
-      console.log('step', timestamp, start, msPerStep)
 
       if (timestamp - start > msPerStep) {
         let path = pathRef.current?.getAttribute('d') || ''
@@ -103,27 +104,20 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     animationId.current = requestAnimationFrame(step)
   }, [msPerStep, pathChunks])
 
+  const restartAnimation = useCallback(() => {
+    if (animationId.current) {
+      cancelAnimationFrame(animationId.current)
+    }
+    animationFinished.current = false
+    animationIndex.current = 0
+    pathRef.current?.setAttribute('d', '')
+    startAnimation()
+  }, [startAnimation])
+
   useImperativeHandle(ref, () => ({
-    redraw: () => {
-      if (animationId.current) {
-        cancelAnimationFrame(animationId.current)
-      }
-      startAnimation()
-    },
+    redraw: restartAnimation,
     download: handleDownload,
   }))
-
-  useEffect(() => {
-    console.log('useEffect', animationFinished.current)
-    // if (animationFinished.current) {
-    //   return;
-    // }
-    startAnimation()
-
-    return () => {
-      animationId.current ? cancelAnimationFrame(animationId.current) : null
-    }
-  }, [startAnimation])
 
   const handleDownload = useCallback(() => {
     if (svgRef.current === null) {
@@ -142,10 +136,53 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       })
   }, [props.name])
 
+  // if shape settings change, restart animation
+  useEffect(() => {
+    console.log('useEffect', animationFinished.current)
+    restartAnimation()
+  }, [props.movingRadius, props.pointDistance])
+
+  // if sampling change, update path with the same percentage of the animation
+  // then continue the animation
+  useEffect(() => {
+    console.log(points, prevPointsLength.current, animationFinished.current)
+    const percentage = animationIndex.current / prevPointsLength.current
+    animationIndex.current = Math.floor(points.length * percentage)
+    pathRef.current?.setAttribute(
+      'd',
+      pathChunksToString(pathChunks.slice(0, animationIndex.current)),
+    )
+    if (!animationFinished.current) {
+      startAnimation()
+    }
+
+    return () => {
+      prevPointsLength.current = points.length
+    }
+  }, [props.stepPerLap])
+
+  // if interpolation change, update path until the current animation index
+  useEffect(() => {
+    if (animationFinished.current) {
+      return
+    }
+    pathRef.current?.setAttribute(
+      'd',
+      pathChunksToString(pathChunks.slice(0, animationIndex.current)),
+    )
+  }, [props.interpolation])
+
+  // if speed change, continue the animation
+  useEffect(() => {
+    if (animationFinished.current) {
+      return
+    }
+    startAnimation()
+  }, [props.msPerLap])
+
   return (
     <svg
       ref={svgRef as never}
-      viewBox="-500 -500 1000 1000"
       width="100%"
       height="100%"
       fill="none"
@@ -153,7 +190,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       strokeWidth={props.strokeWidth}
       style={{ backgroundColor: props.backgroundColor }}
     >
-      <path ref={pathRef} d="" stroke={props.color} />
+      <path ref={pathRef} stroke={props.color} />
     </svg>
   )
 }

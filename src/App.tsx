@@ -1,6 +1,6 @@
 import { Header } from 'antd/es/layout/layout'
 import ListFavoriteSpiros from './components/favoriteSpiro/ListFavoriteSpiros'
-import { Card } from 'antd'
+import { Card, ColorPicker } from 'antd'
 import EditingSpiro from './components/EditingSpiro/EditingSpiro'
 import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
 import Icon from './ui-kit/Icon'

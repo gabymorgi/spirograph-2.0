@@ -74,7 +74,6 @@ function ControlForm(props: ControlFormProps) {
   return (
     <Container>
       <Button
-        type="primary"
         tooltip="Save to Favs"
         onClick={handleSave}
         icon={<Icon path={mdiContentSave} />}

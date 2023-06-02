@@ -27,7 +27,6 @@ function ListFavoriteSpiros() {
   const [span, setSpan] = useState(8)
   const { spiros } = useFavSpiros()
 
-  console.log(spiros)
   return spiros?.length ? (
     <Row gutter={[16, 16]}>
       <Col span={24}>
@@ -60,11 +59,11 @@ function ListFavoriteSpiros() {
           </div>
         </div>
       </Col>
-      {spiros.map((spiro) => (
+      {/* {spiros.map((spiro) => (
         <Col key={spiro.id} span={span}>
           <FavoriteSpiro spiro={spiro} />
         </Col>
-      ))}
+      ))} */}
     </Row>
   ) : (
     <div className="flex flex-col gap-16 items-center">
