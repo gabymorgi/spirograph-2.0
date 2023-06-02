@@ -1,67 +1,92 @@
-import { useEffect, useCallback, useMemo, useState, useRef, memo, useImperativeHandle, forwardRef, } from "react";
-import { calculateSpirographPoints, recalculateViewBox } from "@/utils/functions";
-import { getPath, pathChunkToString, pathChunksToString } from "@/utils/canvasUtils";
-import { SpiroAnimationSettings, SpiroSettings } from "@/utils/types";
-import { toPng } from "html-to-image";
+import {
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react'
+import {
+  calculateSpirographPoints,
+  recalculateViewBox,
+} from '@/utils/functions'
+import {
+  getPath,
+  pathChunkToString,
+  pathChunksToString,
+} from '@/utils/canvasUtils'
+import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
+import { toPng } from 'html-to-image'
 
 export interface SpiroCanvasHandle {
-  redraw: () => void;
-  download: () => void;
+  redraw: () => void
+  download: () => void
 }
 
 type SpiroCanvasProps = Partial<SpiroAnimationSettings> & SpiroSettings
 
-const SpiroCanvas: React.ForwardRefRenderFunction<SpiroCanvasHandle, SpiroCanvasProps> = (props, ref) => {
-  const animationId = useRef<number | null>(null);
-  const animationFinished = useRef<boolean>(false);
-  const animationIndex = useRef<number>(0);
-  const svgRef = useRef<HTMLElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const [viewBox, setViewBox] = useState(recalculateViewBox(props));
+const SpiroCanvas: React.ForwardRefRenderFunction<
+  SpiroCanvasHandle,
+  SpiroCanvasProps
+> = (props, ref) => {
+  const animationId = useRef<number | null>(null)
+  const animationFinished = useRef<boolean>(false)
+  const animationIndex = useRef<number>(0)
+  const svgRef = useRef<HTMLElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
 
   console.log('SpiroCanvas', props)
 
-  const { pathChunks, msPerStep } = useMemo(() => {
-    const { points, laps } = calculateSpirographPoints(
+  const { points, laps } = useMemo(() => {
+    return calculateSpirographPoints(
       props.movingRadius,
       props.pointDistance,
-      props.stepPerLap
-    );
+      props.stepPerLap,
+    )
+  }, [props.movingRadius, props.pointDistance, props.stepPerLap])
+
+  const pathChunks = useMemo(() => {
+    return getPath(points, props.interpolation)
+  }, [points, props.interpolation])
+
+  const msPerStep = useMemo(() => {
     const msPerLap = props.msPerLap || 0
-    return {
-      pathChunks: getPath(points, props.interpolation),
-      msPerStep: msPerLap ? (msPerLap * laps) / points.length : 0
-    }
-  }, [props.interpolation, props.movingRadius, props.pointDistance, props.stepPerLap]);
+    return msPerLap ? (msPerLap * laps) / points.length : 0
+  }, [laps, points.length, props.msPerLap])
 
   useEffect(() => {
-    setViewBox(recalculateViewBox(props));
-  }, [props.movingRadius, props.pointDistance]);
+    const viewBox = recalculateViewBox({
+      movingRadius: props.movingRadius,
+      pointDistance: props.pointDistance,
+      strokeWidth: props.strokeWidth,
+    })
+    svgRef.current?.setAttribute('viewBox', viewBox)
+  }, [props.movingRadius, props.pointDistance, props.strokeWidth])
 
   const startAnimation = useCallback(() => {
-    pathRef.current?.setAttribute('d', "")
+    pathRef.current?.setAttribute('d', '')
     animationFinished.current = false
     animationIndex.current = 0
-    if (!('msPerLap' in props) || msPerStep < 1) {
+    if (msPerStep < 1) {
       pathRef.current?.setAttribute('d', pathChunksToString(pathChunks))
       return
     }
 
-    let start: number | null = null;
-  
+    let start: number | null = null
+
     function step(timestamp: number) {
-      if (!start) start = timestamp;
+      if (!start) start = timestamp
       console.log('step', timestamp, start, msPerStep)
-  
+
       if (timestamp - start > msPerStep) {
         let path = pathRef.current?.getAttribute('d') || ''
         while (timestamp - start > msPerStep) {
-          start += msPerStep;
-    
+          start += msPerStep
+
           if (animationIndex.current < pathChunks.length) {
             path += pathChunkToString(pathChunks[animationIndex.current])
-            
-            animationIndex.current += 1;
+
+            animationIndex.current += 1
           } else {
             animationFinished.current = true
             break
@@ -69,14 +94,14 @@ const SpiroCanvas: React.ForwardRefRenderFunction<SpiroCanvasHandle, SpiroCanvas
         }
         pathRef.current?.setAttribute('d', path)
       }
-  
+
       if (animationIndex.current < pathChunks.length) {
-        animationId.current = requestAnimationFrame(step);
+        animationId.current = requestAnimationFrame(step)
       }
     }
-  
-    animationId.current = requestAnimationFrame(step);
-  }, [pathChunks, msPerStep]);
+
+    animationId.current = requestAnimationFrame(step)
+  }, [msPerStep, pathChunks])
 
   useImperativeHandle(ref, () => ({
     redraw: () => {
@@ -86,26 +111,26 @@ const SpiroCanvas: React.ForwardRefRenderFunction<SpiroCanvasHandle, SpiroCanvas
       startAnimation()
     },
     download: handleDownload,
-  }));
+  }))
 
   useEffect(() => {
-    if (animationFinished.current) {
-      return
-    }
+    console.log('useEffect', animationFinished.current)
+    // if (animationFinished.current) {
+    //   return;
+    // }
     startAnimation()
-  
+
     return () => {
-      animationId.current ? cancelAnimationFrame(animationId.current) : null;
-    };
-  }, [startAnimation]);
-  
+      animationId.current ? cancelAnimationFrame(animationId.current) : null
+    }
+  }, [startAnimation])
 
   const handleDownload = useCallback(() => {
     if (svgRef.current === null) {
       return
     }
 
-    toPng(svgRef.current, { cacheBust: true, })
+    toPng(svgRef.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement('a')
         link.download = `${props.name}.png`
@@ -115,12 +140,12 @@ const SpiroCanvas: React.ForwardRefRenderFunction<SpiroCanvasHandle, SpiroCanvas
       .catch((err) => {
         console.log(err)
       })
-  }, [ref])
+  }, [props.name])
 
   return (
     <svg
-      ref={svgRef as any}
-      viewBox={viewBox}
+      ref={svgRef as never}
+      viewBox="-500 -500 1000 1000"
       width="100%"
       height="100%"
       fill="none"
@@ -130,9 +155,10 @@ const SpiroCanvas: React.ForwardRefRenderFunction<SpiroCanvasHandle, SpiroCanvas
     >
       <path ref={pathRef} d="" stroke={props.color} />
     </svg>
-  );
+  )
 }
 
+// const MemoizedSpiroCanvas = memo(SpiroCanvas)
 const ForwardSpiroCanvas = forwardRef(SpiroCanvas)
 
-export default memo(ForwardSpiroCanvas)
+export default ForwardSpiroCanvas

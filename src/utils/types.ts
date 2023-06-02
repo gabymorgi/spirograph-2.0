@@ -1,45 +1,45 @@
 export type Point = {
-  x: number;
-  y: number;
-};
+  x: number
+  y: number
+}
 
 export type Line = {
-  point: Point;
-  slope: number;
-};
+  point: Point
+  slope: number
+}
 
 export type LineSegment = {
-  p1: Point;
-  p2: Point;
-};
+  p1: Point
+  p2: Point
+}
 
 export enum Interpolation {
-  Linear = "linear",
-  Bezier = "bezier",
-  Derivative = "derivative",
+  Linear = 'linear',
+  Bezier = 'bezier',
+  Derivative = 'derivative',
 }
 
 export type PathChunk = {
-  command: 'M' | 'L' | 'Q' | 'Z';
-  points: Point[];
-};
+  command: 'M' | 'L' | 'Q' | 'Z'
+  points: Point[]
+}
 
 export interface SpiroSettings {
-  id: number;
-  name: string;
-  movingRadius: number;
-  pointDistance: number;
-  stepPerLap: number;
-  interpolation: Interpolation;
-  color: string;
-  backgroundColor: string;
-  strokeWidth: number;
+  id: number
+  name: string
+  movingRadius: number
+  pointDistance: number
+  stepPerLap: number
+  interpolation: Interpolation
+  color: string
+  backgroundColor: string
+  strokeWidth: number
 }
 
 export interface SpiroAnimationSettings extends SpiroSettings {
-  msPerLap: number;
+  msPerLap: number
 }
 
 export type Dict<T> = {
-  [key: string]: T;
+  [key: string]: T
 }

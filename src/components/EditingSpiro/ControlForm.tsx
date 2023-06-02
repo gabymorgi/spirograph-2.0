@@ -1,12 +1,17 @@
-import { Input, InputRef } from "antd";
-import { mdiPencil, mdiDownloadBoxOutline, mdiRestart, mdiContentSave } from "@mdi/js";
-import { useRef } from "react";
-import styled from "styled-components";
-import { SpiroAnimationSettings } from "@/utils/types";
-import Icon from "@/ui-kit/Icon";
-import Button from "@/ui-kit/Button";
-import { useFavSpiros } from "@/contexts/favSpiros";
-import { SpiroCanvasHandle } from "../SpiroCanvas";
+import { Input, InputRef } from 'antd'
+import {
+  mdiPencil,
+  mdiDownloadBoxOutline,
+  mdiRestart,
+  mdiContentSave,
+} from '@mdi/js'
+import { useRef } from 'react'
+import styled from 'styled-components'
+import { SpiroAnimationSettings } from '@/utils/types'
+import Icon from '@/ui-kit/Icon'
+import Button from '@/ui-kit/Button'
+import { useFavSpiros } from '@/contexts/favSpiros'
+import { SpiroCanvasHandle } from '../SpiroCanvas'
 
 const Container = styled.div`
   display: flex;
@@ -28,28 +33,28 @@ const StyledInput = styled(Input)`
     border-color: blue;
     display: table-cell;
   }
-`;
+`
 
 interface ControlFormStore {
-  name: string;
+  name: string
 }
 
 interface ControlFormProps {
-  spiroRef: React.RefObject<SpiroCanvasHandle>;
-  spiro: SpiroAnimationSettings;
-  onEdit: (partialSpiro: ControlFormStore) => void;
+  spiroRef: React.RefObject<SpiroCanvasHandle>
+  spiro: SpiroAnimationSettings
+  onEdit: (partialSpiro: ControlFormStore) => void
 }
 
 function ControlForm(props: ControlFormProps) {
   const { addSpiro } = useFavSpiros()
-  const inputRef = useRef<InputRef>(null);
+  const inputRef = useRef<InputRef>(null)
 
   function handleEdit() {
     if (
       inputRef.current?.input?.value &&
       inputRef.current?.input?.value !== props.spiro.name
     ) {
-      props.onEdit({ name: inputRef.current.input.value });
+      props.onEdit({ name: inputRef.current.input.value })
     }
   }
 
@@ -97,7 +102,7 @@ function ControlForm(props: ControlFormProps) {
         icon={<Icon path={mdiRestart} />}
       />
     </Container>
-  );
+  )
 }
 
-export default ControlForm;
+export default ControlForm

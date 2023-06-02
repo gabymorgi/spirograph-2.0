@@ -1,9 +1,15 @@
-import { Button, Input, InputRef, Popconfirm } from "antd";
-import Icon from "@mdi/react";
-import { mdiTrashCanOutline, mdiImageEdit, mdiPencil, mdiDownloadBoxOutline, mdiExport } from "@mdi/js";
-import { useRef, memo } from "react";
-import styled from "styled-components";
-import { useFavSpiros } from "@/contexts/favSpiros";
+import { Button, Input, InputRef, Popconfirm } from 'antd'
+import Icon from '@mdi/react'
+import {
+  mdiTrashCanOutline,
+  mdiImageEdit,
+  mdiPencil,
+  mdiDownloadBoxOutline,
+  mdiExport,
+} from '@mdi/js'
+import { useRef, memo } from 'react'
+import styled from 'styled-components'
+import { useFavSpiros } from '@/contexts/favSpiros'
 
 const Container = styled.div`
   display: flex;
@@ -25,23 +31,23 @@ const StyledInput = styled(Input)`
     border-color: blue;
     display: table-cell;
   }
-`;
+`
 
 interface InteractionFormProps {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 function InteractionForm(props: InteractionFormProps) {
   const { editSpiroName, removeSpiro } = useFavSpiros()
-  const inputRef = useRef<InputRef>(null);
+  const inputRef = useRef<InputRef>(null)
 
   function handleEdit() {
     if (
       inputRef.current?.input?.value &&
       inputRef.current?.input?.value !== props.name
     ) {
-      editSpiroName(props.id, inputRef.current.input.value);
+      editSpiroName(props.id, inputRef.current.input.value)
     }
   }
 
@@ -57,7 +63,9 @@ function InteractionForm(props: InteractionFormProps) {
       />
       <Button
         type="primary"
-        icon={<Icon path={mdiDownloadBoxOutline} title="Download Spiro" size={1} />}
+        icon={
+          <Icon path={mdiDownloadBoxOutline} title="Download Spiro" size={1} />
+        }
       />
       <Button
         type="primary"
@@ -88,7 +96,7 @@ function InteractionForm(props: InteractionFormProps) {
         />
       </Popconfirm>
     </Container>
-  );
+  )
 }
 
-export default memo(InteractionForm);
+export default memo(InteractionForm)

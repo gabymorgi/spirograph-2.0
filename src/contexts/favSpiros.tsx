@@ -1,34 +1,44 @@
-import { getIncrementalId } from '@/utils/constants';
-import { SpiroSettings } from '@/utils/types';
-import { message } from 'antd';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { SpiroSettings } from '@/utils/types'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react'
 
 type IFavSpirosContext = {
-  spiros: SpiroSettings[],
-  setSpiros: React.Dispatch<React.SetStateAction<SpiroSettings[]>>,
-  addSpiro: (spiro: SpiroSettings) => void,
-  editSpiroName: (id: number, name: string) => void,
-  removeSpiro: (id: number) => void,
-};
+  spiros: SpiroSettings[]
+  setSpiros: React.Dispatch<React.SetStateAction<SpiroSettings[]>>
+  addSpiro: (spiro: SpiroSettings) => void
+  editSpiroName: (id: number, name: string) => void
+  removeSpiro: (id: number) => void
+}
 
 // Crear el contexto
-const FavSpirosContext = createContext<IFavSpirosContext | undefined>(undefined);
+const FavSpirosContext = createContext<IFavSpirosContext | undefined>(undefined)
 
 // Crear el proveedor del contexto
-function FavSpirosProvider({ children, keyName }: { children: ReactNode, keyName: string }) {
+function FavSpirosProvider({
+  children,
+  keyName,
+}: {
+  children: ReactNode
+  keyName: string
+}) {
   const [spiros, setSpiros] = useState<SpiroSettings[]>(() => {
-    const storedSpiros = localStorage.getItem(keyName);
+    const storedSpiros = localStorage.getItem(keyName)
     if (storedSpiros) {
-      return JSON.parse(storedSpiros);
+      return JSON.parse(storedSpiros)
     }
-    return [];
-  });
+    return []
+  })
 
   useEffect(() => {
     if (spiros && keyName) {
-      localStorage.setItem(keyName, JSON.stringify(spiros));
+      localStorage.setItem(keyName, JSON.stringify(spiros))
     }
-  }, [keyName, spiros]);
+  }, [keyName, spiros])
 
   function addSpiro(spiro: SpiroSettings) {
     console.log('addSpiro', spiro)
@@ -45,7 +55,7 @@ function FavSpirosProvider({ children, keyName }: { children: ReactNode, keyName
       // add to start
       newSpiros.unshift(spiro)
     }
-    setSpiros(newSpiros);
+    setSpiros(newSpiros)
   }
 
   function editSpiroName(id: number, name: string) {
@@ -54,38 +64,40 @@ function FavSpirosProvider({ children, keyName }: { children: ReactNode, keyName
         return {
           ...v,
           name,
-        };
+        }
       }
-      return v;
-    });
-    setSpiros(newSpiros);
+      return v
+    })
+    setSpiros(newSpiros)
   }
 
   function removeSpiro(id: number) {
-    const newSpiros = spiros.filter((v) => v.id !== id);
-    setSpiros(newSpiros);
+    const newSpiros = spiros.filter((v) => v.id !== id)
+    setSpiros(newSpiros)
   }
 
   return (
-    <FavSpirosContext.Provider value={{
-      spiros,
-      setSpiros,
-      addSpiro,
-      editSpiroName,
-      removeSpiro,
-    }}>
+    <FavSpirosContext.Provider
+      value={{
+        spiros,
+        setSpiros,
+        addSpiro,
+        editSpiroName,
+        removeSpiro,
+      }}
+    >
       {children}
     </FavSpirosContext.Provider>
-  );
+  )
 }
 
 // Crear un hook para utilizar el contexto
 function useFavSpiros(): IFavSpirosContext {
-  const context = useContext(FavSpirosContext);
+  const context = useContext(FavSpirosContext)
   if (!context) {
-    throw new Error('useFavSpiros must be used within a FavSpirosProvider');
+    throw new Error('useFavSpiros must be used within a FavSpirosProvider')
   }
-  return context;
+  return context
 }
 
-export { FavSpirosProvider, useFavSpiros };
+export { FavSpirosProvider, useFavSpiros }

@@ -1,22 +1,22 @@
-import { Header } from "antd/es/layout/layout";
-import ListFavoriteSpiros from "./components/favoriteSpiro/ListFavoriteSpiros";
-import { Card } from "antd";
-import EditingSpiro from "./components/EditingSpiro/EditingSpiro";
-import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from "@mdi/js";
-import Icon from "./ui-kit/Icon";
-import { useState } from "react";
-import Button from "./ui-kit/Button";
+import { Header } from 'antd/es/layout/layout'
+import ListFavoriteSpiros from './components/favoriteSpiro/ListFavoriteSpiros'
+import { Card } from 'antd'
+import EditingSpiro from './components/EditingSpiro/EditingSpiro'
+import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
+import Icon from './ui-kit/Icon'
+import { useState } from 'react'
+import Button from './ui-kit/Button'
 
 function App() {
-  const [language, setLanguage] = useState<"en" | "es">("en");
-  const [showAdvanceSettings, setShowAdvanceSettings] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'es'>('en')
+  const [showAdvanceSettings, setShowAdvanceSettings] = useState(false)
 
   function toggleLanguage() {
-    setLanguage(language === "en" ? "es" : "en");
+    setLanguage(language === 'en' ? 'es' : 'en')
   }
 
   function toggleShowAdvanceSettings() {
-    setShowAdvanceSettings(!showAdvanceSettings);
+    setShowAdvanceSettings(!showAdvanceSettings)
   }
 
   return (
@@ -26,26 +26,23 @@ function App() {
         <div className="flex gap-16 justify-between">
           <Button
             onClick={toggleLanguage}
-            tooltip={`Change to ${language === "en" ? "Spanish" : "English"}`}
-            icon={
-              <Icon
-                path={mdiTranslate}
-              />
-            }
+            tooltip={`Change to ${language === 'en' ? 'Spanish' : 'English'}`}
+            icon={<Icon path={mdiTranslate} />}
           >
-            {language === "en" ? "Español" : "English"}
+            {language === 'en' ? 'Español' : 'English'}
           </Button>
           <Button
             onClick={toggleShowAdvanceSettings}
-            tooltip={`Show ${showAdvanceSettings ? "friendly" : "advance"
-              } Settings`}
+            tooltip={`Show ${
+              showAdvanceSettings ? 'friendly' : 'advance'
+            } Settings`}
             icon={
               <Icon
                 path={showAdvanceSettings ? mdiViewAgendaOutline : mdiTune}
               />
             }
           >
-            Show {showAdvanceSettings ? "friendly" : "advance"} settings
+            Show {showAdvanceSettings ? 'friendly' : 'advance'} settings
           </Button>
         </div>
       </Header>
@@ -58,7 +55,7 @@ function App() {
         </Card>
       </div>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

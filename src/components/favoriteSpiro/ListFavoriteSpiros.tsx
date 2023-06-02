@@ -3,7 +3,16 @@ import { useState } from 'react'
 import { useFavSpiros } from '@/contexts/favSpiros'
 import FavoriteSpiro from './FavoriteSpiro'
 import Button from '@/ui-kit/Button'
-import { mdiApps, mdiDatabaseExportOutline, mdiDatabaseImportOutline, mdiHeartPlusOutline, mdiShapeOutline, mdiSquare, mdiUpload, mdiViewComfy, mdiViewGrid, mdiViewGridOutline, mdiViewModule, mdiViewQuilt, mdiViewStream } from '@mdi/js'
+import {
+  mdiApps,
+  mdiDatabaseExportOutline,
+  mdiDatabaseImportOutline,
+  mdiHeartPlusOutline,
+  mdiShapeOutline,
+  mdiSquare,
+  mdiViewComfy,
+  mdiViewGrid,
+} from '@mdi/js'
 import Icon from '@/ui-kit/Icon'
 import MDIIcon from '@mdi/react'
 
@@ -24,32 +33,27 @@ function ListFavoriteSpiros() {
       <Col span={24}>
         <div className="flex gap-16 justify-between">
           <div className="flex gap-16 items-center">
-            Tamaño: {options.map((option) => (
+            Tamaño:{' '}
+            {options.map((option) => (
               <Button
                 key={option.value}
                 onClick={() => setSpan(option.value)}
                 tooltip={option.label}
-                icon={
-                  <Icon path={option.icon} />
-                }
+                icon={<Icon path={option.icon} />}
                 type={span === option.value ? 'primary' : 'default'}
               />
             ))}
           </div>
           <div className="flex gap-16">
             <Button
-              type='primary'
-              icon={
-                <Icon path={mdiDatabaseImportOutline} />
-              }
+              type="primary"
+              icon={<Icon path={mdiDatabaseImportOutline} />}
             >
               Import
             </Button>
             <Button
-              type='primary'
-              icon={
-                <Icon path={mdiDatabaseExportOutline} />
-              }
+              type="primary"
+              icon={<Icon path={mdiDatabaseExportOutline} />}
             >
               Export
             </Button>
@@ -67,18 +71,16 @@ function ListFavoriteSpiros() {
       <h2>No tienes ningún spiro en tus favoritos... aún</h2>
       <MDIIcon path={mdiShapeOutline} size={4} />
       <p>Este es el lugar donde aparecerán tus spiro favoritos.</p>
-      <p>Puedes agregar algunos a tu lista seleccionando el <Icon path={mdiHeartPlusOutline} /> en cada spiro,</p>
+      <p>
+        Puedes agregar algunos a tu lista seleccionando el{' '}
+        <Icon path={mdiHeartPlusOutline} /> en cada spiro,
+      </p>
       <p>o importar algunos si ya tienes un archivo de spiro listo.</p>
-      <Button
-        type='primary'
-        icon={
-          <Icon path={mdiDatabaseImportOutline} />
-        }
-      >
+      <Button type="primary" icon={<Icon path={mdiDatabaseImportOutline} />}>
         Import
       </Button>
     </div>
-  );
+  )
 }
 
-export default ListFavoriteSpiros;
+export default ListFavoriteSpiros

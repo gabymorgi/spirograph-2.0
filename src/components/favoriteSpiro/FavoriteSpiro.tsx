@@ -1,20 +1,18 @@
-import { SpiroSettings } from "@/utils/types";
-import SpiroCanvas from "../SpiroCanvas";
-import InteractionFormProps from "./InteractionForm";
+import { SpiroSettings } from '@/utils/types'
+import SpiroCanvas from '../SpiroCanvas'
+import InteractionFormProps from './InteractionForm'
 
 interface FavoriteSpiroProps {
-  spiro: SpiroSettings;
+  spiro: SpiroSettings
 }
 
 function FavoriteSpiro(props: FavoriteSpiroProps) {
   return (
     <div className="flex flex-col">
       <InteractionFormProps id={props.spiro.id} name={props.spiro.name} />
-      <SpiroCanvas
-        {...props.spiro}
-      />
+      <SpiroCanvas {...props.spiro} />
     </div>
-  );
+  )
 }
 
-export default FavoriteSpiro;
+export default FavoriteSpiro
