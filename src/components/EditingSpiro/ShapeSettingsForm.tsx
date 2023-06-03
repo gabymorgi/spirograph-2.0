@@ -1,8 +1,10 @@
-import { Button, Form, InputNumber, Select } from 'antd'
+import { Button, Form, InputNumber, Select, Slider } from 'antd'
 import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix, mdiGesture } from '@mdi/js'
 import { useMemo } from 'react'
+import { HYPOTROCHOID_FIXED_RADIUS } from '@/utils/constants'
+import { getMovingRadius } from '@/utils/maths'
 
 interface ShapeSettingsFormStore {
   laps: number
@@ -17,10 +19,15 @@ interface ShapeSettingsFormProps {
 
 function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   function handleFinish(values: ShapeSettingsFormStore) {
+    const movingRadius = getMovingRadius(
+      HYPOTROCHOID_FIXED_RADIUS,
+      values.petals,
+      values.laps,
+    )
     props.onEdit({
       laps: values.laps,
       petals: values.petals,
-      pointDistance: values.pointDistance,
+      pointDistance: (movingRadius / 100) * values.pointDistance,
     })
   }
 
@@ -60,7 +67,7 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
             },
           ]}
         >
-          <InputNumber />
+          <Slider min={0} max={100} />
         </Form.Item>
         <Button icon={<Icon path={mdiAutoFix} />}>I feel lucky</Button>
         <Button

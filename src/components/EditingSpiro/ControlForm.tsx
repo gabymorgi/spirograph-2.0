@@ -1,37 +1,16 @@
-import { Input, InputRef } from 'antd'
-import {
-  mdiPencil,
-  mdiDownloadBoxOutline,
-  mdiRestart,
-  mdiContentSave,
-} from '@mdi/js'
-import { useRef } from 'react'
+import { mdiDownloadBoxOutline, mdiRestart, mdiHeartPlusOutline } from '@mdi/js'
 import styled from 'styled-components'
 import { SpiroAnimationSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import Button from '@/ui-kit/Button'
 import { useFavSpiros } from '@/contexts/favSpiros'
 import { SpiroCanvasHandle } from '../SpiroCanvas'
+import EditableInput from '@/ui-kit/EditableInput'
 
 const Container = styled.div`
   display: flex;
   > button {
     flex-shrink: 0;
-  }
-`
-
-const StyledInput = styled(Input)`
-  .ant-input:focus {
-    border-right: none;
-  }
-  .ant-input-group-addon {
-    display: none;
-  }
-  // .ant-input-group-addon is beside a focused input
-  .ant-input:focus + .ant-input-group-addon {
-    background-color: #141414;
-    border-color: blue;
-    display: table-cell;
   }
 `
 
@@ -47,16 +26,6 @@ interface ControlFormProps {
 
 function ControlForm(props: ControlFormProps) {
   const { addSpiro } = useFavSpiros()
-  const inputRef = useRef<InputRef>(null)
-
-  function handleEdit() {
-    if (
-      inputRef.current?.input?.value &&
-      inputRef.current?.input?.value !== props.spiro.name
-    ) {
-      props.onEdit({ name: inputRef.current.input.value })
-    }
-  }
 
   function handleSave() {
     const { msPerLap, ...favSpiro } = props.spiro
@@ -71,31 +40,29 @@ function ControlForm(props: ControlFormProps) {
     props.spiroRef.current?.download()
   }
 
+  function handleNameChange(name: string) {
+    props.onEdit({ name })
+  }
+
   return (
     <Container>
       <Button
         tooltip="Save to Favs"
         onClick={handleSave}
-        icon={<Icon path={mdiContentSave} />}
+        icon={<Icon path={mdiHeartPlusOutline} />}
       />
       <Button
         tooltip="Download Spiro"
         onClick={handleDownload}
         icon={<Icon path={mdiDownloadBoxOutline} />}
       />
-      <StyledInput
-        ref={inputRef}
-        type="text"
-        placeholder="Name"
-        defaultValue={props.spiro.name}
-        addonAfter={
-          <div onClick={handleEdit} className="cursor-pointer font-10">
-            <Icon path={mdiPencil} />
-          </div>
-        }
-        onBlur={handleEdit}
+      <EditableInput
+        onChange={handleNameChange}
+        id={props.spiro.id}
+        name={props.spiro.name}
       />
       <Button
+        type="primary"
         tooltip="Redibujar"
         onClick={handleReDraw}
         icon={<Icon path={mdiRestart} />}

@@ -1,3 +1,4 @@
+import { INFINITY } from './constants'
 import { Line, LineSegment, Point } from './types'
 
 export function getSlope(p1: Point, p2: Point): number {
@@ -26,10 +27,10 @@ export function getLineIntersection(line1: Line, line2: Line): Point {
 
   let x, y
 
-  if (line1.slope === Infinity || line1.slope === -Infinity) {
+  if (line1.slope > INFINITY || line1.slope < -INFINITY) {
     x = line1.point.x
     y = line2.slope * (x - line2.point.x) + line2.point.y
-  } else if (line2.slope === Infinity || line2.slope === -Infinity) {
+  } else if (line2.slope > INFINITY || line2.slope < -INFINITY) {
     x = line2.point.x
     y = line1.slope * (x - line1.point.x) + line1.point.y
   } else {

@@ -1,35 +1,20 @@
-import { Button, Input, InputRef, Popconfirm } from 'antd'
+import { Button, InputRef, Popconfirm } from 'antd'
 import Icon from '@mdi/react'
 import {
   mdiTrashCanOutline,
   mdiImageEdit,
-  mdiPencil,
   mdiDownloadBoxOutline,
   mdiExport,
 } from '@mdi/js'
 import { useRef, memo } from 'react'
 import styled from 'styled-components'
 import { useFavSpiros } from '@/contexts/favSpiros'
+import EditableInput from '@/ui-kit/EditableInput'
 
 const Container = styled.div`
   display: flex;
   > button {
     flex-shrink: 0;
-  }
-`
-
-const StyledInput = styled(Input)`
-  .ant-input:focus {
-    border-right: none;
-  }
-  .ant-input-group-addon {
-    display: none;
-  }
-  // .ant-input-group-addon is beside a focused input
-  .ant-input:focus + .ant-input-group-addon {
-    background-color: #141414;
-    border-color: blue;
-    display: table-cell;
   }
 `
 
@@ -71,18 +56,7 @@ function InteractionForm(props: InteractionFormProps) {
         type="primary"
         icon={<Icon path={mdiExport} title="Export Spiro" size={1} />}
       />
-      <StyledInput
-        ref={inputRef}
-        type="text"
-        placeholder="Name"
-        defaultValue={props.name}
-        addonAfter={
-          <div onClick={handleEdit} className="cursor-pointer">
-            <Icon path={mdiPencil} title="Edit Spiro" size="15px" />
-          </div>
-        }
-        onBlur={handleEdit}
-      />
+      <EditableInput onChange={handleEdit} id={props.id} name={props.name} />
       <Popconfirm
         title="Delete spiro"
         description="Are you sure to remove this spiro from favs?"

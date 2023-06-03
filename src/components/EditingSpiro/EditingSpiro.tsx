@@ -5,6 +5,7 @@ import AnimationControlForm from './ControlForm'
 import ShapeSettingsForm from './ShapeSettingsForm'
 import VisualSettingsForm from './VisualSettingsForm'
 import { getIncrementalId } from '@/utils/constants'
+import { getUniqueSpirographName } from '@/utils/canvasUtils'
 
 const initialSpiro: SpiroAnimationSettings = {
   id: getIncrementalId(),
@@ -29,10 +30,16 @@ function EditingSpiro() {
     setSpiro(newSpiro)
   }
 
+  function handleEditWithName(partialSpiro: Partial<SpiroAnimationSettings>) {
+    const newSpiro = { ...spiro, ...partialSpiro, id: getIncrementalId() }
+    newSpiro.name = getUniqueSpirographName(newSpiro)
+    setSpiro(newSpiro)
+  }
+
   return (
     <div className="flex gap-16">
       <div className="flex gap-16">
-        <ShapeSettingsForm spiro={spiro} onEdit={handleEdit} />
+        <ShapeSettingsForm spiro={spiro} onEdit={handleEditWithName} />
         <VisualSettingsForm spiro={spiro} onEdit={handleEdit} />
       </div>
       <div className="flex-grow">

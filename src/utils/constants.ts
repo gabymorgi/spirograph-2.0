@@ -4,6 +4,13 @@ export function getIncrementalId() {
   return incrementalId++
 }
 
-export const HYPOTROCHOID_FIXED_RADIUS = 2 * 2 * 2 * 3 * 3 * 5 * 7
-
 export const PADDING = 100
+export const MAX_VALUE = 1000
+export const CANVAS_MAX_VALUE = MAX_VALUE + PADDING
+export const CANVAS_SIZE = CANVAS_MAX_VALUE * 2
+
+// we are working with 1000x1000 canvas
+// so to avoid precision errors, we consider infinity to be 1000 times bigger
+export const INFINITY = 1000000
+
+export const HYPOTROCHOID_FIXED_RADIUS = MAX_VALUE

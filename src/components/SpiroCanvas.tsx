@@ -6,10 +6,7 @@ import {
   useImperativeHandle,
   forwardRef,
 } from 'react'
-import {
-  calculateSpirographPoints,
-  recalculateViewBox,
-} from '@/utils/functions'
+import { calculateSpirographPoints } from '@/utils/functions'
 import {
   getPath,
   pathChunkToString,
@@ -18,6 +15,7 @@ import {
 import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
 import { toPng } from 'html-to-image'
 import { message } from 'antd'
+import { CANVAS_MAX_VALUE, CANVAS_SIZE } from '@/utils/constants'
 
 export interface SpiroCanvasHandle {
   redraw: () => void
@@ -34,8 +32,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   const animationIndex = useRef<number>(0)
   const svgRef = useRef<HTMLElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
-  const prevPointsLength = useRef<number>(0)
-  const prevProps = useRef<SpiroCanvasProps>()
 
   const points = useMemo(() => {
     return calculateSpirographPoints(
@@ -127,61 +123,11 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       })
   }, [props.name])
 
-  // viewbox effect
-  useEffect(() => {
-    const viewBox = recalculateViewBox({
-      laps: props.laps,
-      petals: props.petals,
-      pointDistance: props.pointDistance,
-      strokeWidth: props.strokeWidth,
-    })
-    svgRef.current?.setAttribute('viewBox', viewBox)
-  }, [props.laps, props.petals, props.pointDistance, props.strokeWidth])
-
   // animation effect
-  // this effect has multiple purposes
-  // but I don't split it into multiple effects because it uses a lot of the same variables
-  // and I don't want to struggle with race conditions
   useEffect(() => {
-    // if shape settings change, restart animation
-    if (
-      prevProps.current?.laps !== props.laps ||
-      prevProps.current?.petals !== props.petals ||
-      prevProps.current?.pointDistance !== props.pointDistance
-    ) {
-      restartAnimation()
-    } else {
-      // if sampling change, update path with the same percentage of the animation
-      // then continue the animation
-      if (prevProps.current?.stepPerLap !== props.stepPerLap) {
-        if (prevPointsLength.current === 0) {
-          return
-        }
-        const percentage = animationIndex.current / prevPointsLength.current
-        animationIndex.current = Math.floor(points.length * percentage)
-        pathRef.current?.setAttribute(
-          'd',
-          pathChunksToString(pathChunks.slice(0, animationIndex.current)),
-        )
-      }
-
-      // if interpolation change, update path until the current animation index
-      if (prevProps.current?.interpolation !== props.interpolation) {
-        pathRef.current?.setAttribute(
-          'd',
-          pathChunksToString(pathChunks.slice(0, animationIndex.current)),
-        )
-      }
-
-      // continue the animation
-      if (animationIndex.current < pathChunks.length) {
-        startAnimation()
-      }
-    }
+    restartAnimation()
 
     return () => {
-      prevProps.current = props
-      prevPointsLength.current = points.length
       if (animationId.current) {
         cancelAnimationFrame(animationId.current)
       }
@@ -192,12 +138,23 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     props.pointDistance,
     props.stepPerLap,
     props.interpolation,
-    props.msPerLap,
   ])
+
+  useEffect(() => {
+    if (animationIndex.current < pathChunks.length) {
+      startAnimation()
+    }
+    return () => {
+      if (animationId.current) {
+        cancelAnimationFrame(animationId.current)
+      }
+    }
+  }, [props.msPerLap])
 
   return (
     <svg
       ref={svgRef as never}
+      viewBox={`${-CANVAS_MAX_VALUE} ${-CANVAS_MAX_VALUE} ${CANVAS_SIZE} ${CANVAS_SIZE}`}
       width="100%"
       height="100%"
       fill="none"
