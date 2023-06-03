@@ -23,13 +23,24 @@ export function getLineIntersection(line1: Line, line2: Line): Point {
   if (line1.slope === line2.slope) {
     throw new Error('Lines are parallel')
   }
-  const x =
-    (line2.slope * line2.point.x -
-      line1.slope * line1.point.x -
-      line2.point.y +
-      line1.point.y) /
-    (line2.slope - line1.slope)
-  const y = line2.slope * (x - line2.point.x) + line2.point.y
+
+  let x, y
+
+  if (line1.slope === Infinity || line1.slope === -Infinity) {
+    x = line1.point.x
+    y = line2.slope * (x - line2.point.x) + line2.point.y
+  } else if (line2.slope === Infinity || line2.slope === -Infinity) {
+    x = line2.point.x
+    y = line1.slope * (x - line1.point.x) + line1.point.y
+  } else {
+    x =
+      (line2.slope * line2.point.x -
+        line1.slope * line1.point.x -
+        line2.point.y +
+        line1.point.y) /
+      (line2.slope - line1.slope)
+    y = line2.slope * (x - line2.point.x) + line2.point.y
+  }
 
   return { x, y }
 }
