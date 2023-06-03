@@ -38,7 +38,7 @@ export interface SpiroSettings {
 }
 
 export interface SpiroAnimationSettings extends SpiroSettings {
-  msPerLap: number
+  msPerPetal: number
 }
 
 export type Dict<T> = {

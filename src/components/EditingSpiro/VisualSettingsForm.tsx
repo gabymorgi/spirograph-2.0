@@ -42,9 +42,9 @@ const transitionOptions = [
 ]
 
 const animationSpeedOptions = [
-  { label: 'slow', value: 3000, icon: mdiSnail },
-  { label: 'medium', value: 1000, icon: mdiRabbit },
-  { label: 'fast', value: 300, icon: mdiHorseVariant },
+  { label: 'slow', value: 1000, icon: mdiSnail },
+  { label: 'medium', value: 500, icon: mdiRabbit },
+  { label: 'fast', value: 200, icon: mdiHorseVariant },
   { label: 'instant', value: 0, icon: mdiUnicorn },
 ]
 
@@ -54,7 +54,7 @@ interface VisualSettingsFormStore {
   color: string
   backgroundColor: string
   strokeWidth: number
-  msPerLap: number
+  msPerPetal: number
 }
 
 interface VisualSettingsFormProps {
@@ -75,8 +75,8 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
     props.onEdit({ interpolation: interpolation as Interpolation })
   }
 
-  function handleChangeSpeed(msPerLaps: string | number) {
-    props.onEdit({ msPerLap: Number(msPerLaps) })
+  function handleChangeSpeed(msPerPetal: string | number) {
+    props.onEdit({ msPerPetal: Number(msPerPetal) })
   }
 
   function handleChangeColor(_value: Color, hex: string) {
@@ -140,8 +140,8 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         </Form.Item>
         <Form.Item
           label="Animation speed:"
-          name="msPerLap"
-          initialValue={props.spiro.msPerLap}
+          name="msPerPetal"
+          initialValue={props.spiro.msPerPetal}
           tooltip="Velocidad de la animación"
         >
           <OptionPicker

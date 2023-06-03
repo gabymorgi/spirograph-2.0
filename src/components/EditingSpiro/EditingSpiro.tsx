@@ -18,7 +18,7 @@ const initialSpiro: SpiroAnimationSettings = {
   strokeWidth: 10,
   color: '#ffffff',
   backgroundColor: '#00000000',
-  msPerLap: 1000,
+  msPerPetal: 1000,
 }
 
 function EditingSpiro() {

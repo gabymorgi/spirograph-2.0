@@ -47,9 +47,9 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   }, [points, props.interpolation])
 
   const msPerStep = useMemo(() => {
-    const msPerLap = props.msPerLap || 0
-    return msPerLap ? (msPerLap * props.laps) / points.length : 0
-  }, [props.laps, points.length, props.msPerLap])
+    const pointsPerPetal = points.length / props.petals
+    return props.msPerPetal ? props.msPerPetal / pointsPerPetal : 0
+  }, [props.petals, points.length, props.msPerPetal])
 
   const startAnimation = useCallback(() => {
     if (animationIndex.current >= pathChunks.length) {
@@ -149,7 +149,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         cancelAnimationFrame(animationId.current)
       }
     }
-  }, [props.msPerLap])
+  }, [props.msPerPetal])
 
   return (
     <svg

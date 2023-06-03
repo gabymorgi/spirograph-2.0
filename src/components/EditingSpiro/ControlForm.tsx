@@ -28,7 +28,7 @@ function ControlForm(props: ControlFormProps) {
   const { addSpiro } = useFavSpiros()
 
   function handleSave() {
-    const { msPerLap, ...favSpiro } = props.spiro
+    const { msPerPetal, ...favSpiro } = props.spiro
     addSpiro(favSpiro)
   }
 
