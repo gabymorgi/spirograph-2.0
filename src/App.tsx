@@ -6,17 +6,15 @@ import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
 import Icon from './ui-kit/Icon'
 import { useState } from 'react'
 import Button from './ui-kit/Button'
+import ReverseButton from './ui-kit/ReverseButton'
+import { useThemeContext } from './contexts/ThemeContext'
 
 function App() {
   const [language, setLanguage] = useState<'en' | 'es'>('en')
-  const [showAdvanceSettings, setShowAdvanceSettings] = useState(false)
+  const { advanced, toggleAdvanced } = useThemeContext()
 
   function toggleLanguage() {
     setLanguage(language === 'en' ? 'es' : 'en')
-  }
-
-  function toggleShowAdvanceSettings() {
-    setShowAdvanceSettings(!showAdvanceSettings)
   }
 
   return (
@@ -31,19 +29,13 @@ function App() {
           >
             {language === 'en' ? 'Español' : 'English'}
           </Button>
-          <Button
-            onClick={toggleShowAdvanceSettings}
-            tooltip={`Show ${
-              showAdvanceSettings ? 'friendly' : 'advance'
-            } Settings`}
-            icon={
-              <Icon
-                path={showAdvanceSettings ? mdiViewAgendaOutline : mdiTune}
-              />
-            }
+          <ReverseButton
+            type="primary"
+            onClick={toggleAdvanced}
+            icon={<Icon path={advanced ? mdiViewAgendaOutline : mdiTune} />}
           >
-            Show {showAdvanceSettings ? 'friendly' : 'advance'} settings
-          </Button>
+            Show {advanced ? 'friendly' : 'advance'} settings
+          </ReverseButton>
         </div>
       </Header>
       <div className="flex flex-col gap-16 p-16">

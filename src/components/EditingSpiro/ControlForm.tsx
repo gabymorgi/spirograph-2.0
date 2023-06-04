@@ -6,6 +6,8 @@ import Button from '@/ui-kit/Button'
 import { useFavSpiros } from '@/contexts/favSpiros'
 import { SpiroCanvasHandle } from '../SpiroCanvas'
 import EditableInput from '@/ui-kit/EditableInput'
+import { SpiroParam } from '@/utils/queryParamsUtils'
+import { useQueryParams } from 'use-query-params'
 
 const Container = styled.div`
   display: flex;
@@ -14,21 +16,17 @@ const Container = styled.div`
   }
 `
 
-interface ControlFormStore {
-  name: string
-}
-
 interface ControlFormProps {
   spiroRef: React.RefObject<SpiroCanvasHandle>
-  spiro: SpiroAnimationSettings
-  onEdit: (partialSpiro: ControlFormStore) => void
 }
 
 function ControlForm(props: ControlFormProps) {
+  const [query, setQuery] = useQueryParams(SpiroParam)
+  const spiro = query as SpiroAnimationSettings
   const { addSpiro } = useFavSpiros()
 
   function handleSave() {
-    const { msPerPetal, ...favSpiro } = props.spiro
+    const { msPerPetal, ...favSpiro } = spiro
     addSpiro(favSpiro)
   }
 
@@ -41,7 +39,7 @@ function ControlForm(props: ControlFormProps) {
   }
 
   function handleNameChange(name: string) {
-    props.onEdit({ name })
+    setQuery({ name }, 'replaceIn')
   }
 
   return (
@@ -58,8 +56,8 @@ function ControlForm(props: ControlFormProps) {
       />
       <EditableInput
         onChange={handleNameChange}
-        id={props.spiro.id}
-        name={props.spiro.name}
+        id={spiro.id}
+        name={spiro.name}
       />
       <Button
         type="primary"

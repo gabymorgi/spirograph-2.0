@@ -23,7 +23,7 @@ export function clipViewBox(points: Point[]): string {
 interface RecalculateViewBoxParams {
   laps: number
   petals: number
-  pointDistance: number
+  pointDistancePercentage: number
   strokeWidth: number
 }
 
@@ -35,7 +35,7 @@ export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
   )
   const max =
     HYPOTROCHOID_FIXED_RADIUS -
-    (movingRadius - spiro.pointDistance) +
+    (movingRadius - spiro.pointDistancePercentage) +
     spiro.strokeWidth
   const maxWithPadding = max + PADDING
   const width = maxWithPadding * 2
@@ -46,7 +46,7 @@ export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
 export function calculateSpirographPoints(
   laps: number,
   petals: number,
-  pointDistance: number,
+  pointDistancePercentage: number,
   pointsPerLap: number,
 ): Point[] {
   const points: Point[] = []
@@ -54,6 +54,7 @@ export function calculateSpirographPoints(
 
   // const laps = getLaps(HYPOTROCHOID_FIXED_RADIUS, movingRadius)
   const movingRadius = getMovingRadius(HYPOTROCHOID_FIXED_RADIUS, petals, laps)
+  const pointDistance = (movingRadius / 100) * pointDistancePercentage
   let max = laps * pointsPerLap
 
   let t = 0

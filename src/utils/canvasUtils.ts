@@ -1,5 +1,5 @@
 import { derivativeOnPoint, getLineIntersection } from './maths'
-import { Interpolation, PathChunk, Point, SpiroSettings } from './types'
+import { Interpolation, PathChunk, Point } from './types'
 
 export function pathChunksToString(chunks: PathChunk[]): string {
   return chunks.map(pathChunkToString).join(' ')
@@ -113,7 +113,13 @@ function getDerivativePoint(
   return { command: 'Q', points: [ControlPoint, P2] }
 }
 
-export function getUniqueSpirographName(spiro: SpiroSettings): string {
-  const params = [spiro.petals, spiro.laps, spiro.pointDistance]
+interface PartialSpiroSettings {
+  laps: number
+  petals: number
+  pointDistancePercentage: number
+}
+
+export function getUniqueSpirographName(spiro: PartialSpiroSettings): string {
+  const params = [spiro.petals, spiro.laps, spiro.pointDistancePercentage]
   return `Spiro-${params.join('-')}`
 }

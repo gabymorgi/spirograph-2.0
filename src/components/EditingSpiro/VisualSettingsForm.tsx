@@ -18,6 +18,9 @@ import {
 import OptionPicker from '@/ui-kit/OptionPicker'
 import ColorPicker from '@/ui-kit/ColorPicker'
 import { Color } from 'antd/es/color-picker'
+import { useQueryParams } from 'use-query-params'
+import { SpiroParam } from '@/utils/queryParamsUtils'
+import { useEffect } from 'react'
 
 const thicknessOptions = [
   { label: 'thin', value: 10, icon: mdiCircleSmall },
@@ -48,61 +51,63 @@ const animationSpeedOptions = [
   { label: 'instant', value: 0, icon: mdiUnicorn },
 ]
 
-interface VisualSettingsFormStore {
-  stepPerLap: number
-  interpolation: Interpolation
-  color: string
-  backgroundColor: string
-  strokeWidth: number
-  msPerPetal: number
-}
+function VisualSettingsForm() {
+  const [form] = Form.useForm()
+  const [query, setQuery] = useQueryParams(SpiroParam)
+  const spiro = query as SpiroAnimationSettings
 
-interface VisualSettingsFormProps {
-  spiro: SpiroAnimationSettings
-  onEdit: (partialSpiro: Partial<VisualSettingsFormStore>) => void
-}
-
-function VisualSettingsForm(props: VisualSettingsFormProps) {
   function handleChangeWidth(width: string | number) {
-    props.onEdit({ strokeWidth: Number(width) })
+    setQuery({ strokeWidth: Number(width) }, 'replaceIn')
   }
 
   function handleChangeDetail(detail: string | number) {
-    props.onEdit({ stepPerLap: Number(detail) })
+    setQuery({ stepPerLap: Number(detail) }, 'replaceIn')
   }
 
   function handleChangeInterpolation(interpolation: string | number) {
-    props.onEdit({ interpolation: interpolation as Interpolation })
+    setQuery({ interpolation: interpolation as Interpolation }, 'replaceIn')
   }
 
   function handleChangeSpeed(msPerPetal: string | number) {
-    props.onEdit({ msPerPetal: Number(msPerPetal) })
+    setQuery({ msPerPetal: Number(msPerPetal) }, 'replaceIn')
   }
 
   function handleChangeColor(_value: Color, hex: string) {
-    props.onEdit({ color: hex })
+    setQuery({ color: hex }, 'replaceIn')
   }
 
   function handleChangeBackgroundColor(_value: Color, hex: string) {
-    props.onEdit({ backgroundColor: hex })
+    setQuery({ backgroundColor: hex }, 'replaceIn')
   }
+
+  useEffect(() => {
+    form.setFieldsValue({
+      color: spiro.color,
+      backgroundColor: spiro.backgroundColor,
+      strokeWidth: spiro.strokeWidth,
+      stepPerLap: spiro.stepPerLap,
+      interpolation: spiro.interpolation,
+      msPerPetal: spiro.msPerPetal,
+    })
+  }, [
+    spiro.color,
+    spiro.backgroundColor,
+    spiro.strokeWidth,
+    spiro.stepPerLap,
+    spiro.interpolation,
+    spiro.msPerPetal,
+  ])
 
   return (
     <div className="flex flex-col">
-      <Form layout="vertical">
+      <Form layout="vertical" form={form}>
         <div className="flex gap-16">
-          <Form.Item
-            label="Linea:"
-            name="color"
-            initialValue={props.spiro.color}
-            tooltip="Color de la línea"
-          >
+          <Form.Item label="Linea:" name="color" tooltip="Color de la línea">
             <ColorPicker onChange={handleChangeColor} />
           </Form.Item>
           <Form.Item
             label="Background:"
             name="backgroundColor"
-            initialValue={props.spiro.backgroundColor}
             tooltip="Color de fondo"
           >
             <ColorPicker onChange={handleChangeBackgroundColor} />
@@ -111,7 +116,6 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         <Form.Item
           label="Grosor:"
           name="strokeWidth"
-          initialValue={props.spiro.strokeWidth}
           tooltip="Grosor de la línea"
         >
           <OptionPicker
@@ -122,7 +126,6 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         <Form.Item
           label="Detail:"
           name="stepPerLap"
-          initialValue={props.spiro.stepPerLap}
           tooltip="Cantidad de puntos que se dibujan"
         >
           <OptionPicker options={detailOptions} onChange={handleChangeDetail} />
@@ -130,7 +133,6 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         <Form.Item
           label="Transition:"
           name="interpolation"
-          initialValue={props.spiro.interpolation}
           tooltip="Tipo de interpolación entre puntos"
         >
           <OptionPicker
@@ -141,7 +143,6 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         <Form.Item
           label="Animation speed:"
           name="msPerPetal"
-          initialValue={props.spiro.msPerPetal}
           tooltip="Velocidad de la animación"
         >
           <OptionPicker

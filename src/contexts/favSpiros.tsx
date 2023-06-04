@@ -19,15 +19,9 @@ type IFavSpirosContext = {
 const FavSpirosContext = createContext<IFavSpirosContext | undefined>(undefined)
 
 // Crear el proveedor del contexto
-function FavSpirosProvider({
-  children,
-  keyName,
-}: {
-  children: ReactNode
-  keyName: string
-}) {
+function FavSpirosProvider({ children }: { children: ReactNode }) {
   const [spiros, setSpiros] = useState<SpiroSettings[]>(() => {
-    const storedSpiros = localStorage.getItem(keyName)
+    const storedSpiros = localStorage.getItem('favoriteSpiros')
     if (storedSpiros) {
       return JSON.parse(storedSpiros)
     }
@@ -35,10 +29,10 @@ function FavSpirosProvider({
   })
 
   useEffect(() => {
-    if (spiros && keyName) {
-      localStorage.setItem(keyName, JSON.stringify(spiros))
+    if (spiros) {
+      localStorage.setItem('favoriteSpiros', JSON.stringify(spiros))
     }
-  }, [keyName, spiros])
+  }, [spiros])
 
   function addSpiro(spiro: SpiroSettings) {
     let exists = false

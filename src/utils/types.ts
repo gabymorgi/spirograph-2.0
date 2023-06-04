@@ -29,7 +29,7 @@ export interface SpiroSettings {
   name: string
   laps: number
   petals: number
-  pointDistance: number
+  pointDistancePercentage: number
   stepPerLap: number
   interpolation: Interpolation
   color: string

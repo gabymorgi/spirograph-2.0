@@ -1,51 +1,37 @@
 import { Button, Form, InputNumber, Select, Slider } from 'antd'
-import { SpiroSettings } from '@/utils/types'
+import { SpiroAnimationSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix, mdiGesture } from '@mdi/js'
-import { useMemo } from 'react'
-import { HYPOTROCHOID_FIXED_RADIUS } from '@/utils/constants'
-import { getMovingRadius } from '@/utils/maths'
+import { useEffect } from 'react'
+import { SpiroParam } from '@/utils/queryParamsUtils'
+import { useQueryParams } from 'use-query-params'
+import { getUniqueSpirographName } from '@/utils/canvasUtils'
 
 interface ShapeSettingsFormStore {
   laps: number
   petals: number
-  pointDistance: number
+  pointDistancePercentage: number
 }
 
-interface ShapeSettingsFormProps {
-  spiro: SpiroSettings
-  onEdit: (partialSpiro: ShapeSettingsFormStore) => void
-}
-
-function ShapeSettingsForm(props: ShapeSettingsFormProps) {
+function ShapeSettingsForm() {
+  const [form] = Form.useForm()
+  const [query, setQuery] = useQueryParams(SpiroParam)
+  const spiro = query as SpiroAnimationSettings
   function handleFinish(values: ShapeSettingsFormStore) {
-    const movingRadius = getMovingRadius(
-      HYPOTROCHOID_FIXED_RADIUS,
-      values.petals,
-      values.laps,
-    )
-    props.onEdit({
-      laps: values.laps,
-      petals: values.petals,
-      pointDistance: (movingRadius / 100) * values.pointDistance,
-    })
+    setQuery({ ...values, name: getUniqueSpirographName(values) }, 'replaceIn')
   }
 
-  const initialValues: ShapeSettingsFormStore = useMemo(() => {
-    return {
-      laps: props.spiro.laps,
-      petals: props.spiro.petals,
-      pointDistance: props.spiro.pointDistance,
-    }
-  }, [props.spiro])
+  useEffect(() => {
+    form.setFieldsValue({
+      laps: spiro.laps,
+      petals: spiro.petals,
+      pointDistancePercentage: spiro.pointDistancePercentage,
+    })
+  }, [spiro.laps, spiro.petals, spiro.pointDistancePercentage])
 
   return (
     <div className="flex flex-col">
-      <Form
-        onFinish={handleFinish}
-        initialValues={initialValues}
-        layout="vertical"
-      >
+      <Form form={form} onFinish={handleFinish} layout="vertical">
         <Form.Item label="Curve type" name="type">
           <Select disabled>
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
@@ -59,7 +45,7 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
         </Form.Item>
         <Form.Item
           label="Tamaño de los petalos"
-          name="pointDistance"
+          name="pointDistancePercentage"
           rules={[
             {
               required: true,
