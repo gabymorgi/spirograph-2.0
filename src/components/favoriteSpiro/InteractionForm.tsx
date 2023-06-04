@@ -1,4 +1,4 @@
-import { Button, InputRef, Popconfirm } from 'antd'
+import { InputRef, Popconfirm } from 'antd'
 import Icon from '@mdi/react'
 import {
   mdiTrashCanOutline,
@@ -10,6 +10,7 @@ import { useRef, memo } from 'react'
 import styled from 'styled-components'
 import { useFavSpiros } from '@/contexts/favSpiros'
 import EditableInput from '@/ui-kit/EditableInput'
+import Button from '@/ui-kit/Button'
 
 const Container = styled.div`
   display: flex;
@@ -21,13 +22,14 @@ const Container = styled.div`
 interface InteractionFormProps {
   id: number
   name: string
+  onSendToEditor?: () => void
 }
 
 function InteractionForm(props: InteractionFormProps) {
   const { editSpiroName, removeSpiro } = useFavSpiros()
   const inputRef = useRef<InputRef>(null)
 
-  function handleEdit() {
+  function handleEditName() {
     if (
       inputRef.current?.input?.value &&
       inputRef.current?.input?.value !== props.name
@@ -43,20 +45,25 @@ function InteractionForm(props: InteractionFormProps) {
   return (
     <Container>
       <Button
-        type="primary"
+        tooltip="Edit Spiro"
+        onClick={props.onSendToEditor}
         icon={<Icon path={mdiImageEdit} title="Edit Spiro" size={1} />}
       />
       <Button
-        type="primary"
+        tooltip="Download Spiro"
         icon={
           <Icon path={mdiDownloadBoxOutline} title="Download Spiro" size={1} />
         }
       />
       <Button
-        type="primary"
+        tooltip="Export Spiro"
         icon={<Icon path={mdiExport} title="Export Spiro" size={1} />}
       />
-      <EditableInput onChange={handleEdit} id={props.id} name={props.name} />
+      <EditableInput
+        onChange={handleEditName}
+        id={props.id}
+        name={props.name}
+      />
       <Popconfirm
         title="Delete spiro"
         description="Are you sure to remove this spiro from favs?"
@@ -66,6 +73,7 @@ function InteractionForm(props: InteractionFormProps) {
       >
         <Button
           danger
+          tooltip="Delete Spiro"
           icon={<Icon path={mdiTrashCanOutline} title="Edit Spiro" size={1} />}
         />
       </Popconfirm>

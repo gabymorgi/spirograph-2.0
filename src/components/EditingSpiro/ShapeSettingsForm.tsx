@@ -1,11 +1,8 @@
 import { Button, Form, InputNumber, Select, Slider } from 'antd'
-import { SpiroAnimationSettings } from '@/utils/types'
+import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix, mdiGesture } from '@mdi/js'
 import { useEffect } from 'react'
-import { SpiroParam } from '@/utils/queryParamsUtils'
-import { useQueryParams } from 'use-query-params'
-import { getUniqueSpirographName } from '@/utils/canvasUtils'
 
 interface ShapeSettingsFormStore {
   laps: number
@@ -13,21 +10,28 @@ interface ShapeSettingsFormStore {
   pointDistancePercentage: number
 }
 
-function ShapeSettingsForm() {
+interface ShapeSettingsFormProps {
+  spiro: SpiroSettings
+  onEdit: (partialSpiro: ShapeSettingsFormStore) => void
+}
+
+function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   const [form] = Form.useForm()
-  const [query, setQuery] = useQueryParams(SpiroParam)
-  const spiro = query as SpiroAnimationSettings
   function handleFinish(values: ShapeSettingsFormStore) {
-    setQuery({ ...values, name: getUniqueSpirographName(values) }, 'replaceIn')
+    props.onEdit(values)
   }
 
   useEffect(() => {
     form.setFieldsValue({
-      laps: spiro.laps,
-      petals: spiro.petals,
-      pointDistancePercentage: spiro.pointDistancePercentage,
+      laps: props.spiro.laps,
+      petals: props.spiro.petals,
+      pointDistancePercentage: props.spiro.pointDistancePercentage,
     })
-  }, [spiro.laps, spiro.petals, spiro.pointDistancePercentage])
+  }, [
+    props.spiro.laps,
+    props.spiro.petals,
+    props.spiro.pointDistancePercentage,
+  ])
 
   return (
     <div className="flex flex-col">

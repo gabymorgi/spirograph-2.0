@@ -12,24 +12,22 @@ import {
   pathChunkToString,
   pathChunksToString,
 } from '@/utils/canvasUtils'
-import { SpiroAnimationSettings } from '@/utils/types'
+import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
 import { toPng } from 'html-to-image'
 import { message } from 'antd'
 import { CANVAS_MAX_VALUE, CANVAS_SIZE } from '@/utils/constants'
-import { SpiroParam } from '@/utils/queryParamsUtils'
-import { useQueryParams } from 'use-query-params'
 
 export interface SpiroCanvasHandle {
   redraw: () => void
   download: () => void
 }
 
+type SpiroCanvasProps = Partial<SpiroAnimationSettings> & SpiroSettings
+
 const SpiroCanvas: React.ForwardRefRenderFunction<
   SpiroCanvasHandle,
-  unknown
-> = (_props, ref) => {
-  const [query] = useQueryParams(SpiroParam)
-  const spiro = query as SpiroAnimationSettings
+  SpiroCanvasProps
+> = (props, ref) => {
   const animationId = useRef<number | null>(null)
   const animationIndex = useRef<number>(0)
   const svgRef = useRef<HTMLElement>(null)
@@ -37,26 +35,26 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   const points = useMemo(() => {
     return calculateSpirographPoints(
-      spiro.laps,
-      spiro.petals,
-      spiro.pointDistancePercentage,
-      spiro.stepPerLap,
+      props.laps,
+      props.petals,
+      props.pointDistancePercentage,
+      props.stepPerLap,
     )
   }, [
-    spiro.laps,
-    spiro.pointDistancePercentage,
-    spiro.petals,
-    spiro.stepPerLap,
+    props.laps,
+    props.pointDistancePercentage,
+    props.petals,
+    props.stepPerLap,
   ])
 
   const pathChunks = useMemo(() => {
-    return getPath(points, spiro.interpolation)
-  }, [points, spiro.interpolation])
+    return getPath(points, props.interpolation)
+  }, [points, props.interpolation])
 
   const msPerStep = useMemo(() => {
-    const pointsPerPetal = points.length / spiro.petals
-    return spiro.msPerPetal ? spiro.msPerPetal / pointsPerPetal : 0
-  }, [spiro.petals, points.length, spiro.msPerPetal])
+    const pointsPerPetal = points.length / props.petals
+    return props.msPerPetal ? props.msPerPetal / pointsPerPetal : 0
+  }, [props.petals, points.length, props.msPerPetal])
 
   const startAnimation = useCallback(() => {
     if (animationIndex.current >= pathChunks.length) {
@@ -121,14 +119,14 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     toPng(svgRef.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement('a')
-        link.download = `${spiro.name}.png`
+        link.download = `${props.name}.png`
         link.href = dataUrl
         link.click()
       })
       .catch((err) => {
         message.error(err.message)
       })
-  }, [spiro.name])
+  }, [props.name])
 
   // animation effect
   useEffect(() => {
@@ -140,11 +138,11 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       }
     }
   }, [
-    spiro.laps,
-    spiro.petals,
-    spiro.pointDistancePercentage,
-    spiro.stepPerLap,
-    spiro.interpolation,
+    props.laps,
+    props.petals,
+    props.pointDistancePercentage,
+    props.stepPerLap,
+    props.interpolation,
   ])
 
   useEffect(() => {
@@ -156,7 +154,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         cancelAnimationFrame(animationId.current)
       }
     }
-  }, [spiro.msPerPetal])
+  }, [props.msPerPetal])
 
   return (
     <svg
@@ -166,10 +164,10 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       height="100%"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      strokeWidth={spiro.strokeWidth}
-      style={{ backgroundColor: spiro.backgroundColor, maxHeight: '70vh' }}
+      strokeWidth={props.strokeWidth}
+      style={{ backgroundColor: props.backgroundColor, maxHeight: '70vh' }}
     >
-      <path ref={pathRef} stroke={spiro.color} />
+      <path ref={pathRef} stroke={props.color} />
     </svg>
   )
 }

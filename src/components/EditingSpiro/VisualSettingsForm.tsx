@@ -18,8 +18,6 @@ import {
 import OptionPicker from '@/ui-kit/OptionPicker'
 import ColorPicker from '@/ui-kit/ColorPicker'
 import { Color } from 'antd/es/color-picker'
-import { useQueryParams } from 'use-query-params'
-import { SpiroParam } from '@/utils/queryParamsUtils'
 import { useEffect } from 'react'
 
 const thicknessOptions = [
@@ -51,51 +49,63 @@ const animationSpeedOptions = [
   { label: 'instant', value: 0, icon: mdiUnicorn },
 ]
 
-function VisualSettingsForm() {
+interface VisualSettingsFormStore {
+  stepPerLap: number
+  interpolation: Interpolation
+  color: string
+  backgroundColor: string
+  strokeWidth: number
+  msPerPetal: number
+}
+
+interface VisualSettingsFormProps {
+  spiro: SpiroAnimationSettings
+  onEdit: (partialSpiro: Partial<VisualSettingsFormStore>) => void
+}
+
+function VisualSettingsForm(props: VisualSettingsFormProps) {
   const [form] = Form.useForm()
-  const [query, setQuery] = useQueryParams(SpiroParam)
-  const spiro = query as SpiroAnimationSettings
 
   function handleChangeWidth(width: string | number) {
-    setQuery({ strokeWidth: Number(width) }, 'replaceIn')
+    props.onEdit({ strokeWidth: Number(width) })
   }
 
   function handleChangeDetail(detail: string | number) {
-    setQuery({ stepPerLap: Number(detail) }, 'replaceIn')
+    props.onEdit({ stepPerLap: Number(detail) })
   }
 
   function handleChangeInterpolation(interpolation: string | number) {
-    setQuery({ interpolation: interpolation as Interpolation }, 'replaceIn')
+    props.onEdit({ interpolation: interpolation as Interpolation })
   }
 
   function handleChangeSpeed(msPerPetal: string | number) {
-    setQuery({ msPerPetal: Number(msPerPetal) }, 'replaceIn')
+    props.onEdit({ msPerPetal: Number(msPerPetal) })
   }
 
   function handleChangeColor(_value: Color, hex: string) {
-    setQuery({ color: hex }, 'replaceIn')
+    props.onEdit({ color: hex })
   }
 
   function handleChangeBackgroundColor(_value: Color, hex: string) {
-    setQuery({ backgroundColor: hex }, 'replaceIn')
+    props.onEdit({ backgroundColor: hex })
   }
 
   useEffect(() => {
     form.setFieldsValue({
-      color: spiro.color,
-      backgroundColor: spiro.backgroundColor,
-      strokeWidth: spiro.strokeWidth,
-      stepPerLap: spiro.stepPerLap,
-      interpolation: spiro.interpolation,
-      msPerPetal: spiro.msPerPetal,
+      color: props.spiro.color,
+      backgroundColor: props.spiro.backgroundColor,
+      strokeWidth: props.spiro.strokeWidth,
+      stepPerLap: props.spiro.stepPerLap,
+      interpolation: props.spiro.interpolation,
+      msPerPetal: props.spiro.msPerPetal,
     })
   }, [
-    spiro.color,
-    spiro.backgroundColor,
-    spiro.strokeWidth,
-    spiro.stepPerLap,
-    spiro.interpolation,
-    spiro.msPerPetal,
+    props.spiro.color,
+    props.spiro.backgroundColor,
+    props.spiro.strokeWidth,
+    props.spiro.stepPerLap,
+    props.spiro.interpolation,
+    props.spiro.msPerPetal,
   ])
 
   return (
