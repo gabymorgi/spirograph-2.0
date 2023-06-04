@@ -37,10 +37,25 @@ export interface SpiroSettings {
   strokeWidth: number
 }
 
+export function isSpiroSetting(arg: any): arg is SpiroSettings {
+  return (
+    arg &&
+    typeof arg.id === 'number' &&
+    typeof arg.name === 'string' &&
+    typeof arg.laps === 'number' &&
+    typeof arg.petals === 'number' &&
+    typeof arg.pointDistancePercentage === 'number' &&
+    typeof arg.stepPerLap === 'number' &&
+    ['linear', 'bezier', 'derivative'].includes(arg.interpolation) &&
+    typeof arg.interpolation === 'string' &&
+    typeof arg.color === 'string' &&
+    typeof arg.backgroundColor === 'string' &&
+    typeof arg.strokeWidth === 'number'
+  )
+}
+
 export interface SpiroAnimationSettings extends SpiroSettings {
   msPerPetal: number
 }
 
-export type Dict<T> = {
-  [key: string]: T
-}
+export type Dict<T> = { [key: string | number]: T }
