@@ -50,44 +50,57 @@ export function derivativeOnPoint(prevPoint: Point, nextPoint: Point): number {
   return (nextPoint.y - prevPoint.y) / (nextPoint.x - prevPoint.x)
 }
 
-export function getStepSize(
+export function getSuggestedStepsPerLap(
   getPoint: (t: number) => Point,
   threshold: [number, number],
 ): number {
-  const tStart = 0
-  const tEnd = Math.PI * 0.5
-  let stepNumber = 127
-  let step = (tEnd - tStart) / stepNumber
-  let t = tStart
-  const points = []
+  const stepAmount = 128
+  const maxStep = Math.PI * 0.66 // valor arbitrario, 120º (3 pasos por vuelta)
+  const minStep = Math.PI * 0.005 // valor arbitrario, 1º (360 pasos por vuelta)
+
   // Calcula los puntos iniciales
-  for (let i = 0; i < 3; i++) {
+  let step = Math.PI * 0.05 // valor inicial arbitrario, 9º (20 pasos por vuelta)
+  let t = 0
+  const points = []
+  for (let i = 0; i <= 3; i++) {
     points.push(getPoint(t))
     t += step
   }
 
-  const steps = []
+  let stepsAcum = 0
 
-  do {
-    points.push(getPoint(t))
-    // Calcula la magnitud del cambio en la función
-    const slope1 = derivativeOnPoint(points[0], points[2])
-    const slope2 = derivativeOnPoint(points[1], points[3])
-    const change = Math.abs(slope2 - slope1)
+  for (let i = 0; i < stepAmount; i++) {
+    // shift de los puntos
+    points[0] = points[1]
+    points[1] = points[2]
+    points[2] = points[3]
+    points[3] = getPoint(t)
+
+    // Calcula la magnitud del cambio en la función en radianes
+    const angle1 = Math.atan2(
+      points[2].y - points[0].y,
+      points[2].x - points[0].x,
+    )
+    const angle2 = Math.atan2(
+      points[3].y - points[1].y,
+      points[3].x - points[1].x,
+    )
+    const change = Math.abs(angle2 - angle1)
     if (change > threshold[1]) {
       step /= 1 + (change - threshold[1]) / threshold[1]
-      steps.push(step)
     } else if (change < threshold[0]) {
       step *= 1 + (threshold[0] - change) / threshold[0]
-      steps.push(step)
     }
-    points.shift()
-    stepNumber--
-    t += step
-  } while (stepNumber > 0)
 
-  const prom = steps.reduce((acc, val) => acc + val, 0) / steps.length
-  return (2 * Math.PI) / Math.round((2 * Math.PI) / prom)
+    // cap step between minStep and maxStep
+    step = Math.max(Math.min(step, maxStep), minStep)
+    stepsAcum += step
+    t += step
+  }
+
+  const prom = stepsAcum / stepAmount
+  // devuelvo el número de pasos por vuelta
+  return Math.round((2 * Math.PI) / prom)
 }
 
 // Función para calcular el MCD usando el algoritmo de Euclides

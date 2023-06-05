@@ -11,25 +11,15 @@ import {
   mdiVectorBezier,
   mdiVectorCurve,
   mdiVectorLine,
-  mdiVectorPolygon,
-  mdiVectorSquare,
-  mdiVectorTriangle,
 } from '@mdi/js'
 import OptionPicker from '@/ui-kit/OptionPicker'
 import ColorPicker from '@/ui-kit/ColorPicker'
-import { Color } from 'antd/es/color-picker'
 import { useEffect } from 'react'
 
 const thicknessOptions = [
   { label: 'thin', value: 10, icon: mdiCircleSmall },
   { label: 'medium', value: 50, icon: mdiCircleMedium },
   { label: 'thick', value: 100, icon: mdiCircle },
-]
-
-const detailOptions = [
-  { label: 'low', value: 10, icon: mdiVectorTriangle },
-  { label: 'medium', value: 20, icon: mdiVectorSquare },
-  { label: 'high', value: 50, icon: mdiVectorPolygon },
 ]
 
 const transitionOptions = [
@@ -66,36 +56,11 @@ interface VisualSettingsFormProps {
 function VisualSettingsForm(props: VisualSettingsFormProps) {
   const [form] = Form.useForm()
 
-  function handleChangeWidth(width: string | number) {
-    props.onEdit({ strokeWidth: Number(width) })
-  }
-
-  function handleChangeDetail(detail: string | number) {
-    props.onEdit({ stepPerLap: Number(detail) })
-  }
-
-  function handleChangeInterpolation(interpolation: string | number) {
-    props.onEdit({ interpolation: interpolation as Interpolation })
-  }
-
-  function handleChangeSpeed(msPerPetal: string | number) {
-    props.onEdit({ msPerPetal: Number(msPerPetal) })
-  }
-
-  function handleChangeColor(_value: Color, hex: string) {
-    props.onEdit({ color: hex })
-  }
-
-  function handleChangeBackgroundColor(_value: Color, hex: string) {
-    props.onEdit({ backgroundColor: hex })
-  }
-
   useEffect(() => {
     form.setFieldsValue({
       color: props.spiro.color,
       backgroundColor: props.spiro.backgroundColor,
       strokeWidth: props.spiro.strokeWidth,
-      stepPerLap: props.spiro.stepPerLap,
       interpolation: props.spiro.interpolation,
       msPerPetal: props.spiro.msPerPetal,
     })
@@ -103,9 +68,9 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
     props.spiro.color,
     props.spiro.backgroundColor,
     props.spiro.strokeWidth,
-    props.spiro.stepPerLap,
     props.spiro.interpolation,
     props.spiro.msPerPetal,
+    form,
   ])
 
   return (
@@ -113,14 +78,18 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
       <Form layout="vertical" form={form}>
         <div className="flex gap-16">
           <Form.Item label="Linea:" name="color" tooltip="Color de la línea">
-            <ColorPicker onChange={handleChangeColor} />
+            <ColorPicker
+              onChange={(_value, hex) => props.onEdit({ color: hex })}
+            />
           </Form.Item>
           <Form.Item
             label="Background:"
             name="backgroundColor"
             tooltip="Color de fondo"
           >
-            <ColorPicker onChange={handleChangeBackgroundColor} />
+            <ColorPicker
+              onChange={(_value, hex) => props.onEdit({ backgroundColor: hex })}
+            />
           </Form.Item>
         </div>
         <Form.Item
@@ -130,15 +99,8 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         >
           <OptionPicker
             options={thicknessOptions}
-            onChange={handleChangeWidth}
+            onChange={(value) => props.onEdit({ strokeWidth: Number(value) })}
           />
-        </Form.Item>
-        <Form.Item
-          label="Detail:"
-          name="stepPerLap"
-          tooltip="Cantidad de puntos que se dibujan"
-        >
-          <OptionPicker options={detailOptions} onChange={handleChangeDetail} />
         </Form.Item>
         <Form.Item
           label="Transition:"
@@ -147,7 +109,9 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         >
           <OptionPicker
             options={transitionOptions}
-            onChange={handleChangeInterpolation}
+            onChange={(interpolation: string | number) =>
+              props.onEdit({ interpolation: interpolation as Interpolation })
+            }
           />
         </Form.Item>
         <Form.Item
@@ -157,7 +121,9 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         >
           <OptionPicker
             options={animationSpeedOptions}
-            onChange={handleChangeSpeed}
+            onChange={(msPerPetal: string | number) =>
+              props.onEdit({ msPerPetal: Number(msPerPetal) })
+            }
           />
         </Form.Item>
       </Form>

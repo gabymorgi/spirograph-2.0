@@ -12,16 +12,17 @@
       "jsx": true
     }
   },
+  "plugins": ["react-hooks"],
   "rules": {
-    "prettier/prettier": ["error", {
-      "endOfLine": "auto"
-    }],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "@typescript-eslint/explicit-function-return-type": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
-    "no-console": "warn"
+    "no-console": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "react": {

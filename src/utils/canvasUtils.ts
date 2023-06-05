@@ -110,6 +110,24 @@ function getDerivativePoint(
     slope: derivativeOnPoint(P1, P3),
   }
   const ControlPoint = getLineIntersection(Line1, Line2)
+
+  // Calculate the bounding box
+  const minX = Math.min(P1.x, P2.x)
+  const maxX = Math.max(P1.x, P2.x)
+  const minY = Math.min(P1.y, P2.y)
+  const maxY = Math.max(P1.y, P2.y)
+
+  if (
+    (ControlPoint.x < minX && ControlPoint.y < minY) ||
+    (ControlPoint.x > maxX && ControlPoint.y > maxY) ||
+    (ControlPoint.x < minX && ControlPoint.y > maxY) ||
+    (ControlPoint.x > maxX && ControlPoint.y < minY)
+  ) {
+    // The control point is outside the bounding box
+    // so we simply return a linear path
+    return { command: 'L', points: [P2] }
+  }
+
   return { command: 'Q', points: [ControlPoint, P2] }
 }
 

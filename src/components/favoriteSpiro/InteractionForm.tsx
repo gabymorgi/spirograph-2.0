@@ -4,7 +4,6 @@ import {
   mdiTrashCanOutline,
   mdiImageEdit,
   mdiDownloadBoxOutline,
-  mdiExport,
 } from '@mdi/js'
 import { useRef, memo } from 'react'
 import styled from 'styled-components'
@@ -54,10 +53,6 @@ function InteractionForm(props: InteractionFormProps) {
         icon={
           <Icon path={mdiDownloadBoxOutline} title="Download Spiro" size={1} />
         }
-      />
-      <Button
-        tooltip="Export Spiro"
-        icon={<Icon path={mdiExport} title="Export Spiro" size={1} />}
       />
       <EditableInput
         onChange={handleEditName}

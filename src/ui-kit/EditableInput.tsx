@@ -7,8 +7,9 @@ import { useRef } from 'react'
 import Icon from './Icon'
 import { mdiPencil } from '@mdi/js'
 import styled from 'styled-components'
+import { useThemeContext } from '@/contexts/ThemeContext'
 
-const StyledInput = styled(AntdInput)`
+const StyledInput = styled(AntdInput)<{ $advanced: boolean }>`
   .ant-input:first-child {
     border-start-end-radius: 6px;
     border-end-end-radius: 6px;
@@ -17,6 +18,7 @@ const StyledInput = styled(AntdInput)`
     border-start-end-radius: 0px;
     border-end-end-radius: 0px;
     border-right: none;
+    box-shadow: none;
   }
   .ant-input-group-addon {
     display: none;
@@ -24,7 +26,7 @@ const StyledInput = styled(AntdInput)`
   // .ant-input-group-addon is beside a focused input
   .ant-input:focus + .ant-input-group-addon {
     background-color: #141414;
-    border-color: blue;
+    border-color: ${(props) => (props.$advanced ? '#8c20ba' : '#20bab4')};
     display: table-cell;
   }
 `
@@ -36,6 +38,7 @@ interface EditableInputProps extends Omit<AntdInputProps, 'onChange' | 'id'> {
 }
 
 function EditableInput(props: EditableInputProps) {
+  const { advanced } = useThemeContext()
   const inputRef = useRef<InputRef>(null)
 
   function handleEdit() {
@@ -50,6 +53,7 @@ function EditableInput(props: EditableInputProps) {
   const { addonAfter, id, name, onChange, ...rest } = props
   return (
     <StyledInput
+      $advanced={advanced}
       key={id}
       ref={inputRef}
       type="text"
