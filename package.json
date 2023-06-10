@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "VITE_PUBLIC_BASE_PATH=/spirograph-2.0/ npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
+    "@types/node": "^20.2.6",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/styled-components": "^5.1.26",

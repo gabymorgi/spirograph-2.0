@@ -65,7 +65,7 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
           values.length,
           6,
         )
-      : 1
+      : 3
     if (curlingOptions.length !== options.length) {
       form.setFieldsValue({
         laps: newValue,
@@ -109,13 +109,15 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, props.spiro.petals, props.spiro.pointDistancePercentage])
 
+  console.log(form.getFieldValue('laps'), curlingOptions)
+
   return (
     <div className="flex flex-col">
       <Form
         form={form}
         onFinish={handleFinish}
         layout="vertical"
-        initialValues={{ type: 'Hypocycloid', laps: 3, stepPerLap: 1 }}
+        initialValues={{ type: 'Hypocycloid', laps: 2, stepPerLap: 1 }}
       >
         <Form.Item label="Curve type" name="type">
           <Select disabled>
