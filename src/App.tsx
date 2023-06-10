@@ -2,20 +2,20 @@ import { Header } from 'antd/es/layout/layout'
 import ListFavoriteSpiros from './components/favoriteSpiro/ListFavoriteSpiros'
 import { Card } from 'antd'
 import EditingSpiro from './components/EditingSpiro/EditingSpiro'
-import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
-import Icon from './ui-kit/Icon'
-import { useState } from 'react'
-import Button from './ui-kit/Button'
-import ReverseButton from './ui-kit/ReverseButton'
-import { useThemeContext } from './contexts/ThemeContext'
+// import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
+// import Icon from './ui-kit/Icon'
+// import { useState } from 'react'
+// import Button from './ui-kit/Button'
+// import ReverseButton from './ui-kit/ReverseButton'
+// import { useThemeContext } from './contexts/ThemeContext'
 
 function App() {
-  const [language, setLanguage] = useState<'en' | 'es'>('en')
-  const { advanced, toggleAdvanced } = useThemeContext()
+  // const [language, setLanguage] = useState<'en' | 'es'>('en')
+  // const { advanced, toggleAdvanced } = useThemeContext()
 
-  function toggleLanguage() {
-    setLanguage(language === 'en' ? 'es' : 'en')
-  }
+  // function toggleLanguage() {
+  //   setLanguage(language === 'en' ? 'es' : 'en')
+  // }
 
   return (
     <>

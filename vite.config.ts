@@ -9,4 +9,5 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  base: '/spirograph-2.0/',
 })
