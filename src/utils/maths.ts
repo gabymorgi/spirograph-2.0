@@ -1,6 +1,37 @@
 import { INFINITY } from './constants'
 import { Line, LineSegment, Point } from './types'
 
+export function nonCommonDivisors(number: number): number[] {
+  const result: number[] = []
+
+  for (let i = 1; i < number; i++) {
+    if (gcd(number, i) === 1) {
+      result.push(i)
+    }
+  }
+
+  return result
+}
+
+export function selectEvenlySpacedValues(
+  numbers: number[],
+  amount: number,
+): number[] {
+  if (numbers.length <= amount) {
+    return numbers
+  }
+
+  const result: number[] = []
+  const interval = (numbers.length - 1) / (amount - 1)
+
+  // select evenly spaced values
+  for (let i = 0; i < amount; i++) {
+    result.push(numbers[Math.round(interval * i)])
+  }
+
+  return result
+}
+
 export function getSlope(p1: Point, p2: Point): number {
   return (p2.y - p1.y) / (p2.x - p1.x)
 }
@@ -104,11 +135,11 @@ export function getSuggestedStepsPerLap(
 }
 
 // Función para calcular el MCD usando el algoritmo de Euclides
-function gcd(fixedRadius: number, movingRadius: number): number {
-  if (movingRadius === 0) {
-    return fixedRadius
+function gcd(a: number, b: number): number {
+  if (b === 0) {
+    return a
   } else {
-    return gcd(movingRadius, fixedRadius % movingRadius)
+    return gcd(b, a % b)
   }
 }
 

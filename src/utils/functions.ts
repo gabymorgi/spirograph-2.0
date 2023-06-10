@@ -1,5 +1,5 @@
 import { HYPOTROCHOID_FIXED_RADIUS, PADDING } from './constants'
-import { getLaps, getMovingRadius } from './maths'
+import { getMovingRadius } from './maths'
 import { Point } from './types'
 
 export function clipViewBox(points: Point[]): string {
@@ -24,7 +24,7 @@ interface RecalculateViewBoxParams {
   laps: number
   petals: number
   pointDistancePercentage: number
-  strokeWidth: number
+  strokeWidthPercentage: number
 }
 
 export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
@@ -35,8 +35,7 @@ export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
   )
   const max =
     HYPOTROCHOID_FIXED_RADIUS -
-    (movingRadius - spiro.pointDistancePercentage) +
-    spiro.strokeWidth
+    movingRadius * (1 - spiro.pointDistancePercentage * 0.01)
   const maxWithPadding = max + PADDING
   const width = maxWithPadding * 2
   const viewBox = `${-maxWithPadding} ${-maxWithPadding} ${width} ${width}`

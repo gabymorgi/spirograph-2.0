@@ -6,7 +6,10 @@ import {
   useImperativeHandle,
   forwardRef,
 } from 'react'
-import { calculateSpirographPoints } from '@/utils/functions'
+import {
+  calculateSpirographPoints,
+  recalculateViewBox,
+} from '@/utils/functions'
 import {
   getPath,
   pathChunkToString,
@@ -65,6 +68,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     }
     if (msPerStep < 1) {
       pathRef.current?.setAttribute('d', pathChunksToString(pathChunks))
+      animationIndex.current = pathChunks.length
       return
     }
 
@@ -137,6 +141,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         cancelAnimationFrame(animationId.current)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     props.laps,
     props.petals,
@@ -154,7 +159,32 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         cancelAnimationFrame(animationId.current)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.msPerPetal])
+
+  //viewbox effect
+  useEffect(() => {
+    if (svgRef.current === null) {
+      return
+    }
+    const viewBox = recalculateViewBox({
+      laps: props.laps,
+      petals: props.petals,
+      pointDistancePercentage: props.pointDistancePercentage,
+      strokeWidthPercentage: props.strokeWidthPercentage,
+    })
+    svgRef.current.setAttribute('viewBox', viewBox)
+    // set stroke width
+    svgRef.current.setAttribute(
+      'stroke-width',
+      `${props.strokeWidthPercentage}%`,
+    )
+  }, [
+    props.laps,
+    props.petals,
+    props.pointDistancePercentage,
+    props.strokeWidthPercentage,
+  ])
 
   return (
     <svg
@@ -164,7 +194,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       height="100%"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      strokeWidth={props.strokeWidth}
       style={{ backgroundColor: props.backgroundColor, maxHeight: '70vh' }}
     >
       <path ref={pathRef} stroke={props.color} />

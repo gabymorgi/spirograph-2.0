@@ -13,7 +13,7 @@ interface IconProps {
 function Icon(props: IconProps) {
   return (
     <StyledIcon className="icon" viewBox="0 0 24 24">
-      <path fill="currentColor" d={props.path} />
+      <path fill="currentColor" strokeLinecap="round" d={props.path} />
     </StyledIcon>
   )
 }

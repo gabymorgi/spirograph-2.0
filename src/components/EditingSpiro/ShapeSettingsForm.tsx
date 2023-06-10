@@ -1,24 +1,18 @@
-import { Button, Form, InputNumber, Select, Slider } from 'antd'
+import { Button, Form, Select } from 'antd'
 import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
+import { mdiAutoFix, mdiGesture } from '@mdi/js'
+import { useEffect, useState, useRef } from 'react'
+import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
+import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
 import {
-  mdiAutoFix,
-  mdiGesture,
-  mdiVectorPolygon,
-  mdiVectorSquare,
-  mdiVectorTriangle,
-} from '@mdi/js'
-import { useEffect } from 'react'
-import OptionPicker from '@/ui-kit/OptionPicker'
-import { getSuggestedStepsPerLap, getMovingRadius } from '@/utils/maths'
-import { getHypotrochoidPoint } from '@/utils/functions'
-import { HYPOTROCHOID_FIXED_RADIUS } from '@/utils/constants'
-
-interface DetailOption {
-  label: string
-  value: number
-  icon: string
-}
+  detailOptions,
+  lapsOptions,
+  pointDistanceBaseOptions,
+  pointDistanceOptions,
+} from './formOptions'
+import { getSelectedStep, normalizeValue } from './formUtils'
+import InputNumber from '@/ui-kit/InputNumber'
 
 interface ShapeSettingsFormStore {
   laps: number
@@ -32,58 +26,88 @@ interface ShapeSettingsFormProps {
   onEdit: (partialSpiro: ShapeSettingsFormStore) => void
 }
 
-const detailOptions: DetailOption[] = [
-  { label: 'low', value: 0, icon: mdiVectorTriangle },
-  { label: 'medium', value: 1, icon: mdiVectorSquare },
-  { label: 'high', value: 2, icon: mdiVectorPolygon },
-]
-
 function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   const [form] = Form.useForm()
+  const [curlingOptions, setcurlingOptions] = useState<Option[]>([])
+  const [spiknessOptions, setSpiknessOptions] = useState<Option[]>([])
+  const lapsValues = useRef<number[]>([])
+
+  function recalculateSpiknessOptions(laps: string | number) {
+    if (laps === null) return
+    setSpiknessOptions(
+      pointDistanceBaseOptions.map((option, index) => ({
+        ...option,
+        icon: pointDistanceOptions[Number(laps)][index],
+      })),
+    )
+  }
+
+  function recalculateCurlingOptions(petals: string | number | null) {
+    if (petals === null) return
+    const values = selectEvenlySpacedValues(
+      nonCommonDivisors(Number(petals)),
+      6,
+    )
+    lapsValues.current = values
+    const options: Option[] = []
+    for (let i = 0; i < values.length; i++) {
+      const normalizedValue = normalizeValue(i, values.length, 6)
+      options.push({
+        label: lapsOptions[normalizedValue].label,
+        value: normalizedValue,
+        icon: lapsOptions[normalizedValue].icon,
+      })
+    }
+    const prevValue = form.getFieldValue('laps')
+    const newValue = curlingOptions.length
+      ? normalizeValue(
+          normalizeValue(prevValue, 6, values.length),
+          values.length,
+          6,
+        )
+      : 1
+    if (curlingOptions.length !== options.length) {
+      form.setFieldsValue({
+        laps: newValue,
+      })
+    }
+    setcurlingOptions(options)
+    recalculateSpiknessOptions(newValue)
+  }
 
   function handleFinish(values: ShapeSettingsFormStore) {
-    const movingRadius = getMovingRadius(
-      HYPOTROCHOID_FIXED_RADIUS,
-      values.petals,
-      values.laps,
-    )
-    const pointDistance = (movingRadius / 100) * values.pointDistancePercentage
-    const step = getSuggestedStepsPerLap(
-      (t) =>
-        getHypotrochoidPoint(
-          HYPOTROCHOID_FIXED_RADIUS,
-          movingRadius,
-          pointDistance,
-          t,
-        ),
-      [0.1, 1],
-    )
-    let stepOptions: number[] = []
-    if (step === 2) {
-      stepOptions = [2, 3, 4]
-    } else if (step === 3) {
-      stepOptions = [2, 3, 6]
-    } else {
-      stepOptions = [Math.round(step * 0.5), step, step * 2]
-    }
     props.onEdit({
       ...values,
-      stepPerLap: stepOptions[values.stepPerLap],
+      laps: lapsValues.current[
+        normalizeValue(values.laps, 6, lapsValues.current.length)
+      ],
+      stepPerLap: getSelectedStep(values),
     })
+  }
+
+  function randomizeSpiro() {
+    const petals = Math.floor(Math.random() * 98) + 3
+    const pointDistancePercentage = Math.floor(Math.random() * 5) * 20 + 10
+    const laps = Math.floor(Math.random() * 6)
+    const stepPerLap = Math.floor(Math.random() * 3)
+    form.setFieldsValue({
+      petals: petals,
+      laps: laps,
+      pointDistancePercentage: pointDistancePercentage,
+      stepPerLap: stepPerLap,
+    })
+    recalculateCurlingOptions(petals)
+    form.submit()
   }
 
   useEffect(() => {
     form.setFieldsValue({
-      laps: props.spiro.laps,
       petals: props.spiro.petals,
       pointDistancePercentage: props.spiro.pointDistancePercentage,
     })
-  }, [
-    form,
-    props.spiro.laps,
-    props.spiro.petals,
-    props.spiro.pointDistancePercentage,
-  ])
+    recalculateCurlingOptions(props.spiro.petals)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, props.spiro.petals, props.spiro.pointDistancePercentage])
 
   return (
     <div className="flex flex-col">
@@ -91,39 +115,38 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
         form={form}
         onFinish={handleFinish}
         layout="vertical"
-        initialValues={{ type: 'Hypocycloid' }}
+        initialValues={{ type: 'Hypocycloid', laps: 3, stepPerLap: 1 }}
       >
         <Form.Item label="Curve type" name="type">
           <Select disabled>
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Cantidad de petalos" name="petals">
-          <InputNumber />
+        <Form.Item label="Petals amount" name="petals">
+          <InputNumber min={3} max={100} onChange={recalculateCurlingOptions} />
         </Form.Item>
-        <Form.Item label="Rotaciones" name="laps">
-          <InputNumber />
+        <Form.Item label="Petals curling" name="laps">
+          <OptionPicker
+            options={curlingOptions}
+            onChange={recalculateSpiknessOptions}
+          />
         </Form.Item>
         <Form.Item
-          label="Tamaño de los petalos"
+          label="Spikiness" // translate: "Puntiagudez" antonimo: "redondez" o "curvatura"
           name="pointDistancePercentage"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the petals size',
-            },
-          ]}
         >
-          <Slider min={0} max={100} />
+          <OptionPicker options={spiknessOptions} />
         </Form.Item>
         <Form.Item
           label="Detail:"
           name="stepPerLap"
-          tooltip="Cantidad de puntos que se dibujan"
+          tooltip="Amount of points per lap"
         >
           <OptionPicker options={detailOptions} />
         </Form.Item>
-        <Button icon={<Icon path={mdiAutoFix} />}>I feel lucky</Button>
+        <Button icon={<Icon path={mdiAutoFix} />} onClick={randomizeSpiro}>
+          I feel lucky
+        </Button>
         <Button
           icon={<Icon path={mdiGesture} />}
           type="primary"

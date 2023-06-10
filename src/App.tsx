@@ -21,7 +21,7 @@ function App() {
     <>
       <Header className="flex justify-between items-center">
         <h1 className="text-4xl text-white">Spirograph 2.0</h1>
-        <div className="flex gap-16 justify-between">
+        {/* <div className="flex gap-16 justify-between">
           <Button
             onClick={toggleLanguage}
             tooltip={`Change to ${language === 'en' ? 'Spanish' : 'English'}`}
@@ -36,7 +36,7 @@ function App() {
           >
             Show {advanced ? 'friendly' : 'advance'} settings
           </ReverseButton>
-        </div>
+        </div> */}
       </Header>
       <div className="flex flex-col gap-16 p-16">
         <Card>

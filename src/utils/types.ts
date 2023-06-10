@@ -34,7 +34,7 @@ export interface SpiroSettings {
   interpolation: Interpolation
   color: string
   backgroundColor: string
-  strokeWidth: number
+  strokeWidthPercentage: number
 }
 
 export function isSpiroSetting(arg: any): arg is SpiroSettings {
@@ -50,7 +50,7 @@ export function isSpiroSetting(arg: any): arg is SpiroSettings {
     typeof arg.interpolation === 'string' &&
     typeof arg.color === 'string' &&
     typeof arg.backgroundColor === 'string' &&
-    typeof arg.strokeWidth === 'number'
+    typeof arg.strokeWidthPercentage === 'number'
   )
 }
 

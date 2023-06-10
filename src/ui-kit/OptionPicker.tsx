@@ -1,14 +1,16 @@
-import { Button } from 'antd'
+import Button from './Button'
 import Icon from './Icon'
+
+export interface Option {
+  label: string
+  value: string | number
+  icon: string
+}
 
 interface OptionPickerProps {
   value?: string | number
   onChange?: (value: string | number) => void
-  options: {
-    label: string
-    value: string | number
-    icon: string
-  }[]
+  options: Option[]
 }
 
 function OptionPicker(props: OptionPickerProps) {
@@ -20,10 +22,11 @@ function OptionPicker(props: OptionPickerProps) {
     <div className="flex gap-8">
       {props.options.map((option) => (
         <Button
+          tooltip={option.label}
           type={props.value === option.value ? 'primary' : 'default'}
           icon={<Icon path={option.icon} />}
           onClick={() => handleOptionClick(option.value)}
-          key={option.value}
+          key={option.label}
         />
       ))}
     </div>

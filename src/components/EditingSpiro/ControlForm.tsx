@@ -63,7 +63,7 @@ function ControlForm(props: ControlFormProps) {
       />
       <Button
         type="primary"
-        tooltip="Redibujar"
+        tooltip="Redraw"
         onClick={handleReDraw}
         icon={<Icon path={mdiRestart} />}
       />

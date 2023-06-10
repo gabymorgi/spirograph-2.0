@@ -85,7 +85,7 @@ function ListFavoriteSpiros() {
           <Col span={24}>
             <div className="flex gap-16 justify-between">
               <div className="flex gap-16 items-center">
-                Tamaño:{' '}
+                Size:{' '}
                 {options.map((option) => (
                   <Button
                     key={option.value}
@@ -156,14 +156,14 @@ function ListFavoriteSpiros() {
         </Row>
       ) : (
         <div className="flex flex-col gap-16 items-center">
-          <h2>No tienes ningún spiro en tu spirodex... aún</h2>
+          <h2>There are no spiros in your spirodex... yet</h2>
           <MDIIcon path={mdiShapeOutline} size={4} />
-          <p>Este es el lugar donde aparecerán tus spiro favoritos.</p>
+          <p>In this place your favorite spiro will appear.</p>
           <p>
-            Puedes agregar algunos a tu lista seleccionando el{' '}
-            <Icon path={mdiHeartPlusOutline} /> en cada spiro,
+            You can add some to your list by selecting the{' '}
+            <Icon path={mdiHeartPlusOutline} /> in each spiro,
           </p>
-          <p>o importar algunos si ya tienes un archivo de spiro listo.</p>
+          <p>or import some if you already have a spiro file ready.</p>
           <Button
             type="primary"
             icon={<Icon path={mdiDatabaseImportOutline} />}
