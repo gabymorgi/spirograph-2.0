@@ -26,7 +26,7 @@ function InputNumber(props: InputNumberProps) {
         min={Number(props.min)}
         max={Number(props.max)}
         defaultValue={Number(props.value)}
-        onAfterChange={handleChange}
+        onChangeComplete={handleChange}
       />
     </StylesInputNumber>
   )

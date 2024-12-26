@@ -47,7 +47,7 @@ import {
   smoothiestMedium,
   smoothiestSpikier,
   smoothiestSpiky,
-} from '@/icons/iconPaths'
+} from '@/routes/spirograph/icons/iconPaths'
 
 export const detailOptions: Option[] = [
   { label: 'low', value: 0, icon: mdiVectorTriangle },

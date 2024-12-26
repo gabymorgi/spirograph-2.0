@@ -19,7 +19,7 @@ interface ControlFormStore {
 }
 
 interface ControlFormProps {
-  spiroRef: React.RefObject<SpiroCanvasHandle>
+  spiroRef: React.RefObject<SpiroCanvasHandle | null>
   spiro: SpiroAnimationSettings
   onEdit: (partialSpiro: ControlFormStore) => void
 }

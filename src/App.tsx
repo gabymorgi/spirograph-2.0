@@ -1,27 +1,55 @@
 import { Header } from 'antd/es/layout/layout'
-import ListFavoriteSpiros from './components/favoriteSpiro/ListFavoriteSpiros'
-import { Card } from 'antd'
-import EditingSpiro from './components/EditingSpiro/EditingSpiro'
-// import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
-// import Icon from './ui-kit/Icon'
-// import { useState } from 'react'
-// import Button from './ui-kit/Button'
-// import ReverseButton from './ui-kit/ReverseButton'
-// import { useThemeContext } from './contexts/ThemeContext'
+import { Layout, Menu } from 'antd'
+import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
+import Icon from './ui-kit/Icon'
+import { useMemo, useState } from 'react'
+import Button from './ui-kit/Button'
+import ReverseButton from './ui-kit/ReverseButton'
+import { useThemeContext } from './contexts/ThemeContext'
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import Sprirograph from './routes/spirograph/Spirograph'
+import Fractal from './routes/fractal/Fractal'
 
 function App() {
-  // const [language, setLanguage] = useState<'en' | 'es'>('en')
-  // const { advanced, toggleAdvanced } = useThemeContext()
+  const [language, setLanguage] = useState<'en' | 'es'>('en')
+  const { advanced, toggleAdvanced } = useThemeContext()
+  const location = useLocation()
 
-  // function toggleLanguage() {
-  //   setLanguage(language === 'en' ? 'es' : 'en')
-  // }
+  function toggleLanguage() {
+    setLanguage(language === 'en' ? 'es' : 'en')
+  }
+
+  const title = useMemo(() => {
+    console.log('location.pathname', location.pathname)
+    switch (location.pathname) {
+      case '/spirograph':
+        return 'Spirograph 2.0'
+      case '/fractal':
+        return 'Fractal'
+      default:
+        return 'emoji eyes 🤪'
+    }
+  }, [location.pathname])
 
   return (
     <>
+      <Menu
+        mode="horizontal"
+        selectedKeys={[location.pathname]}
+        items={[
+          {
+            key: '/spirograph',
+            label: <Link to="/spirograph">spirograph</Link>,
+          },
+          {
+            key: '/fractal',
+            label: <Link to="/fractal">fractal</Link>,
+          },
+        ]}
+      />
       <Header className="flex justify-between items-center">
-        <h1 className="text-4xl text-white">Spirograph 2.0</h1>
-        {/* <div className="flex gap-16 justify-between">
+        <h1 className="text-white">{title}</h1>
+        <div className="flex gap-16 justify-between">
           <Button
             onClick={toggleLanguage}
             tooltip={`Change to ${language === 'en' ? 'Spanish' : 'English'}`}
@@ -36,16 +64,16 @@ function App() {
           >
             Show {advanced ? 'friendly' : 'advance'} settings
           </ReverseButton>
-        </div> */}
+        </div>
       </Header>
-      <div className="flex flex-col gap-16 p-16">
-        <Card>
-          <EditingSpiro />
-        </Card>
-        <Card>
-          <ListFavoriteSpiros />
-        </Card>
-      </div>
+      <Layout.Content className="p-middle">
+        <Routes>
+          <Route path="/" element={<Navigate to="/spirograph" />} />
+          <Route path="/fractal" element={<Fractal />} />
+          <Route path="/spirograph" element={<Sprirograph />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Layout.Content>
     </>
   )
 }
