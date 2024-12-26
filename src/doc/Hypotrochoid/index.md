@@ -1,6 +1,6 @@
 # Hypotrochoid
 
-A hypotrochoid is the trayectory described by a point attached to a given **circle** as it rolls *inside* a second fixed **circle**.
+A hypotrochoid is the trajectory described by a point attached to a given **circle** as it rolls *inside* a second fixed **circle**.
 
 ![Hypocycloids](https://mathworld.wolfram.com/images/gifs/hypocr.gif)
 
@@ -8,7 +8,7 @@ You can learn more about hypotrochoids in [Wikipedia](https://en.wikipedia.org/w
 
 ## Hypocycloid equation
 
-Mathematically, the trayectory of a hypocycloid is described by the following parameters:
+Mathematically, the trajectory of a hypocycloid is described by the following parameters:
 
 - $R$: Radius of the fixed circle.
 
@@ -33,11 +33,11 @@ But this parametes are not the most intuitive to understand the shape of the hyp
 
   - Number of petals $n$: Number of cusps of the hypocycloid.
 
-    This is a fancy way to describe the amount of full rotations the rolling circle has to do to **around itself** complete the trayectory.
+    This is a fancy way to describe the amount of full rotations the rolling circle has to do to **around itself** complete the trajectory.
 
   - Curliness $k$: This describes how much the petals are curled.
   
-    This is a fancy way to describe the amount of full rotations the rolling circle has to do **around the fixed circle** to complete the trayectory.
+    This is a fancy way to describe the amount of full rotations the rolling circle has to do **around the fixed circle** to complete the trajectory.
 
     <br />
     
@@ -47,7 +47,7 @@ But this parametes are not the most intuitive to understand the shape of the hyp
     \frac{R}{r} = \frac{n}{k}
     $$
 
-    where $n$ is the number full rotations the rolling circle has to do around itself to complete the trayectory, and $k$ is the number of full rotations the rolling circle has to do around the fixed circle to complete the trayectory.
+    where $n$ is the number of full rotations the rolling circle has to do around itself to complete the trajectory, and $k$ is the number of full rotations the rolling circle has to do around the fixed circle to complete the trajectory.
 
 - Petal size $s$: This is determined by the distance from the center of the rolling circle to the tracing point.
 

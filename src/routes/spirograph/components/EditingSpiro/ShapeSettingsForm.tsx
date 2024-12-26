@@ -109,8 +109,6 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, props.spiro.petals, props.spiro.pointDistancePercentage])
 
-  console.log(form.getFieldValue('laps'), curlingOptions)
-
   return (
     <div className="flex flex-col">
       <Form

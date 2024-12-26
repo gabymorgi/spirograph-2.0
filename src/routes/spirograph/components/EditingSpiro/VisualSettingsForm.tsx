@@ -69,7 +69,7 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
         <Form.Item
           label="Transition:"
           name="interpolation"
-          tooltip="Interpolations between points"
+          tooltip="Interpolation between points"
         >
           <OptionPicker
             options={transitionOptions}

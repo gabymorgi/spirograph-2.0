@@ -56,9 +56,9 @@ export const detailOptions: Option[] = [
 ]
 
 export const thicknessOptions = [
-  { label: 'thin', value: 0.5, icon: mdiCircleSmall },
-  { label: 'medium', value: 1, icon: mdiCircleMedium },
-  { label: 'thick', value: 2, icon: mdiCircle },
+  { label: 'thin', value: 0.2, icon: mdiCircleSmall },
+  { label: 'medium', value: 0.4, icon: mdiCircleMedium },
+  { label: 'thick', value: 1, icon: mdiCircle },
 ]
 
 export const transitionOptions = [
