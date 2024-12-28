@@ -6,19 +6,17 @@ import { useEffect, useState, useRef } from 'react'
 import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
 import {
-  detailOptions,
   lapsOptions,
   pointDistanceBaseOptions,
   pointDistanceOptions,
 } from './formOptions'
-import { getSelectedStep, normalizeValue } from './formUtils'
+import { normalizeValue } from './formUtils'
 import InputNumber from '@/ui-kit/InputNumber'
 
 interface ShapeSettingsFormStore {
   laps: number
   petals: number
   pointDistancePercentage: number
-  stepPerLap: number
 }
 
 interface ShapeSettingsFormProps {
@@ -81,7 +79,6 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
       laps: lapsValues.current[
         normalizeValue(values.laps, 6, lapsValues.current.length)
       ],
-      stepPerLap: getSelectedStep(values),
     })
   }
 
@@ -89,12 +86,10 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
     const petals = Math.floor(Math.random() * 98) + 3
     const pointDistancePercentage = Math.floor(Math.random() * 5) * 20 + 10
     const laps = Math.floor(Math.random() * 6)
-    const stepPerLap = Math.floor(Math.random() * 3)
     form.setFieldsValue({
       petals: petals,
       laps: laps,
       pointDistancePercentage: pointDistancePercentage,
-      stepPerLap: stepPerLap,
     })
     recalculateCurlingOptions(petals)
     form.submit()
@@ -115,7 +110,7 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
         form={form}
         onFinish={handleFinish}
         layout="vertical"
-        initialValues={{ type: 'Hypocycloid', laps: 2, stepPerLap: 1 }}
+        initialValues={{ type: 'Hypocycloid', laps: 2 }}
       >
         <Form.Item label="Curve type" name="type">
           <Select disabled>
@@ -136,13 +131,6 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
           name="pointDistancePercentage"
         >
           <OptionPicker options={spiknessOptions} />
-        </Form.Item>
-        <Form.Item
-          label="Detail:"
-          name="stepPerLap"
-          tooltip="Amount of points per lap"
-        >
-          <OptionPicker options={detailOptions} />
         </Form.Item>
         <Button icon={<Icon path={mdiAutoFix} />} onClick={randomizeSpiro}>
           I feel lucky

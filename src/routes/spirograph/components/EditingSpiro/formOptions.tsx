@@ -1,5 +1,4 @@
 import { Option } from '@/ui-kit/OptionPicker'
-import { Interpolation } from '@/utils/types'
 import {
   mdiCircle,
   mdiCircleMedium,
@@ -8,12 +7,6 @@ import {
   mdiRabbit,
   mdiSnail,
   mdiUnicorn,
-  mdiVectorBezier,
-  mdiVectorCurve,
-  mdiVectorLine,
-  mdiVectorPolygon,
-  mdiVectorSquare,
-  mdiVectorTriangle,
 } from '@mdi/js'
 
 import {
@@ -49,26 +42,10 @@ import {
   smoothiestSpiky,
 } from '@/routes/spirograph/icons/iconPaths'
 
-export const detailOptions: Option[] = [
-  { label: 'low', value: 0, icon: mdiVectorTriangle },
-  { label: 'medium', value: 1, icon: mdiVectorSquare },
-  { label: 'high', value: 2, icon: mdiVectorPolygon },
-]
-
 export const thicknessOptions = [
   { label: 'thin', value: 0.2, icon: mdiCircleSmall },
   { label: 'medium', value: 0.4, icon: mdiCircleMedium },
   { label: 'thick', value: 1, icon: mdiCircle },
-]
-
-export const transitionOptions = [
-  { label: 'linear', value: Interpolation.Linear, icon: mdiVectorLine },
-  { label: 'bezier', value: Interpolation.Bezier, icon: mdiVectorCurve },
-  {
-    label: 'derivative',
-    value: Interpolation.Derivative,
-    icon: mdiVectorBezier,
-  },
 ]
 
 export const animationSpeedOptions = [

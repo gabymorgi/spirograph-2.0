@@ -1,17 +1,14 @@
 import { Form } from 'antd'
-import { Interpolation, SpiroAnimationSettings } from '@/utils/types'
+import { SpiroAnimationSettings } from '@/utils/types'
 import OptionPicker from '@/ui-kit/OptionPicker'
 import ColorPicker from '@/ui-kit/ColorPicker'
 import { useEffect } from 'react'
 import {
   animationSpeedOptions,
   thicknessOptions,
-  transitionOptions,
 } from './formOptions'
 
 interface VisualSettingsFormStore {
-  stepPerLap: number
-  interpolation: Interpolation
   color: string
   backgroundColor: string
   strokeWidthPercentage: number
@@ -31,14 +28,12 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
       color: props.spiro.color,
       backgroundColor: props.spiro.backgroundColor,
       strokeWidthPercentage: props.spiro.strokeWidthPercentage,
-      interpolation: props.spiro.interpolation,
       msPerPetal: props.spiro.msPerPetal,
     })
   }, [
     props.spiro.color,
     props.spiro.backgroundColor,
     props.spiro.strokeWidthPercentage,
-    props.spiro.interpolation,
     props.spiro.msPerPetal,
     form,
   ])
@@ -63,18 +58,6 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
             options={thicknessOptions}
             onChange={(value) =>
               props.onEdit({ strokeWidthPercentage: Number(value) })
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          label="Transition:"
-          name="interpolation"
-          tooltip="Interpolation between points"
-        >
-          <OptionPicker
-            options={transitionOptions}
-            onChange={(interpolation: string | number) =>
-              props.onEdit({ interpolation: interpolation as Interpolation })
             }
           />
         </Form.Item>

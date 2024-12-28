@@ -1,6 +1,6 @@
-import { Card } from "antd";
-import EditingSpiro from "./components/EditingSpiro/EditingSpiro";
-import ListFavoriteSpiros from "./components/favoriteSpiro/ListFavoriteSpiros";
+import { Card } from 'antd'
+import EditingSpiro from './components/EditingSpiro/EditingSpiro'
+import ListFavoriteSpiros from './components/favoriteSpiro/ListFavoriteSpiros'
 
 function Sprirograph() {
   return (
@@ -12,7 +12,7 @@ function Sprirograph() {
         <ListFavoriteSpiros />
       </Card>
     </div>
-  );
+  )
 }
 
-export default Sprirograph;
+export default Sprirograph

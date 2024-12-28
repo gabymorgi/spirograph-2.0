@@ -7,11 +7,10 @@ import {
   forwardRef,
 } from 'react'
 import {
-  calculateSpirographPoints,
+  getAwesomeSpiro,
   recalculateViewBox,
 } from '@/utils/functions'
 import {
-  getPath,
   pathChunkToString,
   pathChunksToString,
 } from '@/utils/canvasUtils'
@@ -33,31 +32,18 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 > = (props, ref) => {
   const animationId = useRef<number | null>(null)
   const animationIndex = useRef<number>(0)
-  const svgRef = useRef<HTMLElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
 
-  const points = useMemo(() => {
-    return calculateSpirographPoints(
-      props.laps,
-      props.petals,
-      props.pointDistancePercentage,
-      props.stepPerLap,
-    )
-  }, [
-    props.laps,
-    props.pointDistancePercentage,
-    props.petals,
-    props.stepPerLap,
-  ])
-
   const pathChunks = useMemo(() => {
-    return getPath(points, props.interpolation)
-  }, [points, props.interpolation])
+    const awesomeSpiro = getAwesomeSpiro(props.laps, props.petals, props.pointDistancePercentage)
+    return awesomeSpiro
+  }, [props.laps, props.petals, props.pointDistancePercentage])
 
   const msPerStep = useMemo(() => {
-    const pointsPerPetal = points.length / props.petals
+    const pointsPerPetal = props.petals * 2 / props.laps
     return props.msPerPetal ? props.msPerPetal / pointsPerPetal : 0
-  }, [props.petals, points.length, props.msPerPetal])
+  }, [props.petals, props.laps, props.msPerPetal])
 
   const startAnimation = useCallback(() => {
     if (animationIndex.current >= pathChunks.length) {
@@ -120,7 +106,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       return
     }
 
-    toPng(svgRef.current, { cacheBust: true })
+    toPng(svgRef.current as any, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement('a')
         link.download = `${props.name}.png`
@@ -146,8 +132,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     props.laps,
     props.petals,
     props.pointDistancePercentage,
-    props.stepPerLap,
-    props.interpolation,
   ])
 
   useEffect(() => {
@@ -188,7 +172,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   return (
     <svg
-      ref={svgRef as never}
+      ref={svgRef}
       viewBox={`${-CANVAS_MAX_VALUE} ${-CANVAS_MAX_VALUE} ${CANVAS_SIZE} ${CANVAS_SIZE}`}
       width="100%"
       height="100%"

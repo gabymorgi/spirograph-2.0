@@ -13,14 +13,8 @@ export type LineSegment = {
   p2: Point
 }
 
-export enum Interpolation {
-  Linear = 'linear',
-  Bezier = 'bezier',
-  Derivative = 'derivative',
-}
-
 export type PathChunk = {
-  command: 'M' | 'L' | 'Q' | 'Z'
+  command: 'M' | 'L' | 'Q' | 'C' | 'Z'
   points: Point[]
 }
 
@@ -30,8 +24,6 @@ export interface SpiroSettings {
   laps: number
   petals: number
   pointDistancePercentage: number
-  stepPerLap: number
-  interpolation: Interpolation
   color: string
   backgroundColor: string
   strokeWidthPercentage: number
@@ -45,9 +37,6 @@ export function isSpiroSetting(arg: any): arg is SpiroSettings {
     typeof arg.laps === 'number' &&
     typeof arg.petals === 'number' &&
     typeof arg.pointDistancePercentage === 'number' &&
-    typeof arg.stepPerLap === 'number' &&
-    ['linear', 'bezier', 'derivative'].includes(arg.interpolation) &&
-    typeof arg.interpolation === 'string' &&
     typeof arg.color === 'string' &&
     typeof arg.backgroundColor === 'string' &&
     typeof arg.strokeWidthPercentage === 'number'

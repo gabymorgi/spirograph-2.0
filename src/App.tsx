@@ -19,8 +19,8 @@ function App() {
     setLanguage(language === 'en' ? 'es' : 'en')
   }
 
+
   const title = useMemo(() => {
-    console.log('location.pathname', location.pathname)
     switch (location.pathname) {
       case '/spirograph':
         return 'Spirograph 2.0'
