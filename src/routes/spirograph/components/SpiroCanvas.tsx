@@ -40,12 +40,8 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     return awesomeSpiro
   }, [props.laps, props.petals, props.pointDistancePercentage])
 
-  const msPerStep = useMemo(() => {
-    const pointsPerPetal = props.petals * 2 / props.laps
-    return props.msPerPetal ? props.msPerPetal / pointsPerPetal : 0
-  }, [props.petals, props.laps, props.msPerPetal])
-
   const startAnimation = useCallback(() => {
+    const msPerStep = props.msPerPetal || 0
     if (animationIndex.current >= pathChunks.length) {
       return
     }
@@ -85,7 +81,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     }
 
     animationId.current = requestAnimationFrame(step)
-  }, [msPerStep, pathChunks])
+  }, [props.msPerPetal, pathChunks])
 
   const restartAnimation = useCallback(() => {
     if (animationId.current) {

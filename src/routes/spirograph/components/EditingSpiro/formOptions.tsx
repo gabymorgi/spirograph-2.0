@@ -49,9 +49,9 @@ export const thicknessOptions = [
 ]
 
 export const animationSpeedOptions = [
-  { label: 'slow', value: 1000, icon: mdiSnail },
-  { label: 'medium', value: 500, icon: mdiRabbit },
-  { label: 'fast', value: 200, icon: mdiHorseVariant },
+  { label: 'slow', value: 400, icon: mdiSnail },
+  { label: 'medium', value: 200, icon: mdiRabbit },
+  { label: 'fast', value: 100, icon: mdiHorseVariant },
   { label: 'instant', value: 0, icon: mdiUnicorn },
 ]
 
