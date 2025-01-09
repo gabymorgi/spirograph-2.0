@@ -8,7 +8,7 @@ export const TWO_PI = Math.PI * 2
 export const HALF_PI = Math.PI / 2
 
 export const PADDING = 2 //100
-export const MAX_VALUE = 28 //1000
+export const MAX_VALUE = 120 //1000
 export const CANVAS_MAX_VALUE = MAX_VALUE + PADDING
 export const CANVAS_SIZE = CANVAS_MAX_VALUE * 2
 

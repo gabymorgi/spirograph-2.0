@@ -1,6 +1,4 @@
-import { pathChunksToString } from '@/utils/canvasUtils'
-import { getAwesomeSpiro } from '@/utils/functions'
-import { PathChunk } from '@/utils/types'
+import { PathChunk } from "@/utils/types"
 
 interface SVGCirlceProps {
   type: 'circle'
@@ -20,9 +18,9 @@ interface SVGLineProps {
   strokeWidth: number
 }
 
-type SVGElementProps = SVGCirlceProps | SVGLineProps
+export type SVGElementProps = SVGCirlceProps | SVGLineProps
 
-function generateSVGElements(commands: PathChunk[]) {
+export function generateSVGElements(commands: PathChunk[]) {
   const segmentsLength: [number[], number[]] = [[], []]
   const svgElements: SVGElementProps[] = []
   let currentPoint = { x: 0, y: 0 } // Mantener la posición actual
@@ -45,7 +43,7 @@ function generateSVGElements(commands: PathChunk[]) {
           x2: control1.x,
           y2: control1.y,
           stroke: '#ff0',
-          strokeWidth: 0.2,
+          strokeWidth: 0.02,
         })
 
         // Línea desde el punto final al segundo punto de control
@@ -56,7 +54,7 @@ function generateSVGElements(commands: PathChunk[]) {
           x2: control2.x,
           y2: control2.y,
           stroke: '#ff0',
-          strokeWidth: 0.2,
+          strokeWidth: 0.02,
         })
 
         const seg1 = Math.sqrt(
@@ -80,21 +78,21 @@ function generateSVGElements(commands: PathChunk[]) {
           type: 'circle',
           cx: control1.x,
           cy: control1.y,
-          r: 0.5,
+          r: 0.05,
           fill: '#ff0',
         })
         svgElements.push({
           type: 'circle',
           cx: control2.x,
           cy: control2.y,
-          r: 0.5,
+          r: 0.05,
           fill: '#ff0',
         })
         svgElements.push({
           type: 'circle',
           cx: endPoint.x,
           cy: endPoint.y,
-          r: 0.5,
+          r: 0.05,
           fill: '#f00',
         })
 
@@ -106,54 +104,3 @@ function generateSVGElements(commands: PathChunk[]) {
 
   return svgElements
 }
-
-interface Props {
-  l: number
-  p: number
-  c: number
-}
-
-function Sprirograph(props: Props) {
-  const awesomeSpiro = getAwesomeSpiro(props.l, props.p, props.c)
-  const divisor = awesomeSpiro[0].points[0].x / 18
-  const norm = awesomeSpiro.map((v) => ({ 
-    points: v.points.map((p) => ({ x: p.x / divisor, y: p.y / divisor })),
-    command: v.command
-  }))
-
-  const awesomeElements = generateSVGElements(norm)
-
-  return (
-    <div className="flex flex-col gap-16 p-16">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-25 -25 50 50">
-        {awesomeElements.map((element, index) => {
-          if (element.type === 'circle') {
-            const { cx, cy, r, fill } = element
-            return <circle key={index} cx={cx} cy={cy} r={r} fill={fill} />
-          } else if (element.type === 'line') {
-            const { x1, y1, x2, y2, stroke, strokeWidth } = element
-            return (
-              <line
-                key={index}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke={stroke}
-                strokeWidth={strokeWidth}
-              />
-            )
-          }
-        })}
-        <path
-          d={pathChunksToString(norm)}
-          fill="none"
-          stroke="#f00"
-          strokeWidth="0.2"
-        />
-      </svg>
-    </div>
-  )
-}
-
-export default Sprirograph
