@@ -12,10 +12,10 @@ export function pathChunkToString(chunk: PathChunk): string {
 interface PartialSpiroSettings {
   laps: number
   petals: number
-  pointDistancePercentage: number
+  distance: number
 }
 
 export function getUniqueSpirographName(spiro: PartialSpiroSettings): string {
-  const params = [spiro.petals, spiro.laps, spiro.pointDistancePercentage]
+  const params = [spiro.petals, spiro.laps, spiro.distance]
   return `Spiro-${params.join('-')}`
 }

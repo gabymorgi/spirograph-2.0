@@ -28,7 +28,7 @@ export function getSizesRadius(
   const movingRadius = r
   // const laps = getLaps(fixedRadius, movingRadius)
   // const petals = getPetalsAmount(fixedRadius, movingRadius)
-  const pointDistance = (movingRadius / 100) * pointDistancePercentage
+  const pointDistance = movingRadius * pointDistancePercentage
 
   let step = (movingRadius * Math.PI) / fixedRadius
   const samplingStep = step / 2
@@ -70,7 +70,7 @@ export function getSizes(
 ): [number, number] {
   const fixedRadius = HYPOTROCHOID_FIXED_RADIUS
   const movingRadius = getMovingRadius(fixedRadius, petals, laps)
-  const pointDistance = (movingRadius / 100) * pointDistancePercentage
+  const pointDistance = movingRadius * pointDistancePercentage
 
   let step = (laps * Math.PI) / petals
   const samplingStep = step / 2
@@ -131,12 +131,14 @@ export function getLineParams(points: Point[]): Line {
 }
 
 export function getMagicNumbers(r: number) {
-  const lineParams1 = getLineParams([{ x: 0, y: getSizesRadius(r, 0)[0] }, { x: 100, y: getSizesRadius(r, 100)[0] }])
-
+  const lineParams1 = getLineParams([{ x: 0, y: getSizesRadius(r, 0)[0] }, { x: 100, y: getSizesRadius(r, 1)[0] }])
+  const lineParams2 = getLineParams([{ x: 0, y: getSizesRadius(r, 0)[1] }, { x: 100, y: getSizesRadius(r, 1)[1] }])
   return {
     r,
-    b: lineParams1.b,
-    m: -lineParams1.m
+    b1: lineParams1.b,
+    m1: lineParams1.m,
+    b2: lineParams2.b,
+    m2: lineParams2.m,
   }
 }
 

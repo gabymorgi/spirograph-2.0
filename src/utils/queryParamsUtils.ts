@@ -5,8 +5,8 @@ import {
   defaultLaps,
   defaultMsPerPetal,
   defaultPetals,
-  defaultPointDistancePercentage,
-  defaultStrokeWidthPercentage,
+  defaultDistance,
+  defaultstrokeWidth,
   getIncrementalId,
 } from './constants'
 
@@ -15,11 +15,11 @@ export const SpiroParam = {
   name: withDefault(StringParam, 'My Spiro'),
   laps: withDefault(NumberParam, defaultLaps),
   petals: withDefault(NumberParam, defaultPetals),
-  pointDistancePercentage: withDefault(
+  distance: withDefault(
     NumberParam,
-    defaultPointDistancePercentage,
+    defaultDistance,
   ),
-  strokeWidthPercentage: withDefault(NumberParam, defaultStrokeWidthPercentage),
+  strokeWidth: withDefault(NumberParam, defaultstrokeWidth),
   color: withDefault(StringParam, defaultColor),
   backgroundColor: withDefault(StringParam, defaultBackgroundColor),
   msPerPetal: withDefault(NumberParam, defaultMsPerPetal),

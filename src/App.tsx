@@ -8,8 +8,7 @@ import ReverseButton from './ui-kit/ReverseButton'
 import { useThemeContext } from './contexts/ThemeContext'
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Fractal from './routes/fractal/Fractal'
-import { getMagicNumbers } from './routes/spirograph/test/sizes'
-import LineChart from './routes/spirograph/test/components/LineChart'
+import Spirograph from './routes/spirograph/Spirograph'
 
 function App() {
   const [language, setLanguage] = useState<'en' | 'es'>('en')
@@ -19,7 +18,6 @@ function App() {
   function toggleLanguage() {
     setLanguage(language === 'en' ? 'es' : 'en')
   }
-
 
   const title = useMemo(() => {
     switch (location.pathname) {
@@ -31,34 +29,6 @@ function App() {
         return 'emoji eyes 🤪'
     }
   }, [location.pathname])
-
-  const res = Array.from({ length: 120 }, (_, i) => i + 1).map((r) => getMagicNumbers(r))
-  // const res = getRes(5, 1)
-  res.sort((a, b) => a.r - b.r)
-
-  const bPoints = res.map(({ r, b }) => ({ x: r, y: b }))
-  const mPoints = res.map(({ r, m }) => ({ x: r, y: m * 100 }))
-
-  // maximum: 63.53805472008254 - 33.245605709583764
-
-  const amount = 240
-  const step = 4
-  const evaluatedPoints = Array.from({ length: amount }, (_, i) => (i * step) - (amount * step) / 2).map((r) => {
-    const y = getMagicNumbers(r).b
-    return {
-      x: r,
-      y: y > 0 ? Math.log10(y) : -Math.log10(-y)
-    }
-  })
-
-  
-  const error = evaluatedPoints.map(({ x, y }) => {
-    const real = getMagicNumbers(x).b
-    return {
-      x: x,
-      y: Math.abs(y - real)
-    }
-  })
 
   return (
     <>
@@ -99,32 +69,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/spirograph" />} />
           <Route path="/fractal" element={<Fractal />} />
-          <Route path="/spirograph" element={<div />} />
+          <Route path="/spirograph" element={<Spirograph />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Layout.Content>
-      <div style={{ position: 'relative' }}>
-        <LineChart
-          datasets={[
-            {
-              name: 'b',
-              points: bPoints,
-            },
-            {
-              name: 'm',
-              points: mPoints,
-            },
-          ]}
-        />
-        <LineChart
-          datasets={[
-            {
-              name: 'Error',
-              points: error,
-            }
-          ]}
-        />
-      </div>
     </>
   )
 }

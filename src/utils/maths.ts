@@ -75,16 +75,3 @@ export function getMovingRadius(
   const divisor = fixedRadius / petals
   return divisor * laps
 }
-
-export function getViewBox(points: Point[]): string {
-  const minX = Math.min(...points.map((point) => point.x))
-  const maxX = Math.max(...points.map((point) => point.x))
-  const minY = Math.min(...points.map((point) => point.y))
-  const maxY = Math.max(...points.map((point) => point.y))
-  const width = maxX - minX
-  const height = maxY - minY
-  const viewBox = `${minX - width * 0.1} ${minY - height * 0.1} ${
-    width * 1.2
-  } ${height * 1.2}`
-  return viewBox
-}

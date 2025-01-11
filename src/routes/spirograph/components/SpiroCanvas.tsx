@@ -6,18 +6,21 @@ import {
   useImperativeHandle,
   forwardRef,
 } from 'react'
-import {
-  getAwesomeSpiro,
-  recalculateViewBox,
-} from '@/utils/functions'
-import {
-  pathChunkToString,
-  pathChunksToString,
-} from '@/utils/canvasUtils'
 import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
 import { toPng } from 'html-to-image'
 import { message } from 'antd'
-import { CANVAS_MAX_VALUE, CANVAS_SIZE } from '@/utils/constants'
+import styled from 'styled-components'
+import useSpiro from '@/hooks/useSpiro'
+
+interface StyledSvgProps {
+  vel: number
+}
+
+const StyledSvg = styled.svg<StyledSvgProps>`
+  path {
+    transition: all 2s linear;
+  }
+`
 
 export interface SpiroCanvasHandle {
   redraw: () => void
@@ -30,70 +33,47 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   SpiroCanvasHandle,
   SpiroCanvasProps
 > = (props, ref) => {
-  const animationId = useRef<number | null>(null)
-  const animationIndex = useRef<number>(0)
   const svgRef = useRef<SVGSVGElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
 
-  const pathChunks = useMemo(() => {
-    const awesomeSpiro = getAwesomeSpiro(props.laps, props.petals, props.pointDistancePercentage)
-    return awesomeSpiro
-  }, [props.laps, props.petals, props.pointDistancePercentage])
+  const dPath = useSpiro(props.petals, props.laps, props.distance)
+
+  const vel = useMemo(() => {
+    return (props.msPerPetal || 0) * props.petals / 1000
+  }, [props.msPerPetal, props.petals])
 
   const startAnimation = useCallback(() => {
-    const msPerStep = props.msPerPetal || 0
-    if (animationIndex.current >= pathChunks.length) {
+    const path = pathRef.current
+    if (!path) {
       return
     }
-    if (animationId.current) {
-      cancelAnimationFrame(animationId.current)
-    }
-    if (msPerStep < 1) {
-      pathRef.current?.setAttribute('d', pathChunksToString(pathChunks))
-      animationIndex.current = pathChunks.length
-      return
-    }
+    const length = path.getTotalLength().toString();
+    console.log(length)
 
-    let start: number | null = null
+    // Borrar la animación anterior
+    path.style.transition = 'none';
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
 
-    function step(timestamp: number) {
-      if (!start) start = timestamp
-
-      if (timestamp - start > msPerStep) {
-        let path = pathRef.current?.getAttribute('d') || ''
-        while (timestamp - start > msPerStep) {
-          start += msPerStep
-
-          if (animationIndex.current < pathChunks.length) {
-            path += pathChunkToString(pathChunks[animationIndex.current])
-
-            animationIndex.current += 1
-          } else {
-            break
-          }
-        }
-        pathRef.current?.setAttribute('d', path)
-      }
-
-      if (animationIndex.current < pathChunks.length) {
-        animationId.current = requestAnimationFrame(step)
-      }
-    }
-
-    animationId.current = requestAnimationFrame(step)
-  }, [props.msPerPetal, pathChunks])
-
-  const restartAnimation = useCallback(() => {
-    if (animationId.current) {
-      cancelAnimationFrame(animationId.current)
-    }
-    animationIndex.current = 0
-    pathRef.current?.setAttribute('d', '')
-    startAnimation()
-  }, [startAnimation])
+    // Esperar a que se aplique el estilo
+    requestAnimationFrame(() => {
+      path.style.transition = `stroke-dashoffset ${vel}s linear`;
+      path.style.strokeDashoffset = '0';
+      path.addEventListener(
+        "transitionend",
+        () => {
+          // Resetear la animación
+          path.style.strokeDashoffset = 'unset';
+          path.style.strokeDasharray = 'unset';
+          path.style.transition = 'all 2s linear, stroke-dashoffset 0s';
+        },
+        { once: true }
+      );
+    });
+  }, [vel])
 
   useImperativeHandle(ref, () => ({
-    redraw: restartAnimation,
+    redraw: startAnimation,
     download: handleDownload,
   }))
 
@@ -116,68 +96,23 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   // animation effect
   useEffect(() => {
-    restartAnimation()
-
-    return () => {
-      if (animationId.current) {
-        cancelAnimationFrame(animationId.current)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    props.laps,
-    props.petals,
-    props.pointDistancePercentage,
-  ])
-
-  useEffect(() => {
-    if (animationIndex.current < pathChunks.length) {
-      startAnimation()
-    }
-    return () => {
-      if (animationId.current) {
-        cancelAnimationFrame(animationId.current)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.msPerPetal])
-
-  //viewbox effect
-  useEffect(() => {
-    if (svgRef.current === null) {
-      return
-    }
-    const viewBox = recalculateViewBox({
-      laps: props.laps,
-      petals: props.petals,
-      pointDistancePercentage: props.pointDistancePercentage,
-      strokeWidthPercentage: props.strokeWidthPercentage,
-    })
-    svgRef.current.setAttribute('viewBox', viewBox)
-    // set stroke width
-    svgRef.current.setAttribute(
-      'stroke-width',
-      `${props.strokeWidthPercentage}%`,
-    )
-  }, [
-    props.laps,
-    props.petals,
-    props.pointDistancePercentage,
-    props.strokeWidthPercentage,
-  ])
+    startAnimation()
+  }, [])
 
   return (
-    <svg
+    <StyledSvg
       ref={svgRef}
-      viewBox={`${-CANVAS_MAX_VALUE} ${-CANVAS_MAX_VALUE} ${CANVAS_SIZE} ${CANVAS_SIZE}`}
+      viewBox="-1.1 -1.1 2.2 2.2"
+      strokeWidth={`${props.strokeWidth}%`}
+      vel={vel}
       width="100%"
       height="100%"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ backgroundColor: props.backgroundColor, maxHeight: '70vh' }}
     >
-      <path ref={pathRef} stroke={props.color} />
-    </svg>
+      <path ref={pathRef} stroke={props.color} d={dPath} />
+    </StyledSvg>
   )
 }
 

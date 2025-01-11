@@ -11,7 +11,7 @@ import {
 interface VisualSettingsFormStore {
   color: string
   backgroundColor: string
-  strokeWidthPercentage: number
+  strokeWidth: number
   msPerPetal: number
 }
 
@@ -27,13 +27,13 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
     form.setFieldsValue({
       color: props.spiro.color,
       backgroundColor: props.spiro.backgroundColor,
-      strokeWidthPercentage: props.spiro.strokeWidthPercentage,
+      strokeWidth: props.spiro.strokeWidth,
       msPerPetal: props.spiro.msPerPetal,
     })
   }, [
     props.spiro.color,
     props.spiro.backgroundColor,
-    props.spiro.strokeWidthPercentage,
+    props.spiro.strokeWidth,
     props.spiro.msPerPetal,
     form,
   ])
@@ -53,11 +53,11 @@ function VisualSettingsForm(props: VisualSettingsFormProps) {
             />
           </Form.Item>
         </div>
-        <Form.Item label="thickness:" name="strokeWidthPercentage">
+        <Form.Item label="thickness:" name="strokeWidth">
           <OptionPicker
             options={thicknessOptions}
             onChange={(value) =>
-              props.onEdit({ strokeWidthPercentage: Number(value) })
+              props.onEdit({ strokeWidth: Number(value) })
             }
           />
         </Form.Item>

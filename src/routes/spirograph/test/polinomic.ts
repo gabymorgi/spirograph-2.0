@@ -11,10 +11,10 @@ export function polinomicFunction(coefficients: number[], x: number): number {
   return coefficients.reduce((sum, c, i) => sum + c * Math.pow(x, i), 0);
 }
 
-export function findRationalCoefficients(points: Point[], degreeP: number, degreeQ: number) {
-  const totalCoefficients = degreeP + degreeQ + 2; // Incluye a_0...a_m y b_0...b_n
-  if (points.length < totalCoefficients) {
-    throw new Error("Se necesitan al menos " + totalCoefficients + " puntos para ajustar el polinomio racional");
+export function findRationalCoefficients(points: Point[], degreeQ: number = 0) {
+  const degreeP = points.length - degreeQ - 2;
+  if (degreeP < 0) {
+    throw new Error("Se necesitan al menos " + degreeQ + 2 + " puntos para ajustar el polinomio racional");
   }
   const matrix: number[][] = [];
   const vector: number[] = [];
@@ -33,9 +33,16 @@ export function findRationalCoefficients(points: Point[], degreeP: number, degre
     }
 
     matrix.push(row);
-    vector.push(0); // Ecuación p(x) - y * q(x) = 0
+    vector.push(y);
   }
 
   // Resuelve el sistema lineal
   return gaussianElimination(matrix, vector);
+}
+
+export function rationalFunction(coefficients: number[], degreeQ: number, x: number): number {
+  const degreeP = coefficients.length - degreeQ - 1;
+  const p = coefficients.slice(0, degreeP + 1).reduce((sum, c, i) => sum + c * Math.pow(x, i), 0);
+  const q = coefficients.slice(degreeP + 1).reduce((sum, c, i) => sum + c * Math.pow(x, i + 1), 1);
+  return p / q;
 }

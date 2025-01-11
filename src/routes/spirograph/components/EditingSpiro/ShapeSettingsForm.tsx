@@ -7,8 +7,8 @@ import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
 import {
   lapsOptions,
-  pointDistanceBaseOptions,
-  pointDistanceOptions,
+  distanceBaseOptions,
+  distanceOptions,
 } from './formOptions'
 import { normalizeValue } from './formUtils'
 import InputNumber from '@/ui-kit/InputNumber'
@@ -16,7 +16,7 @@ import InputNumber from '@/ui-kit/InputNumber'
 interface ShapeSettingsFormStore {
   laps: number
   petals: number
-  pointDistancePercentage: number
+  distance: number
 }
 
 interface ShapeSettingsFormProps {
@@ -33,9 +33,9 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   function recalculateSpiknessOptions(laps: string | number) {
     if (laps === null) return
     setSpiknessOptions(
-      pointDistanceBaseOptions.map((option, index) => ({
+      distanceBaseOptions.map((option, index) => ({
         ...option,
-        icon: pointDistanceOptions[Number(laps)][index],
+        icon: distanceOptions[Number(laps)][index],
       })),
     )
   }
@@ -84,13 +84,9 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
 
   function randomizeSpiro() {
     const petals = Math.floor(Math.random() * 98) + 3
-    const pointDistancePercentage = Math.floor(Math.random() * 5) * 20 + 10
+    const distance = Math.floor(Math.random() * 5) * 20 + 10
     const laps = Math.floor(Math.random() * 6)
-    form.setFieldsValue({
-      petals: petals,
-      laps: laps,
-      pointDistancePercentage: pointDistancePercentage,
-    })
+    form.setFieldsValue({ petals, laps, distance })
     recalculateCurlingOptions(petals)
     form.submit()
   }
@@ -98,11 +94,11 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
   useEffect(() => {
     form.setFieldsValue({
       petals: props.spiro.petals,
-      pointDistancePercentage: props.spiro.pointDistancePercentage,
+      distance: props.spiro.distance,
     })
     recalculateCurlingOptions(props.spiro.petals)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, props.spiro.petals, props.spiro.pointDistancePercentage])
+  }, [form, props.spiro.petals, props.spiro.distance])
 
   return (
     <div className="flex flex-col">
@@ -128,7 +124,7 @@ function ShapeSettingsForm(props: ShapeSettingsFormProps) {
         </Form.Item>
         <Form.Item
           label="Spikiness" // translate: "Puntiagudez" antonimo: "redondez" o "curvatura"
-          name="pointDistancePercentage"
+          name="distance"
         >
           <OptionPicker options={spiknessOptions} />
         </Form.Item>

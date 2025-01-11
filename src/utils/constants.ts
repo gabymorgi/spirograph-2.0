@@ -20,8 +20,8 @@ export const HYPOTROCHOID_FIXED_RADIUS = MAX_VALUE
 
 export const defaultPetals = 67
 export const defaultLaps = 53
-export const defaultPointDistancePercentage = 50
-export const defaultStrokeWidthPercentage = 0.4
+export const defaultDistance = 0.5
+export const defaultstrokeWidth = 1
 export const defaultColor = '#ffff00'
 export const defaultBackgroundColor = '#00000000'
 export const defaultMsPerPetal = 200

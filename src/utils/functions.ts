@@ -1,55 +1,15 @@
-import { HALF_PI, HYPOTROCHOID_FIXED_RADIUS, PADDING } from './constants'
+import { HALF_PI, HYPOTROCHOID_FIXED_RADIUS } from './constants'
 import { getMovingRadius } from './maths'
 import { PathChunk, Point } from './types'
-
-export function clipViewBox(points: Point[]): string {
-  let minX = points[0].x
-  let minY = points[0].y
-  let maxX = points[0].x
-  let maxY = points[0].y
-
-  points.forEach((point) => {
-    minX = Math.min(minX, point.x)
-    minY = Math.min(minY, point.y)
-    maxX = Math.max(maxX, point.x)
-    maxY = Math.max(maxY, point.y)
-  })
-
-  const width = maxX - minX + PADDING * 2
-  const height = maxY - minY + PADDING * 2
-  return `${minX - PADDING} ${minY - PADDING} ${width} ${height}`
-}
-
-interface RecalculateViewBoxParams {
-  laps: number
-  petals: number
-  pointDistancePercentage: number
-  strokeWidthPercentage: number
-}
-
-export function recalculateViewBox(spiro: RecalculateViewBoxParams): string {
-  const movingRadius = getMovingRadius(
-    HYPOTROCHOID_FIXED_RADIUS,
-    spiro.petals,
-    spiro.laps,
-  )
-  const max =
-    HYPOTROCHOID_FIXED_RADIUS -
-    movingRadius * (1 - spiro.pointDistancePercentage * 0.01)
-  const maxWithPadding = max + PADDING
-  const width = maxWithPadding * 2
-  const viewBox = `${-maxWithPadding} ${-maxWithPadding} ${width} ${width}`
-  return viewBox
-}
 
 export function getAwesomeSpiro(
   laps: number,
   petals: number,
-  pointDistancePercentage: number,
+  distance: number,
 ): PathChunk[] {
   const fixedRadius = HYPOTROCHOID_FIXED_RADIUS
   const movingRadius = getMovingRadius(fixedRadius, petals, laps)
-  const pointDistance = (movingRadius / 100) * pointDistancePercentage
+  const pointDistance = movingRadius * distance
   let isInverted = pointDistance > fixedRadius - movingRadius
 
   let step = (laps * Math.PI) / petals
