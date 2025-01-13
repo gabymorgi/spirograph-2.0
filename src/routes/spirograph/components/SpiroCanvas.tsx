@@ -1,7 +1,6 @@
 import {
   useEffect,
   useCallback,
-  useMemo,
   useRef,
   useImperativeHandle,
   forwardRef,
@@ -11,19 +10,16 @@ import { toPng } from 'html-to-image'
 import { message } from 'antd'
 import styled from 'styled-components'
 import useSpiro from '@/hooks/useSpiro'
+import { defaultMsPerPetal } from '@/utils/constants'
 
-interface StyledSvgProps {
-  vel: number
-}
-
-const StyledSvg = styled.svg<StyledSvgProps>`
+const StyledSvg = styled.svg`
   path {
     transition: all 2s linear;
   }
 `
 
 export interface SpiroCanvasHandle {
-  redraw: () => void
+  redraw: (vel: number) => void
   download: () => void
 }
 
@@ -38,17 +34,17 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   const dPath = useSpiro(props.petals, props.laps, props.distance)
 
-  const vel = useMemo(() => {
-    return (props.msPerPetal || 0) * props.petals / 1000
-  }, [props.msPerPetal, props.petals])
-
-  const startAnimation = useCallback(() => {
+  const startAnimation = useCallback((msPerPetal: number) => {
+    if (msPerPetal === 0) {
+      return
+    }
     const path = pathRef.current
     if (!path) {
       return
     }
     const length = path.getTotalLength().toString();
     console.log(length)
+    const vel = (msPerPetal || 0) * props.petals / 1000
 
     // Borrar la animación anterior
     path.style.transition = 'none';
@@ -70,7 +66,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         { once: true }
       );
     });
-  }, [vel])
+  }, [props.petals])
 
   useImperativeHandle(ref, () => ({
     redraw: startAnimation,
@@ -96,7 +92,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   // animation effect
   useEffect(() => {
-    startAnimation()
+    startAnimation(defaultMsPerPetal)
   }, [])
 
   return (
@@ -104,12 +100,11 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       ref={svgRef}
       viewBox="-1.1 -1.1 2.2 2.2"
       strokeWidth={`${props.strokeWidth}%`}
-      vel={vel}
       width="100%"
       height="100%"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ backgroundColor: props.backgroundColor, maxHeight: '70vh' }}
+      style={{ maxHeight: '70vh' }}
     >
       <path ref={pathRef} stroke={props.color} d={dPath} />
     </StyledSvg>

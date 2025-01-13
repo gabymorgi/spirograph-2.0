@@ -1,6 +1,5 @@
 import { StringParam, NumberParam, withDefault } from 'use-query-params'
 import {
-  defaultBackgroundColor,
   defaultColor,
   defaultLaps,
   defaultMsPerPetal,
@@ -21,6 +20,5 @@ export const SpiroParam = {
   ),
   strokeWidth: withDefault(NumberParam, defaultstrokeWidth),
   color: withDefault(StringParam, defaultColor),
-  backgroundColor: withDefault(StringParam, defaultBackgroundColor),
   msPerPetal: withDefault(NumberParam, defaultMsPerPetal),
 }

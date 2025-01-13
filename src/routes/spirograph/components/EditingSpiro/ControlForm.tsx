@@ -1,4 +1,4 @@
-import { mdiDownloadBoxOutline, mdiRestart, mdiHeartPlusOutline } from '@mdi/js'
+import { mdiDownloadBoxOutline, mdiHeartPlusOutline, mdiGesture } from '@mdi/js'
 import styled from 'styled-components'
 import { SpiroAnimationSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
@@ -6,6 +6,9 @@ import Button from '@/ui-kit/Button'
 import { useFavSpiros } from '@/contexts/favSpiros'
 import { SpiroCanvasHandle } from '../SpiroCanvas'
 import EditableInput from '@/ui-kit/EditableInput'
+import { Dropdown, Space } from 'antd'
+import { animationSpeedOptions } from './formOptions'
+import { useMemo, useState } from 'react'
 
 const Container = styled.div`
   display: flex;
@@ -26,14 +29,36 @@ interface ControlFormProps {
 
 function ControlForm(props: ControlFormProps) {
   const { addSpiro } = useFavSpiros()
+  const [ selectedVel, setSelectedVel ] = useState(0)
+
+  const selectedIcon = useMemo(() => {
+    return animationSpeedOptions.find(option => option.value === selectedVel)?.icon || ''
+  }, [selectedVel])
+  // const items = useMemo(() => {
+  //   return animationSpeedOptions.map(option => (
+  //     {
+  //       key: option.label,
+  //       label: option.label,
+  //       icon: option.icon,
+  //       onClick: () => {
+  //         setSelectedVel(option.value)
+  //         props.onEdit({ msPerPetal: option.value })
+  //       },
+  //     }
+  //   ))
+  // }, [props.selectedVel])
 
   function handleSave() {
-    const { msPerPetal, ...favSpiro } = props.spiro
-    addSpiro(favSpiro)
+    addSpiro(props.spiro)
   }
 
-  function handleReDraw() {
-    props.spiroRef.current?.redraw()
+  function handleChangeVel(vel: number) {
+    setSelectedVel(vel)
+    handleReDraw(vel)
+  }
+
+  function handleReDraw(vel: number) {
+    props.spiroRef.current?.redraw(vel)
   }
 
   function handleDownload() {
@@ -61,12 +86,31 @@ function ControlForm(props: ControlFormProps) {
         id={props.spiro.id}
         name={props.spiro.name}
       />
-      <Button
-        type="primary"
-        tooltip="Redraw"
-        onClick={handleReDraw}
-        icon={<Icon path={mdiRestart} />}
-      />
+      <Space.Compact block>
+        <Dropdown
+          placement="bottomRight"
+          menu={{
+            items: animationSpeedOptions.map(option => (
+              {
+                key: option.label,
+                label: option.label,
+                icon: <Icon path={option.icon} />,
+                onClick: () => handleChangeVel(option.value),
+              })),
+          }}
+        >
+          <Button icon={<Icon path={selectedIcon} />} />
+        </Dropdown>
+        <Button
+          icon={<Icon path={mdiGesture} />}
+          type="primary"
+          htmlType="submit"
+          onClick={() => handleReDraw(selectedVel)}
+        >
+          Draw it!
+        </Button>
+      </Space.Compact>
+      
     </Container>
   )
 }

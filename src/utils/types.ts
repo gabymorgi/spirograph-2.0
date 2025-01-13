@@ -25,7 +25,6 @@ export interface SpiroSettings {
   petals: number
   distance: number
   color: string
-  backgroundColor: string
   strokeWidth: number
 }
 
@@ -38,7 +37,6 @@ export function isSpiroSetting(arg: any): arg is SpiroSettings {
     typeof arg.petals === 'number' &&
     typeof arg.distance === 'number' &&
     typeof arg.color === 'string' &&
-    typeof arg.backgroundColor === 'string' &&
     typeof arg.strokeWidth === 'number'
   )
 }

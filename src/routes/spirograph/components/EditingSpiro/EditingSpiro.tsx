@@ -1,8 +1,7 @@
 import SpiroCanvas, { SpiroCanvasHandle } from '../SpiroCanvas'
 import { useRef } from 'react'
 import AnimationControlForm from './ControlForm'
-import ShapeSettingsForm from './ShapeSettingsForm'
-import VisualSettingsForm from './VisualSettingsForm'
+import SettingsForm from './SettingsForm'
 import { SpiroParam } from '@/utils/queryParamsUtils'
 import { SpiroAnimationSettings } from '@/utils/types'
 import { useQueryParams } from 'use-query-params'
@@ -27,10 +26,7 @@ function EditingSpiro() {
 
   return (
     <div className="flex gap-16">
-      <div className="flex gap-16">
-        <ShapeSettingsForm spiro={spiro} onEdit={handleEditWithName} />
-        <VisualSettingsForm spiro={spiro} onEdit={handleEdit} />
-      </div>
+      <SettingsForm spiro={spiro} onEdit={handleEditWithName} />
       <div className="flex-grow">
         <AnimationControlForm
           spiroRef={spiroRef}
