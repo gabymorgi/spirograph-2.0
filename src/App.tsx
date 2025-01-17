@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import Button from './ui-kit/Button'
 import ReverseButton from './ui-kit/ReverseButton'
 import { useThemeContext } from './contexts/ThemeContext'
-import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router'
 import Fractal from './routes/fractal/Fractal'
 import Spirograph from './routes/spirograph/Spirograph'
 
@@ -65,6 +65,7 @@ function App() {
           </ReverseButton>
         </div>
       </Header>
+      {/* <Comparator /> */}
       <Layout.Content className="p-middle">
         <Routes>
           <Route path="/" element={<Navigate to="/spirograph" />} />

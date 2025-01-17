@@ -1,4 +1,4 @@
-import { mdiDownloadBoxOutline, mdiHeartPlusOutline, mdiGesture } from '@mdi/js'
+import { mdiDownloadBoxOutline, mdiHeartPlusOutline } from '@mdi/js'
 import styled from 'styled-components'
 import { SpiroAnimationSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
@@ -8,7 +8,8 @@ import { SpiroCanvasHandle } from '../SpiroCanvas'
 import EditableInput from '@/ui-kit/EditableInput'
 import { Dropdown, Space } from 'antd'
 import { animationSpeedOptions } from './formOptions'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { defaultMsPerPetal } from '@/utils/constants'
 
 const Container = styled.div`
   display: flex;
@@ -29,24 +30,20 @@ interface ControlFormProps {
 
 function ControlForm(props: ControlFormProps) {
   const { addSpiro } = useFavSpiros()
-  const [ selectedVel, setSelectedVel ] = useState(0)
+  const [selectedVel, setSelectedVel] = useState(defaultMsPerPetal)
 
   const selectedIcon = useMemo(() => {
     return animationSpeedOptions.find(option => option.value === selectedVel)?.icon || ''
   }, [selectedVel])
-  // const items = useMemo(() => {
-  //   return animationSpeedOptions.map(option => (
-  //     {
-  //       key: option.label,
-  //       label: option.label,
-  //       icon: option.icon,
-  //       onClick: () => {
-  //         setSelectedVel(option.value)
-  //         props.onEdit({ msPerPetal: option.value })
-  //       },
-  //     }
-  //   ))
-  // }, [props.selectedVel])
+
+  const items = useMemo(() => {
+    return animationSpeedOptions.map(option => ({
+      key: option.label,
+      label: option.label,
+      icon: <Icon path={option.icon} />,
+      onClick: () => handleChangeVel(option.value),
+    }))
+  }, [])
 
   function handleSave() {
     addSpiro(props.spiro)
@@ -69,48 +66,43 @@ function ControlForm(props: ControlFormProps) {
     props.onEdit({ name })
   }
 
+  // animation effect
+  useEffect(() => {
+    handleReDraw(selectedVel)
+  }, [])
+
   return (
     <Container>
-      <Button
-        tooltip="Save to Favs"
-        onClick={handleSave}
-        icon={<Icon path={mdiHeartPlusOutline} />}
-      />
-      <Button
-        tooltip="Download Spiro"
-        onClick={handleDownload}
-        icon={<Icon path={mdiDownloadBoxOutline} />}
-      />
-      <EditableInput
-        onChange={handleNameChange}
-        id={props.spiro.id}
-        name={props.spiro.name}
-      />
       <Space.Compact block>
-        <Dropdown
-          placement="bottomRight"
-          menu={{
-            items: animationSpeedOptions.map(option => (
-              {
-                key: option.label,
-                label: option.label,
-                icon: <Icon path={option.icon} />,
-                onClick: () => handleChangeVel(option.value),
-              })),
-          }}
-        >
-          <Button icon={<Icon path={selectedIcon} />} />
+        <Button
+          tooltip="Save to Favs"
+          onClick={handleSave}
+          icon={<Icon path={mdiHeartPlusOutline} />}
+        />
+        <Button
+          tooltip="Download Spiro"
+          onClick={handleDownload}
+          icon={<Icon path={mdiDownloadBoxOutline} />}
+        />
+        <EditableInput
+          onChange={handleNameChange}
+          id={props.spiro.id}
+          name={props.spiro.name}
+        />
+
+        <Dropdown menu={{ items }}>
+          <Button color="primary" variant='outlined' icon={<Icon path={selectedIcon} />} />
         </Dropdown>
         <Button
-          icon={<Icon path={mdiGesture} />}
-          type="primary"
+          color="primary"
+          variant='outlined'
           htmlType="submit"
           onClick={() => handleReDraw(selectedVel)}
         >
           Draw it!
         </Button>
       </Space.Compact>
-      
+
     </Container>
   )
 }

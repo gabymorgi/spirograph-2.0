@@ -1,19 +1,12 @@
+import { polinomicFunction } from "@/routes/spirograph/test/polinomic"
 import { pathChunksToString } from "@/utils/canvasUtils"
 import { HALF_PI, HYPOTROCHOID_FIXED_RADIUS } from "@/utils/constants"
-import { getHypotrochoidPoint } from "@/utils/functions"
 import { getMovingRadius } from "@/utils/maths"
 import { PathChunk, Point } from "@/utils/types"
-import { useMemo, useRef } from "react"
+import { useMemo } from "react"
+import { bCoef, mCoef } from '@/utils/data.json'
 
 function useSpiro(petals: number, laps: number, distance: number) {
-  const spiroInnerData = useRef({
-    p: 0,
-    l: 0,
-    r: 0,
-    b: 0,
-    m: 0,
-  })
-
   function normalizePath(awesomeSpiro: PathChunk[]): PathChunk[] {
     const divisor = awesomeSpiro[0].points[0].x
     return awesomeSpiro.map((v) => ({ 
@@ -22,73 +15,25 @@ function useSpiro(petals: number, laps: number, distance: number) {
     }))
   }
 
-  function getSizes(d: number): [number, number] {
-    const innerData = spiroInnerData.current
-    let step = (innerData.l * Math.PI) / innerData.p
-    const samplingStep = step / 2
-    const pointDistance = innerData.r * d
-    
-    const points: Point[] = []
-    for (let i = 0; i <= 2; i++) {
-      points.push(getHypotrochoidPoint(
-        HYPOTROCHOID_FIXED_RADIUS,
-        innerData.r,
-        pointDistance,
-        samplingStep * i,
-      ))
-    }
-    const theta = step - HALF_PI
-    const Zx = 4/3 * (2 * points[1].x - points[0].x - points[2].x)
-    const Zy = 4/3 * (2 * points[1].y - points[0].y - points[2].y)
-    return [
-      Zy - Zx * Math.tan(theta),
-      Zx/Math.cos(theta),
-    ]
-  }
-
-  type Line = { m: number; b: number };
-  function getLineParams(points: [Point, Point]): Line {
-    const deltaX = points[1].x - points[0].x;
-    const deltaY = points[1].y - points[0].y;
-    let m: number = deltaX === 0 ? Infinity : deltaY / deltaX;
-
-    let b = points[0].y - m * points[0].x
-
-    return { m, b };
-  }
-
   const path: string = useMemo(() => {
     if (!petals || !laps || !distance) {
       console.warn('Invalid parameters', petals, laps, distance)
       return ''
     }
-    const innerData = spiroInnerData.current
-    if (petals !== innerData.p || laps !== innerData.l) {
-      innerData.p = petals
-      innerData.l = laps
-      innerData.r = getMovingRadius(HYPOTROCHOID_FIXED_RADIUS, petals, laps)
-      const size0 = getSizes(0)
-      const size100 = getSizes(1)
-      const lineParams = getLineParams(
-        [{ x: 0, y: size0[0] },
-        { x: 100, y: size100[0] }]
-      )
-
-      innerData.b = lineParams.b
-      innerData.m = lineParams.m
-    }
-    
+    const radius = getMovingRadius(HYPOTROCHOID_FIXED_RADIUS, petals, laps)
+    const innerDataB = radius < 60 ? polinomicFunction(bCoef, radius) : polinomicFunction(mCoef, 120 - radius)
+    const innerDataM = radius < 60 ? polinomicFunction(mCoef, radius) : polinomicFunction(bCoef, 120 - radius)
     const sizes = [
-      innerData.b + innerData.m * distance * 100,
-      innerData.b - innerData.m * distance * 100
+      innerDataB - innerDataM * distance,
+      innerDataB + innerDataM * distance
     ]
 
-    const pointDistance = innerData.r * distance
-    let isInverted = pointDistance > HYPOTROCHOID_FIXED_RADIUS - innerData.r
+    const pointDistance = radius * distance
+    let isInverted = pointDistance > HYPOTROCHOID_FIXED_RADIUS - radius
     const invertedSizes = [sizes[1], sizes[0]]
 
-    const maxRadius = HYPOTROCHOID_FIXED_RADIUS - innerData.r + pointDistance
-    let minRadius = HYPOTROCHOID_FIXED_RADIUS - innerData.r - pointDistance
+    const maxRadius = HYPOTROCHOID_FIXED_RADIUS - radius + pointDistance
+    let minRadius = HYPOTROCHOID_FIXED_RADIUS - radius - pointDistance
 
     let step = (laps * Math.PI) / petals
     if (isInverted) {

@@ -12,15 +12,15 @@ export function nonCommonDivisors(number: number): number[] {
   return result
 }
 
-export function selectEvenlySpacedValues(
-  numbers: number[],
+export function selectEvenlySpacedValues<T>(
+  numbers: T[],
   amount: number,
-): number[] {
+): T[] {
   if (numbers.length <= amount) {
     return numbers
   }
 
-  const result: number[] = []
+  const result: T[] = []
   const interval = (numbers.length - 1) / (amount - 1)
 
   // select evenly spaced values

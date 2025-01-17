@@ -21,7 +21,7 @@ function SpriroInner(props: Props) {
   const awesomeElements = generateSVGElements(norm)
 
   return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox={props.viewBox || "-1.5 -1.5 3 3"}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox={props.viewBox || "-1.1 -1.1 2.2 2.2"}>
         {props.showControls ?? awesomeElements.map((element, index) => {
           if (element.type === 'circle') {
             const { cx, cy, r, fill } = element

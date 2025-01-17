@@ -2,7 +2,7 @@ import { Button, ColorPicker, Form, Select } from 'antd'
 import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix } from '@mdi/js'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
 import {
@@ -30,6 +30,7 @@ interface SettingsFormProps {
 
 function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
+  const previousCurlingRel = useRef<number>(props.spiro.laps / props.spiro.petals)
   
   const spiknessOptions: Option[] = useMemo(() => {
     if (props.spiro.laps === null) return []
@@ -56,6 +57,11 @@ function SettingsForm(props: SettingsFormProps) {
     return options
   }, [props.spiro.petals])
 
+  function handleChangeLaps(laps: number) {
+    previousCurlingRel.current = laps / props.spiro.petals
+    props.onEdit({ laps })
+  }
+
   function handleChangePetals(petals: string | number | null) {
     if (petals === null) return
     petals = Number(petals)
@@ -63,9 +69,18 @@ function SettingsForm(props: SettingsFormProps) {
       nonCommonDivisors(petals),
       6,
     )
-    const prevRatio = form.getFieldValue('laps') / props.spiro.petals
-    const newIndex = values.findIndex((value) => value / petals > prevRatio)
-    const newValue = newIndex > -1 ? values[newIndex] : values[values.length - 1]
+    let newIndex = 0
+    let diff = 1
+    for (let i = 0; i < values.length; i++) {
+      const newDiff = Math.abs(values[i] / petals - previousCurlingRel.current)
+      if (newDiff < diff) {
+        diff = newDiff
+        newIndex = i
+      } else {
+        break
+      }
+    }
+    const newValue = values[newIndex]
 
     form.setFieldValue('laps', newValue)
     props.onEdit({
@@ -75,15 +90,13 @@ function SettingsForm(props: SettingsFormProps) {
   }
 
   function randomizeSpiro() {
-    const petals = Math.floor(Math.random() * 98) + 3
-    const distance = Math.floor(Math.random() * 5) * 20 + 10
-    const laps = Math.floor(Math.random() * 6)
+    const petals = Math.floor(Math.log2(Math.random() * 10000)) + 3
+    const options = nonCommonDivisors(petals)
+    const laps = options[Math.floor(Math.random() * options.length)]
+    const distance = (Math.floor(Math.random() * 5) * 20 + 10) / 100
     form.setFieldsValue({ petals, laps, distance })
-    // handleChangePetals(petals)
-    form.submit()
+    props.onEdit({ petals, laps, distance })
   }
-
-  console.log(form.getFieldsValue())
 
   return (
     <div className="flex flex-col">
@@ -103,7 +116,7 @@ function SettingsForm(props: SettingsFormProps) {
         <Form.Item label="Petals curling" name="laps">
           <OptionPicker
             options={curlingOptions}
-            onChange={(laps) => props.onEdit({ laps })}
+            onChange={handleChangeLaps}
           />
         </Form.Item>
         <Form.Item
@@ -115,7 +128,7 @@ function SettingsForm(props: SettingsFormProps) {
         <div className="flex gap-16">
           <Form.Item label="Line:" name="color">
             <ColorPicker
-              onChange={(_value, hex) => props.onEdit({ color: hex })}
+              onChangeComplete={(value) => props.onEdit({ color: value.toHexString() })}
             />
           </Form.Item>
           <Form.Item label="thickness:" name="strokeWidth">

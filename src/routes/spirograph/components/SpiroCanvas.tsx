@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useCallback,
   useRef,
   useImperativeHandle,
@@ -10,7 +9,6 @@ import { toPng } from 'html-to-image'
 import { message } from 'antd'
 import styled from 'styled-components'
 import useSpiro from '@/hooks/useSpiro'
-import { defaultMsPerPetal } from '@/utils/constants'
 
 const StyledSvg = styled.svg`
   path {
@@ -34,7 +32,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 
   const dPath = useSpiro(props.petals, props.laps, props.distance)
 
-  const startAnimation = useCallback((msPerPetal: number) => {
+  const handleRedraw = useCallback((msPerPetal: number) => {
     if (msPerPetal === 0) {
       return
     }
@@ -42,8 +40,8 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     if (!path) {
       return
     }
+    console.log("here", msPerPetal)
     const length = path.getTotalLength().toString();
-    console.log(length)
     const vel = (msPerPetal || 0) * props.petals / 1000
 
     // Borrar la animación anterior
@@ -69,7 +67,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   }, [props.petals])
 
   useImperativeHandle(ref, () => ({
-    redraw: startAnimation,
+    redraw: handleRedraw,
     download: handleDownload,
   }))
 
@@ -89,11 +87,6 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
         message.error(err.message)
       })
   }, [props.name])
-
-  // animation effect
-  useEffect(() => {
-    startAnimation(defaultMsPerPetal)
-  }, [])
 
   return (
     <StyledSvg
