@@ -28,6 +28,17 @@ export interface SpiroSettings {
   strokeWidth: number
 }
 
+export interface SpiroParams {
+  petals?: number
+  laps?: number
+  minRadius: number
+  maxRadius: number
+  minSize: number
+  maxSize: number
+  stepAngle: number
+  anglesAmount: number
+}
+
 export function isSpiroSetting(arg: any): arg is SpiroSettings {
   return (
     arg &&

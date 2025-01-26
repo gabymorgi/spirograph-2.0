@@ -5,13 +5,13 @@ import { generateSVGElements } from '../svgUtils'
 interface Props {
   l: number
   p: number
-  c: number
+  d: number
   viewBox?: string
   showControls?: boolean
 }
 
 function SpriroInner(props: Props) {
-  const awesomeSpiro = getAwesomeSpiro(props.l, props.p, props.c)
+  const awesomeSpiro = getAwesomeSpiro(props.l, props.p, props.d)
   const divisor = awesomeSpiro[0].points[0].x
   const norm = awesomeSpiro.map((v) => ({ 
     points: v.points.map((p) => ({ x: p.x / divisor, y: p.y / divisor })),

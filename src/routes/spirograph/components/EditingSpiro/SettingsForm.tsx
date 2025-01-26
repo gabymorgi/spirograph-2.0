@@ -13,6 +13,7 @@ import {
 } from './formOptions'
 import { normalizeValue } from './formUtils'
 import InputNumber from '@/ui-kit/InputNumber'
+import styled from 'styled-components'
 
 interface SettingsFormStore {
   laps: number
@@ -27,6 +28,10 @@ interface SettingsFormProps {
   spiro: SpiroSettings
   onEdit: (partialSpiro: Partial<SettingsFormStore>) => void
 }
+
+const StyledWrapper = styled.div`
+  min-width: 232px;
+`
 
 function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
@@ -90,7 +95,7 @@ function SettingsForm(props: SettingsFormProps) {
   }
 
   function randomizeSpiro() {
-    const petals = Math.floor(Math.log2(Math.random() * 10000)) + 3
+    const petals = Math.floor(Math.random() * 12) + 3
     const options = nonCommonDivisors(petals)
     const laps = options[Math.floor(Math.random() * options.length)]
     const distance = (Math.floor(Math.random() * 5) * 20 + 10) / 100
@@ -99,7 +104,7 @@ function SettingsForm(props: SettingsFormProps) {
   }
 
   return (
-    <div className="flex flex-col">
+    <StyledWrapper className="flex flex-col">
       <Form
         form={form}
         layout="vertical"
@@ -111,7 +116,7 @@ function SettingsForm(props: SettingsFormProps) {
           </Select>
         </Form.Item>
         <Form.Item label="Petals amount" name="petals">
-          <InputNumber min={3} max={100} onChange={handleChangePetals} />
+          <InputNumber min={3} max={50} onChange={handleChangePetals} />
         </Form.Item>
         <Form.Item label="Petals curling" name="laps">
           <OptionPicker
@@ -144,7 +149,7 @@ function SettingsForm(props: SettingsFormProps) {
           I feel lucky
         </Button>
       </Form>
-    </div>
+    </StyledWrapper>
   )
 }
 

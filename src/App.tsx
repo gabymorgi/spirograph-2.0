@@ -65,6 +65,7 @@ function App() {
           </ReverseButton>
         </div>
       </Header>
+      {/* <SpiroAnim /> */}
       {/* <Comparator /> */}
       <Layout.Content className="p-middle">
         <Routes>

@@ -20,7 +20,11 @@ interface SVGLineProps {
 
 export type SVGElementProps = SVGCirlceProps | SVGLineProps
 
-export function generateSVGElements(commands: PathChunk[]) {
+interface SVGPathOptions {
+  cpColor?: string
+  pointColor?: string
+}
+export function generateSVGElements(commands: PathChunk[], options?: SVGPathOptions): SVGElementProps[] {
   const segmentsLength: [number[], number[]] = [[], []]
   const svgElements: SVGElementProps[] = []
   let currentPoint = { x: 0, y: 0 } // Mantener la posición actual
@@ -42,8 +46,8 @@ export function generateSVGElements(commands: PathChunk[]) {
           y1: currentPoint.y,
           x2: control1.x,
           y2: control1.y,
-          stroke: '#ff0',
-          strokeWidth: 0.02,
+          stroke: options?.cpColor || '#ff0',
+          strokeWidth: 0.01,
         })
 
         // Línea desde el punto final al segundo punto de control
@@ -53,8 +57,8 @@ export function generateSVGElements(commands: PathChunk[]) {
           y1: endPoint.y,
           x2: control2.x,
           y2: control2.y,
-          stroke: '#ff0',
-          strokeWidth: 0.02,
+          stroke: options?.cpColor || '#ff0',
+          strokeWidth: 0.01,
         })
 
         const seg1 = Math.sqrt(
@@ -78,22 +82,22 @@ export function generateSVGElements(commands: PathChunk[]) {
           type: 'circle',
           cx: control1.x,
           cy: control1.y,
-          r: 0.05,
-          fill: '#ff0',
+          r: 0.02,
+          fill: options?.cpColor || '#ff0',
         })
         svgElements.push({
           type: 'circle',
           cx: control2.x,
           cy: control2.y,
-          r: 0.05,
-          fill: '#ff0',
+          r: 0.02,
+          fill: options?.cpColor || '#ff0',
         })
         svgElements.push({
           type: 'circle',
           cx: endPoint.x,
           cy: endPoint.y,
-          r: 0.05,
-          fill: '#f00',
+          r: 0.02,
+          fill: options?.pointColor || '#f00',
         })
 
         currentPoint = endPoint // Actualizar la posición

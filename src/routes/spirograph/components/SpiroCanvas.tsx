@@ -3,18 +3,13 @@ import {
   useRef,
   useImperativeHandle,
   forwardRef,
+  useEffect,
 } from 'react'
-import { SpiroAnimationSettings, SpiroSettings } from '@/utils/types'
+import { SpiroAnimationSettings, SpiroParams, SpiroSettings } from '@/utils/types'
 import { toPng } from 'html-to-image'
 import { message } from 'antd'
-import styled from 'styled-components'
-import useSpiro from '@/hooks/useSpiro'
-
-const StyledSvg = styled.svg`
-  path {
-    transition: all 2s linear;
-  }
-`
+import { getKeyPoints, getPath, getSpiroParams, getSpiroTransition, getTransitionDuration } from '@/utils/functions'
+import { pathChunksToString } from '@/utils/canvasUtils'
 
 export interface SpiroCanvasHandle {
   redraw: (vel: number) => void
@@ -29,8 +24,40 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
 > = (props, ref) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const pathRef = useRef<SVGPathElement>(null)
+  const animationId = useRef<number | null>(null)
+  const prevSpiro = useRef<SpiroParams | null>(null)
+  const postSpiro = useRef<SpiroParams | null>(null)
 
-  const dPath = useSpiro(props.petals, props.laps, props.distance)
+  useEffect(() => {
+    postSpiro.current = getSpiroParams(props.petals, props.laps, props.distance)
+    if (animationId.current) {
+      cancelAnimationFrame(animationId.current)
+    }
+    if (!prevSpiro.current) {
+      pathRef.current?.setAttribute('d', pathChunksToString(getPath(getKeyPoints(postSpiro.current))))
+    } else {
+      const duration = getTransitionDuration(prevSpiro.current as Required<SpiroParams>, postSpiro.current as Required<SpiroParams>)
+      let start: number = 0
+      function step(timestamp: number) {
+        if (!prevSpiro.current || !postSpiro.current) return;
+        if (!start) start = timestamp
+        const progress = (timestamp - start) / duration
+        if (progress < 1) {
+          const path = getSpiroTransition(prevSpiro.current, postSpiro.current, progress)
+          pathRef.current?.setAttribute('d', pathChunksToString(path))
+          animationId.current = requestAnimationFrame(step)
+        } else {
+          pathRef.current?.setAttribute('d', pathChunksToString(getPath(getKeyPoints(postSpiro.current))))
+        }
+      }
+  
+      animationId.current = requestAnimationFrame(step)
+    }
+    
+    return () => {
+      prevSpiro.current = postSpiro.current
+    }
+  }, [props.petals, props.laps, props.distance])
 
   const handleRedraw = useCallback((msPerPetal: number) => {
     if (msPerPetal === 0) {
@@ -40,18 +67,17 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
     if (!path) {
       return
     }
-    console.log("here", msPerPetal)
     const length = path.getTotalLength().toString();
     const vel = (msPerPetal || 0) * props.petals / 1000
 
     // Borrar la animación anterior
-    path.style.transition = 'none';
+    // path.style.transition = 'none';
     path.style.strokeDasharray = length;
     path.style.strokeDashoffset = length;
 
     // Esperar a que se aplique el estilo
     requestAnimationFrame(() => {
-      path.style.transition = `stroke-dashoffset ${vel}s linear`;
+      path.style.transition = `all ${vel}s linear`;
       path.style.strokeDashoffset = '0';
       path.addEventListener(
         "transitionend",
@@ -59,7 +85,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
           // Resetear la animación
           path.style.strokeDashoffset = 'unset';
           path.style.strokeDasharray = 'unset';
-          path.style.transition = 'all 2s linear, stroke-dashoffset 0s';
+          path.style.transition = 'none';
         },
         { once: true }
       );
@@ -89,7 +115,7 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
   }, [props.name])
 
   return (
-    <StyledSvg
+    <svg
       ref={svgRef}
       viewBox="-1.1 -1.1 2.2 2.2"
       strokeWidth={`${props.strokeWidth}%`}
@@ -99,8 +125,8 @@ const SpiroCanvas: React.ForwardRefRenderFunction<
       xmlns="http://www.w3.org/2000/svg"
       style={{ maxHeight: '70vh' }}
     >
-      <path ref={pathRef} stroke={props.color} d={dPath} />
-    </StyledSvg>
+      <path ref={pathRef} stroke={props.color} />
+    </svg>
   )
 }
 
