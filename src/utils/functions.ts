@@ -105,6 +105,43 @@ export function getHypotrochoidPoint(
   return { x: x * multiplier, y: y * multiplier }
 }
 
+export function normalizeKeyPoints(keyPoints: Point[], limits: {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}): Point[] {
+  // Obtener los valores mínimos y máximos de x e y
+  // const drawnPoint = keyPoints.filter((_, i) => i % 3 === 1)
+  // const xValues = drawnPoint.map(p => p.x);
+  // const yValues = drawnPoint.map(p => p.y);
+
+  const xMin = limits.minX //Math.min(...xValues);
+  const xMax = limits.maxX //Math.max(...xValues);
+  const yMin = limits.minY //Math.min(...yValues);
+  const yMax = limits.maxY //Math.max(...yValues);
+
+  // Calcular los rangos
+  const xRange = xMax - xMin;
+  const yRange = yMax - yMin;
+
+  // Determinar el rango dominante (el mayor entre xRange e yRange)
+  const dominantRange = Math.max(xRange, yRange);
+
+  // Normalizar los puntos
+  return keyPoints.map(point => {
+    const normalizedX = ((point.x - xMin) / xRange) * 2 - 1; // Normalizar x a [-1, 1]
+    const normalizedY = ((point.y - yMin) / yRange) * 2 - 1; // Normalizar y a [-1, 1]
+
+    // Ajustar el valor menor para preservar la relación de aspecto
+    if (dominantRange === xRange) {
+      return { x: normalizedX, y: normalizedY * (yRange / xRange) };
+    } else {
+      return { x: normalizedX * (xRange / yRange), y: normalizedY };
+    }
+  });
+}
+
 const CACHE_SIZE = 100
 const cache = new Map<string, SpiroParams>();
 
@@ -147,15 +184,15 @@ export function getSpiroParams(p: number, l: number, d: number): SpiroParams {
   return result;
 }
 
-export function getKeyPoints(params: SpiroParams, from: number = 0): Point[] {
+export function getKeyPoints(params: SpiroParams, from: number = 0, parity: 0 | 1 = 0): Point[] {
   const { minRadius, maxRadius, minSize, maxSize, stepAngle, anglesAmount } = params;
   const keyPoints: Point[] = [];
 
   // calculate each point and the control points attached to it
   let angle = from;
   for (let i = 0; i < anglesAmount; i++) {
-    const radius = i % 2 === 0 ? minRadius : maxRadius;
-    const size = i % 2 === 0 ? minSize : maxSize;
+    const radius = i % 2 === parity ? minRadius : maxRadius;
+    const size = i % 2 === parity ? minSize : maxSize;
 
     const point = {
       x: radius * Math.cos(angle),
@@ -216,8 +253,6 @@ function SpiroLerp(pre: SpiroParams, post: SpiroParams, t: number): SpiroParams 
   }
 }
 
-
-
 export function getSpiroTransition(pre: SpiroParams, post: SpiroParams, t: number): PathChunk[] {
   const actParams = SpiroLerp(pre, post, t)
   const keyPoints = getKeyPoints(actParams)
@@ -253,7 +288,7 @@ export function getSpiroTransition(pre: SpiroParams, post: SpiroParams, t: numbe
 type requiredSpiroParams = Required<SpiroParams>
 
 export function getTransitionDuration(pre: requiredSpiroParams, post: requiredSpiroParams): number {
-  let duration = 0
+  let duration = pre.petals === post.petals ? 0 : 1
   if (pre.minRadius !== post.minRadius) {
     duration = Math.max(duration, Math.abs(post.minRadius - pre.minRadius))
   }
@@ -266,8 +301,6 @@ export function getTransitionDuration(pre: requiredSpiroParams, post: requiredSp
   } else if (pre.laps !== post.laps) {
     duration = Math.max(duration, Math.abs(pre.laps - post.laps))
   }
-
-  console.log({ duration, pre, post })
 
   return duration * 1000
 }

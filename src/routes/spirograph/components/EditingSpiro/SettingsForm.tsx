@@ -6,14 +6,15 @@ import { useMemo, useRef } from 'react'
 import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
 import {
-  lapsOptions,
   distanceBaseOptions,
-  distanceOptions,
   thicknessOptions,
 } from './formOptions'
 import { normalizeValue } from './formUtils'
 import InputNumber from '@/ui-kit/InputNumber'
 import styled from 'styled-components'
+import dAttributes from "../../icons/dAttribute.json"
+
+const dAttr: Record<string, string> = dAttributes
 
 interface SettingsFormStore {
   laps: number
@@ -37,30 +38,46 @@ function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
   const previousCurlingRel = useRef<number>(props.spiro.laps / props.spiro.petals)
   
-  const spiknessOptions: Option[] = useMemo(() => {
-    if (props.spiro.laps === null) return []
-    return distanceBaseOptions.map((option, index) => ({
-      ...option,
-      icon: distanceOptions[0][index],
-    }))
-  }, [props.spiro.laps])
-  
-  const curlingOptions: Option[] = useMemo(() => {
-    const options: Option[] = []
-    const values = selectEvenlySpacedValues(
+  const lapsValues: number[] = useMemo(() => {
+    return selectEvenlySpacedValues(
       nonCommonDivisors(props.spiro.petals),
       6,
     )
-    for (let i = 0; i < values.length; i++) {
-      const normalizedValue = normalizeValue(i, values.length, 6)
+  }, [props.spiro.petals])
+
+  const spiknessOptions: Option[] = useMemo(() => {
+    if (props.spiro.laps === null) return []
+    let index = lapsValues.indexOf(props.spiro.laps)
+    if (index === -1) {
+      // find closest value
+      let diff = Infinity
+      for (let i = 0; i < lapsValues.length; i++) {
+        const newDiff = Math.abs(lapsValues[i] - props.spiro.laps)
+        if (newDiff < diff) {
+          diff = newDiff
+          index = i
+        }
+      }
+    }
+    const normalizedValue = normalizeValue(index, lapsValues.length, 6)
+    return distanceBaseOptions.map((option) => ({
+      ...option,
+      icon: dAttr[`d${normalizedValue}-${option.value}`],
+    }))
+  }, [lapsValues, props.spiro.laps])
+
+  const curlingOptions: Option[] = useMemo(() => {
+    const options: Option[] = []
+    for (let i = 0; i < lapsValues.length; i++) {
+      const normalizedValue = normalizeValue(i, lapsValues.length, 6)
+      const key = `l${normalizedValue}-${props.spiro.distance}`
       options.push({
-        label: lapsOptions[normalizedValue].label,
-        value: values[i],
-        icon: lapsOptions[normalizedValue].icon,
+        value: lapsValues[i],
+        icon: dAttr[key],
       })
     }
     return options
-  }, [props.spiro.petals])
+  }, [lapsValues, props.spiro.distance])
 
   function handleChangeLaps(laps: number) {
     previousCurlingRel.current = laps / props.spiro.petals
@@ -122,13 +139,18 @@ function SettingsForm(props: SettingsFormProps) {
           <OptionPicker
             options={curlingOptions}
             onChange={handleChangeLaps}
+            iconProps={{ stroke: true }}
           />
         </Form.Item>
         <Form.Item
           label="Spikiness" // translate: "Puntiagudez" antonimo: "redondez" o "curvatura"
           name="distance"
         >
-          <OptionPicker options={spiknessOptions} onChange={(distance) => props.onEdit({ distance })} />
+          <OptionPicker
+            options={spiknessOptions}
+            onChange={(distance) => props.onEdit({ distance })}
+            iconProps={{ stroke: true }}
+          />
         </Form.Item>
         <div className="flex gap-16">
           <Form.Item label="Line:" name="color">
