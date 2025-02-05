@@ -1,4 +1,3 @@
-import { gaussianElimination } from "@/routes/spirograph/test/gauss";
 import { Point } from "chart.js";
 
 /**

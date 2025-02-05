@@ -1,9 +1,7 @@
 import { generateSVGElements } from '../svgUtils'
 import { pathChunksToString } from '@/utils/canvasUtils'
 import { useMemo, useState } from 'react'
-import { getKeyPoints, getPath, getSpiroParams, getSpiroTransition } from '@/utils/functions'
-import { PathChunk, SpiroParams } from '@/utils/types'
-import { lerp } from '../../fn'
+import { getSpiroParams, getSpiroTransition } from '@/utils/functions'
 
 const stepAmount = 20
 

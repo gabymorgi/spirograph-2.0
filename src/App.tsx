@@ -21,12 +21,10 @@ function App() {
 
   const title = useMemo(() => {
     switch (location.pathname) {
-      case '/spirograph':
-        return 'Spirograph 2.0'
       case '/fractal':
         return 'Fractal'
-      default:
-        return 'emoji eyes 🤪'
+      default: // '/spiro'
+        return 'Spirograph 2.0'
     }
   }, [location.pathname])
 
@@ -37,8 +35,8 @@ function App() {
         selectedKeys={[location.pathname]}
         items={[
           {
-            key: '/spirograph',
-            label: <Link to="/spirograph">spirograph</Link>,
+            key: '/spiro',
+            label: <Link to="/spiro">spirograph</Link>,
           },
           {
             key: '/fractal',
@@ -69,9 +67,9 @@ function App() {
       {/* <Comparator /> */}
       <Layout.Content className="p-middle">
         <Routes>
-          <Route path="/" element={<Navigate to="/spirograph" />} />
+          <Route path="/" element={<Navigate to="/spiro" />} />
           <Route path="/fractal" element={<Fractal />} />
-          <Route path="/spirograph" element={<Spirograph />} />
+          <Route path="/spiro" element={<Spirograph />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Layout.Content>

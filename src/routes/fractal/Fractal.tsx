@@ -27,7 +27,7 @@ function printCircles(circles: Circle[]) {
 function calc(): Circle[] {
   const fullCircle = 2 * Math.PI
   const alpha = fullCircle / N
-  const halfAlpha = alpha * 0.5
+  // const halfAlpha = alpha * 0.5
   const totalCircles: Circle[] = [{ x: 0, y: 0, r: BASE_R, a: [0, fullCircle] }]
   let levelCircles: Circle[] = []
   let radius = totalCircles[0].r * (BASE + 1)

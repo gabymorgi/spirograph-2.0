@@ -34,9 +34,13 @@ const StyledWrapper = styled.div`
   min-width: 232px;
 `
 
+function getCurlingRel(laps: number, petals: number) {
+  return laps < petals / 2 ? laps : laps - petals
+}
+
 function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
-  const previousCurlingRel = useRef<number>(props.spiro.laps / props.spiro.petals)
+  const previousCurlingRel = useRef<number>(getCurlingRel(props.spiro.laps, props.spiro.petals))
   
   const lapsValues: number[] = useMemo(() => {
     return selectEvenlySpacedValues(
@@ -80,7 +84,7 @@ function SettingsForm(props: SettingsFormProps) {
   }, [lapsValues, props.spiro.distance])
 
   function handleChangeLaps(laps: number) {
-    previousCurlingRel.current = laps / props.spiro.petals
+    previousCurlingRel.current = getCurlingRel(laps, props.spiro.petals)
     props.onEdit({ laps })
   }
 
@@ -92,14 +96,19 @@ function SettingsForm(props: SettingsFormProps) {
       6,
     )
     let newIndex = 0
-    let diff = 1
-    for (let i = 0; i < values.length; i++) {
-      const newDiff = Math.abs(values[i] / petals - previousCurlingRel.current)
+    const isPositive = previousCurlingRel.current > 0
+    const startIndex = isPositive ? 0 : values.length - 1;
+    const endIndex = isPositive ? values.length / 2 : values.length / 2 - 1;
+    const step = isPositive ? 1 : -1;
+    const comp = isPositive ? previousCurlingRel.current : petals + previousCurlingRel.current;
+    let diff = petals;
+    for (let i = startIndex; i !== endIndex; i += step) {
+      const newDiff = Math.abs(comp - values[i]);
       if (newDiff < diff) {
-        diff = newDiff
-        newIndex = i
+        diff = newDiff;
+        newIndex = i;
       } else {
-        break
+        break;
       }
     }
     const newValue = values[newIndex]
@@ -127,7 +136,7 @@ function SettingsForm(props: SettingsFormProps) {
         layout="vertical"
         initialValues={{ type: 'Hypocycloid', ...props.spiro }}
       >
-        <Form.Item label="Curve type" name="type">
+        <Form.Item label="" name="type">
           <Select disabled>
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
           </Select>
