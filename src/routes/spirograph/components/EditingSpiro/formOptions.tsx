@@ -1,5 +1,4 @@
 import { Option } from '@/ui-kit/OptionPicker'
-import { Interpolation } from '@/utils/types'
 import {
   mdiCircle,
   mdiCircleMedium,
@@ -7,13 +6,6 @@ import {
   mdiHorseVariant,
   mdiRabbit,
   mdiSnail,
-  mdiUnicorn,
-  mdiVectorBezier,
-  mdiVectorCurve,
-  mdiVectorLine,
-  mdiVectorPolygon,
-  mdiVectorSquare,
-  mdiVectorTriangle,
 } from '@mdi/js'
 
 import {
@@ -47,35 +39,18 @@ import {
   smoothiestMedium,
   smoothiestSpikier,
   smoothiestSpiky,
-} from '@/icons/iconPaths'
-
-export const detailOptions: Option[] = [
-  { label: 'low', value: 0, icon: mdiVectorTriangle },
-  { label: 'medium', value: 1, icon: mdiVectorSquare },
-  { label: 'high', value: 2, icon: mdiVectorPolygon },
-]
+} from '@/routes/spirograph/icons/iconPaths'
 
 export const thicknessOptions = [
-  { label: 'thin', value: 0.2, icon: mdiCircleSmall },
-  { label: 'medium', value: 0.4, icon: mdiCircleMedium },
-  { label: 'thick', value: 1, icon: mdiCircle },
-]
-
-export const transitionOptions = [
-  { label: 'linear', value: Interpolation.Linear, icon: mdiVectorLine },
-  { label: 'bezier', value: Interpolation.Bezier, icon: mdiVectorCurve },
-  {
-    label: 'derivative',
-    value: Interpolation.Derivative,
-    icon: mdiVectorBezier,
-  },
+  { label: 'thin', value: 0.5, icon: mdiCircleSmall },
+  { label: 'medium', value: 1, icon: mdiCircleMedium },
+  { label: 'thick', value: 2, icon: mdiCircle },
 ]
 
 export const animationSpeedOptions = [
-  { label: 'slow', value: 1000, icon: mdiSnail },
-  { label: 'medium', value: 500, icon: mdiRabbit },
-  { label: 'fast', value: 200, icon: mdiHorseVariant },
-  { label: 'instant', value: 0, icon: mdiUnicorn },
+  { label: 'slow', value: 400, icon: mdiSnail },
+  { label: 'medium', value: 200, icon: mdiRabbit },
+  { label: 'fast', value: 100, icon: mdiHorseVariant },
 ]
 
 export const lapsOptions: Option[] = [
@@ -111,7 +86,7 @@ export const lapsOptions: Option[] = [
   },
 ]
 
-export const pointDistanceOptions: Array<Array<string>> = [
+export const distanceOptions: Array<Array<string>> = [
   [
     smoothiestCurvier,
     smoothiestCurvy,
@@ -138,22 +113,22 @@ export const pointDistanceOptions: Array<Array<string>> = [
   ],
 ]
 
-export const pointDistanceBaseOptions: Option[] = [
+export const distanceBaseOptions: Option[] = [
   {
     label: 'curvier',
-    value: 10,
+    value: 0.1,
     icon: smoothCurvier,
   },
-  { label: 'curvy', value: 30, icon: smoothCurvy },
+  { label: 'curvy', value: 0.3, icon: smoothCurvy },
   {
     label: 'medium',
-    value: 50,
+    value: 0.5,
     icon: smoothMedium,
   },
-  { label: 'spiky', value: 70, icon: smoothSpiky },
+  { label: 'spiky', value: 0.7, icon: smoothSpiky },
   {
     label: 'spikier',
-    value: 90,
+    value: 0.9,
     icon: smoothSpikier,
   },
 ]

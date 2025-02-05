@@ -1,14 +1,11 @@
 import { StringParam, NumberParam, withDefault } from 'use-query-params'
 import {
-  defaultBackgroundColor,
   defaultColor,
-  defaultInterpolation,
   defaultLaps,
   defaultMsPerPetal,
   defaultPetals,
-  defaultPointDistancePercentage,
-  defaultStepPerLap,
-  defaultStrokeWidthPercentage,
+  defaultDistance,
+  defaultstrokeWidth,
   getIncrementalId,
 } from './constants'
 
@@ -17,14 +14,11 @@ export const SpiroParam = {
   name: withDefault(StringParam, 'My Spiro'),
   laps: withDefault(NumberParam, defaultLaps),
   petals: withDefault(NumberParam, defaultPetals),
-  pointDistancePercentage: withDefault(
+  distance: withDefault(
     NumberParam,
-    defaultPointDistancePercentage,
+    defaultDistance,
   ),
-  interpolation: withDefault(StringParam, defaultInterpolation),
-  stepPerLap: withDefault(NumberParam, defaultStepPerLap),
-  strokeWidthPercentage: withDefault(NumberParam, defaultStrokeWidthPercentage),
+  strokeWidth: withDefault(NumberParam, defaultstrokeWidth),
   color: withDefault(StringParam, defaultColor),
-  backgroundColor: withDefault(StringParam, defaultBackgroundColor),
   msPerPetal: withDefault(NumberParam, defaultMsPerPetal),
 }
