@@ -65,12 +65,14 @@ function InteractionForm(props: InteractionFormProps) {
         onConfirm={handleDelete}
         okText="Yes"
         cancelText="No"
-        okType='danger'
+        okType="danger"
       >
         <Button
           danger
           tooltip="Delete Spiro"
-          icon={<Icon path={mdiTrashCanOutline} title="Delete Spiro" size={1} />}
+          icon={
+            <Icon path={mdiTrashCanOutline} title="Delete Spiro" size={1} />
+          }
         />
       </Popconfirm>
     </Container>

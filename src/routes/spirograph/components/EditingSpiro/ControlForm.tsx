@@ -33,11 +33,14 @@ function ControlForm(props: ControlFormProps) {
   const [selectedVel, setSelectedVel] = useState(defaultMsPerPetal)
 
   const selectedIcon = useMemo(() => {
-    return animationSpeedOptions.find(option => option.value === selectedVel)?.icon || ''
+    return (
+      animationSpeedOptions.find((option) => option.value === selectedVel)
+        ?.icon || ''
+    )
   }, [selectedVel])
 
   const items = useMemo(() => {
-    return animationSpeedOptions.map(option => ({
+    return animationSpeedOptions.map((option) => ({
       key: option.label,
       label: option.label,
       icon: <Icon path={option.icon} />,
@@ -91,18 +94,21 @@ function ControlForm(props: ControlFormProps) {
         />
 
         <Dropdown menu={{ items }}>
-          <Button color="primary" variant='outlined' icon={<Icon path={selectedIcon} />} />
+          <Button
+            color="primary"
+            variant="outlined"
+            icon={<Icon path={selectedIcon} />}
+          />
         </Dropdown>
         <Button
           color="primary"
-          variant='outlined'
+          variant="outlined"
           htmlType="submit"
           onClick={() => handleReDraw(selectedVel)}
         >
           Draw it!
         </Button>
       </Space.Compact>
-
     </Container>
   )
 }

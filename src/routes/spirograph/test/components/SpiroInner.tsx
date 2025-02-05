@@ -13,16 +13,20 @@ interface Props {
 function SpriroInner(props: Props) {
   const awesomeSpiro = getAwesomeSpiro(props.l, props.p, props.d)
   const divisor = awesomeSpiro[0].points[0].x
-  const norm = awesomeSpiro.map((v) => ({ 
+  const norm = awesomeSpiro.map((v) => ({
     points: v.points.map((p) => ({ x: p.x / divisor, y: p.y / divisor })),
-    command: v.command
+    command: v.command,
   }))
 
   const awesomeElements = generateSVGElements(norm)
 
   return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox={props.viewBox || "-1.1 -1.1 2.2 2.2"}>
-        {props.showControls ?? awesomeElements.map((element, index) => {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={props.viewBox || '-1.1 -1.1 2.2 2.2'}
+    >
+      {props.showControls ??
+        awesomeElements.map((element, index) => {
           if (element.type === 'circle') {
             const { cx, cy, r, fill } = element
             return <circle key={index} cx={cx} cy={cy} r={r} fill={fill} />
@@ -41,13 +45,13 @@ function SpriroInner(props: Props) {
             )
           }
         })}
-        <path
-          d={pathChunksToString(norm)}
-          fill="none"
-          stroke="#f00"
-          strokeWidth="0.02"
-        />
-      </svg>
+      <path
+        d={pathChunksToString(norm)}
+        fill="none"
+        stroke="#f00"
+        strokeWidth="0.02"
+      />
+    </svg>
   )
 }
 

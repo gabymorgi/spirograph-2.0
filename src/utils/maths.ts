@@ -12,10 +12,7 @@ export function nonCommonDivisors(number: number): number[] {
   return result
 }
 
-export function selectEvenlySpacedValues<T>(
-  numbers: T[],
-  amount: number,
-): T[] {
+export function selectEvenlySpacedValues<T>(numbers: T[], amount: number): T[] {
   if (numbers.length <= amount) {
     return numbers
   }

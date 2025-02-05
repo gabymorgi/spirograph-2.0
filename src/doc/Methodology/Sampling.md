@@ -30,10 +30,10 @@ facilmente podemos obtener Y1 = 4/3.
 ![Circulo](/src/doc/Images/circle-svg.svg)
 
 Si miramos un hypocicloide notaremos un patron similar. Podemos usar una curva diferente cada theta = PI /2, donde en este caso, para despejar t deberiamos hacer
-t = ((laps * Math.PI) / petals)
+t = ((laps \* Math.PI) / petals)
 y con solo un punto intermedio, podriamos obtener los puntos de control. Tambien hay que notar que los puntos extremos estaran siempre a una distancia
 max radius = fixed radius - movingRadius + pointDistance
-y 
+y
 minRadius = fixed radius - movingRadius - pointDistance
 
 ![Hypocicloide](/src/doc/Images/CP-on-half-radius.svg)
@@ -47,7 +47,7 @@ Viendo la imagen vemos que la parte importante es encontrar la magnitud de los d
 ### p
 
 p es la cantidad de petalos, y por lo tanto, nos ca a ayudar a calcular theta
-los puntos estan distribuidos en 2 * Math.PI / p
+los puntos estan distribuidos en 2 \* Math.PI / p
 sin embargo, el orden no es este. Para esto necesitamos el parametro l
 
 ![Petalos](/src/doc/Images/p5-l3-c50.svg)

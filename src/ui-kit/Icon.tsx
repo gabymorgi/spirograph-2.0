@@ -13,12 +13,13 @@ interface IconProps {
 }
 
 function Icon(props: IconProps) {
-  const fill = props.stroke === undefined && props.fill === undefined ? true : props.fill
+  const fill =
+    props.stroke === undefined && props.fill === undefined ? true : props.fill
   return (
     <StyledIcon className="icon" viewBox="0 0 24 24">
       <path
-        stroke={props.stroke ? "currentColor" : "none" }
-        fill={fill ? "currentColor" : "none" }
+        stroke={props.stroke ? 'currentColor' : 'none'}
+        fill={fill ? 'currentColor' : 'none'}
         strokeLinecap="round"
         d={props.path}
       />

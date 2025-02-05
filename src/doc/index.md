@@ -6,7 +6,7 @@ A roulette is the trajectory described by a point attached to a given curve as t
 
 The objective of this project is not to be thorough, but to be a simple and visual introduction to the topic.
 
-You can learn more about roulettes in [Wikipedia](https://en.wikipedia.org/wiki/Roulette_(curve)).
+You can learn more about roulettes in [Wikipedia](<https://en.wikipedia.org/wiki/Roulette_(curve)>).
 
 ---
 

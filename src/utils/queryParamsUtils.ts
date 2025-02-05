@@ -14,10 +14,7 @@ export const SpiroParam = {
   name: withDefault(StringParam, 'My Spiro'),
   laps: withDefault(NumberParam, defaultLaps),
   petals: withDefault(NumberParam, defaultPetals),
-  distance: withDefault(
-    NumberParam,
-    defaultDistance,
-  ),
+  distance: withDefault(NumberParam, defaultDistance),
   strokeWidth: withDefault(NumberParam, defaultstrokeWidth),
   color: withDefault(StringParam, defaultColor),
   msPerPetal: withDefault(NumberParam, defaultMsPerPetal),

@@ -1,6 +1,6 @@
 # Hypotrochoid
 
-A hypotrochoid is the trajectory described by a point attached to a given **circle** as it rolls *inside* a second fixed **circle**.
+A hypotrochoid is the trajectory described by a point attached to a given **circle** as it rolls _inside_ a second fixed **circle**.
 
 ![Hypocycloids](https://mathworld.wolfram.com/images/gifs/hypocr.gif)
 
@@ -36,11 +36,11 @@ But this parametes are not the most intuitive to understand the shape of the hyp
     This is a fancy way to describe the amount of full rotations the rolling circle has to do to **around itself** complete the trajectory.
 
   - Curliness $k$: This describes how much the petals are curled.
-  
+
     This is a fancy way to describe the amount of full rotations the rolling circle has to do **around the fixed circle** to complete the trajectory.
 
     <br />
-    
+
     This can be calculated by the relation between the fixed circle's radius and the rolling circle's radius, reducing the following fraction to its lowest terms:
 
     $$

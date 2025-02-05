@@ -5,7 +5,6 @@ import { getSpiroParams, getSpiroTransition } from '@/utils/functions'
 
 const stepAmount = 20
 
-
 function SpiroAnim() {
   const [step, setStep] = useState(0)
 
@@ -21,15 +20,18 @@ function SpiroAnim() {
     const post = [5, 1, 0.5]
     const preParams = getSpiroParams(pre[0], pre[1], pre[2])
     const postParams = getSpiroParams(post[0], post[1], post[2])
-    
+
     // console.log({ preParams, postParams })
-    const path = getSpiroTransition(preParams, postParams, 1 / stepAmount * step)
+    const path = getSpiroTransition(
+      preParams,
+      postParams,
+      (1 / stepAmount) * step,
+    )
     return {
       path: path,
-      el: generateSVGElements(path)
+      el: generateSVGElements(path),
     }
   }, [step])
-
 
   return (
     <div style={{ position: 'relative' }}>
@@ -39,40 +41,40 @@ function SpiroAnim() {
       </div>
       {/* <SpriroInner p={p} l={l} d={d} /> */}
       {/* {trans.map((v, i) => ( */}
-        <svg
-          // key={i}
-          height={600}
-          width={600}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox={"-1.1 -1.1 2.2 2.2"}
-          style={{ position: 'relative', top: 0, left: 0 }}
-        >
-          {trans.el.map((element, index) => {
-            if (element.type === 'circle') {
-              const { cx, cy, r, fill } = element
-              return <circle key={index} cx={cx} cy={cy} r={r} fill={fill} />
-            } else if (element.type === 'line') {
-              const { x1, y1, x2, y2, stroke, strokeWidth } = element
-              return (
-                <line
-                  key={index}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke={stroke}
-                  strokeWidth={strokeWidth}
-                />
-              )
-            }
-          })}
-          <path
-            d={pathChunksToString(trans.path)}
-            fill="none"
-            stroke="#0f0"
-            strokeWidth="0.02"
-          />
-        </svg>
+      <svg
+        // key={i}
+        height={600}
+        width={600}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox={'-1.1 -1.1 2.2 2.2'}
+        style={{ position: 'relative', top: 0, left: 0 }}
+      >
+        {trans.el.map((element, index) => {
+          if (element.type === 'circle') {
+            const { cx, cy, r, fill } = element
+            return <circle key={index} cx={cx} cy={cy} r={r} fill={fill} />
+          } else if (element.type === 'line') {
+            const { x1, y1, x2, y2, stroke, strokeWidth } = element
+            return (
+              <line
+                key={index}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+              />
+            )
+          }
+        })}
+        <path
+          d={pathChunksToString(trans.path)}
+          fill="none"
+          stroke="#0f0"
+          strokeWidth="0.02"
+        />
+      </svg>
       {/* ))} */}
     </div>
   )

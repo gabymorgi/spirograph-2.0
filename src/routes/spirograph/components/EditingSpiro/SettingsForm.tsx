@@ -5,14 +5,11 @@ import { mdiAutoFix } from '@mdi/js'
 import { useMemo, useRef } from 'react'
 import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
-import {
-  distanceBaseOptions,
-  thicknessOptions,
-} from './formOptions'
+import { distanceBaseOptions, thicknessOptions } from './formOptions'
 import { normalizeValue } from './formUtils'
 import InputNumber from '@/ui-kit/InputNumber'
 import styled from 'styled-components'
-import dAttributes from "../../icons/dAttribute.json"
+import dAttributes from '../../icons/dAttribute.json'
 
 const dAttr: Record<string, string> = dAttributes
 
@@ -40,13 +37,12 @@ function getCurlingRel(laps: number, petals: number) {
 
 function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
-  const previousCurlingRel = useRef<number>(getCurlingRel(props.spiro.laps, props.spiro.petals))
-  
+  const previousCurlingRel = useRef<number>(
+    getCurlingRel(props.spiro.laps, props.spiro.petals),
+  )
+
   const lapsValues: number[] = useMemo(() => {
-    return selectEvenlySpacedValues(
-      nonCommonDivisors(props.spiro.petals),
-      6,
-    )
+    return selectEvenlySpacedValues(nonCommonDivisors(props.spiro.petals), 6)
   }, [props.spiro.petals])
 
   const spiknessOptions: Option[] = useMemo(() => {
@@ -91,24 +87,23 @@ function SettingsForm(props: SettingsFormProps) {
   function handleChangePetals(petals: string | number | null) {
     if (petals === null) return
     petals = Number(petals)
-    const values = selectEvenlySpacedValues(
-      nonCommonDivisors(petals),
-      6,
-    )
+    const values = selectEvenlySpacedValues(nonCommonDivisors(petals), 6)
     let newIndex = 0
     const isPositive = previousCurlingRel.current > 0
-    const startIndex = isPositive ? 0 : values.length - 1;
-    const endIndex = isPositive ? values.length / 2 : values.length / 2 - 1;
-    const step = isPositive ? 1 : -1;
-    const comp = isPositive ? previousCurlingRel.current : petals + previousCurlingRel.current;
-    let diff = petals;
+    const startIndex = isPositive ? 0 : values.length - 1
+    const endIndex = isPositive ? values.length / 2 : values.length / 2 - 1
+    const step = isPositive ? 1 : -1
+    const comp = isPositive
+      ? previousCurlingRel.current
+      : petals + previousCurlingRel.current
+    let diff = petals
     for (let i = startIndex; i !== endIndex; i += step) {
-      const newDiff = Math.abs(comp - values[i]);
+      const newDiff = Math.abs(comp - values[i])
       if (newDiff < diff) {
-        diff = newDiff;
-        newIndex = i;
+        diff = newDiff
+        newIndex = i
       } else {
-        break;
+        break
       }
     }
     const newValue = values[newIndex]
@@ -164,19 +159,24 @@ function SettingsForm(props: SettingsFormProps) {
         <div className="flex gap-16">
           <Form.Item label="Line:" name="color">
             <ColorPicker
-              onChangeComplete={(value) => props.onEdit({ color: value.toHexString() })}
+              onChangeComplete={(value) =>
+                props.onEdit({ color: value.toHexString() })
+              }
             />
           </Form.Item>
           <Form.Item label="thickness:" name="strokeWidth">
             <OptionPicker
               options={thicknessOptions}
-              onChange={(value) =>
-                props.onEdit({ strokeWidth: value })
-              }
+              onChange={(value) => props.onEdit({ strokeWidth: value })}
             />
           </Form.Item>
         </div>
-        <Button icon={<Icon path={mdiAutoFix} />} onClick={randomizeSpiro} color="default" variant="outlined">
+        <Button
+          icon={<Icon path={mdiAutoFix} />}
+          onClick={randomizeSpiro}
+          color="default"
+          variant="outlined"
+        >
           I feel lucky
         </Button>
       </Form>
