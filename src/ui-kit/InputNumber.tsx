@@ -1,26 +1,6 @@
-import {
-  InputNumber as AntdInputNumber,
-  InputNumberProps,
-  Slider,
-  SliderSingleProps,
-} from 'antd'
-import { useEffect, useState } from 'react'
+import { InputNumber as AntdInputNumber, InputNumberProps } from 'antd'
 import styled from 'styled-components'
-
-function LazySlider(props: SliderSingleProps) {
-  const [value, setValue] = useState(props.defaultValue)
-
-  function handleChange(value: number) {
-    setValue(value)
-  }
-
-  useEffect(() => {
-    if (props.value === undefined) return
-    setValue(props.value)
-  }, [props.value])
-
-  return <Slider {...props} value={value} onChange={handleChange} />
-}
+import LazySlider from './LazySlider'
 
 const StylesInputNumber = styled.div`
   display: flex;

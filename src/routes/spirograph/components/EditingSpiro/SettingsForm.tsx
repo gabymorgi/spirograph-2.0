@@ -3,15 +3,16 @@ import { SpiroSettings } from '@/utils/types'
 import Icon from '@/ui-kit/Icon'
 import { mdiAutoFix } from '@mdi/js'
 import { useMemo, useRef } from 'react'
-import OptionPicker, { Option } from '@/ui-kit/OptionPicker'
+import OptionPicker from '@/ui-kit/OptionPicker'
 import { selectEvenlySpacedValues, nonCommonDivisors } from '@/utils/maths'
-import { distanceBaseOptions, thicknessOptions } from './formOptions'
-import { normalizeValue } from './formUtils'
+import { thicknessOptions } from './formOptions'
 import InputNumber from '@/ui-kit/InputNumber'
 import styled from 'styled-components'
-import dAttributes from '../../icons/dAttribute.json'
-
-const dAttr: Record<string, string> = dAttributes
+import { useThemeContext } from '@/contexts/ThemeContext'
+import FriendlyDistanceSettings from './FriendlyDistanceSettings'
+import FriendlyLapsSettings from './FriendlyLapsSettings'
+import AdvancedLapsSettings from './AdvancedLapsSettings'
+import AdvancedDistanceSettings from './AdvancedDistanceSettings'
 
 interface SettingsFormStore {
   laps: number
@@ -37,47 +38,18 @@ function getCurlingRel(laps: number, petals: number) {
 
 function SettingsForm(props: SettingsFormProps) {
   const [form] = Form.useForm()
+  const { advanced } = useThemeContext()
   const previousCurlingRel = useRef<number>(
     getCurlingRel(props.spiro.laps, props.spiro.petals),
   )
 
   const lapsValues: number[] = useMemo(() => {
-    return selectEvenlySpacedValues(nonCommonDivisors(props.spiro.petals), 6)
-  }, [props.spiro.petals])
-
-  const spiknessOptions: Option[] = useMemo(() => {
-    if (props.spiro.laps === null) return []
-    let index = lapsValues.indexOf(props.spiro.laps)
-    if (index === -1) {
-      // find closest value
-      let diff = Infinity
-      for (let i = 0; i < lapsValues.length; i++) {
-        const newDiff = Math.abs(lapsValues[i] - props.spiro.laps)
-        if (newDiff < diff) {
-          diff = newDiff
-          index = i
-        }
-      }
+    if (advanced) {
+      return nonCommonDivisors(props.spiro.petals)
+    } else {
+      return selectEvenlySpacedValues(nonCommonDivisors(props.spiro.petals), 6)
     }
-    const normalizedValue = normalizeValue(index, lapsValues.length, 6)
-    return distanceBaseOptions.map((option) => ({
-      ...option,
-      icon: dAttr[`d${normalizedValue}-${option.value}`],
-    }))
-  }, [lapsValues, props.spiro.laps])
-
-  const curlingOptions: Option[] = useMemo(() => {
-    const options: Option[] = []
-    for (let i = 0; i < lapsValues.length; i++) {
-      const normalizedValue = normalizeValue(i, lapsValues.length, 6)
-      const key = `l${normalizedValue}-${props.spiro.distance}`
-      options.push({
-        value: lapsValues[i],
-        icon: dAttr[key],
-      })
-    }
-    return options
-  }, [lapsValues, props.spiro.distance])
+  }, [props.spiro.petals, advanced])
 
   function handleChangeLaps(laps: number) {
     previousCurlingRel.current = getCurlingRel(laps, props.spiro.petals)
@@ -136,26 +108,42 @@ function SettingsForm(props: SettingsFormProps) {
             <Select.Option value="Hypocycloid">Hypocycloid</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Petals amount" name="petals">
+        <Form.Item label="Petals" name="petals">
           <InputNumber min={3} max={50} onChange={handleChangePetals} />
         </Form.Item>
-        <Form.Item label="Petals curling" name="laps">
-          <OptionPicker
-            options={curlingOptions}
-            onChange={handleChangeLaps}
-            iconProps={{ stroke: true }}
-          />
+        {/* translate: "Rizos de los pétalos" */}
+        <Form.Item label="Curling" name="laps">
+          {advanced ? (
+            <AdvancedLapsSettings
+              lapsValues={lapsValues}
+              onChange={handleChangeLaps}
+            />
+          ) : (
+            <FriendlyLapsSettings
+              distance={props.spiro.distance}
+              lapsValues={lapsValues}
+              onChange={handleChangeLaps}
+            />
+          )}
         </Form.Item>
         <Form.Item
           label="Spikiness" // translate: "Puntiagudez" antonimo: "redondez" o "curvatura"
           name="distance"
         >
-          <OptionPicker
-            options={spiknessOptions}
-            onChange={(distance) => props.onEdit({ distance })}
-            iconProps={{ stroke: true }}
-          />
+          {advanced ? (
+            <AdvancedDistanceSettings
+              laps={props.spiro.laps}
+              onChange={(d) => props.onEdit({ distance: d })}
+            />
+          ) : (
+            <FriendlyDistanceSettings
+              laps={props.spiro.laps}
+              lapsValues={lapsValues}
+              onChange={(d) => props.onEdit({ distance: d })}
+            />
+          )}
         </Form.Item>
+
         <div className="flex gap-16">
           <Form.Item label="Line:" name="color">
             <ColorPicker

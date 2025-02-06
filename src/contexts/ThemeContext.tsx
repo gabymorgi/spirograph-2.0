@@ -22,7 +22,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
-          colorPrimary: advanced ? '#8000bf' : '#00c0c0',
+          colorPrimary: advanced ? '#b423fc' : '#00c0c0',
         },
       }}
     >

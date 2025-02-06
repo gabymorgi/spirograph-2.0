@@ -2,7 +2,7 @@ import { Header } from 'antd/es/layout/layout'
 import { Layout, Menu } from 'antd'
 import { mdiTranslate, mdiTune, mdiViewAgendaOutline } from '@mdi/js'
 import Icon from './ui-kit/Icon'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Button from './ui-kit/Button'
 import ReverseButton from './ui-kit/ReverseButton'
 import { useThemeContext } from './contexts/ThemeContext'
@@ -19,34 +19,25 @@ function App() {
     setLanguage(language === 'en' ? 'es' : 'en')
   }
 
-  const title = useMemo(() => {
-    switch (location.pathname) {
-      case '/fractal':
-        return 'Fractal'
-      default: // '/spiro'
-        return 'Spirograph 2.0'
-    }
-  }, [location.pathname])
-
   return (
-    <>
-      <Menu
-        mode="horizontal"
-        selectedKeys={[location.pathname]}
-        items={[
-          {
-            key: '/spiro',
-            label: <Link to="/spiro">spirograph</Link>,
-          },
-          {
-            key: '/fractal',
-            label: <Link to="/fractal">fractal</Link>,
-          },
-        ]}
-      />
-      <Header className="flex justify-between items-center">
-        <h1 className="text-white">{title}</h1>
-        <div className="flex gap-16 justify-between">
+    <Layout>
+      <Header className="flex justify-between items-center p-16">
+        <Menu
+          className="flex-grow transparent"
+          mode="horizontal"
+          selectedKeys={[location.pathname]}
+          items={[
+            {
+              key: '/spiro',
+              label: <Link to="/spiro">spirograph</Link>,
+            },
+            {
+              key: '/fractal',
+              label: <Link to="/fractal">fractal</Link>,
+            },
+          ]}
+        />
+        <div className="flex gap-16">
           <Button
             onClick={toggleLanguage}
             tooltip={`Change to ${language === 'en' ? 'Spanish' : 'English'}`}
@@ -73,7 +64,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Layout.Content>
-    </>
+    </Layout>
   )
 }
 
